@@ -1,9 +1,11 @@
-# download twitter data
+# twitter-all.py
+# collects ordinary tweets
 
 from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
 import time
+import datetime
 import presto.sentan.sentan_twitter as s
 
 from http.client import IncompleteRead
@@ -22,6 +24,10 @@ class MyListener(StreamListener):
         self.switch = True
         self.start_time = time.time()
         self.limit = time_limit
+
+        file_name = "output/all/twitter-all-" + str(datetime.datetime.now().date()) + ".csv"
+        self.output = open(file_name, "a")
+
         super(MyListener, self).__init__()
 
     def on_status(self, status):
@@ -36,23 +42,23 @@ class MyListener(StreamListener):
     def on_error(self, status_code):
         print(status_code)
 
-    @staticmethod
+
     def do_process(self, status):
 
         try:
             tweet = status.text
+            created = status.created_at
 
-            #if 'afsagasg' not in tweet:
+            if '@' not in tweet:
+                if 'http' not in tweet:
 
 
-            sentimen_value, confidence = s.sentiment(tweet)
-            print(tweet, sentimen_value, confidence)
+                    sentimen_value, confidence = s.sentiment(tweet)
+                    print(tweet, sentimen_value, confidence)
 
-            # if confidence * 100 >= 80:
-            #     output = open("twitter-out.txt", "a")
-            #     output.write(sentimen_value)
-            #     output.write('\n')
-            #     output.close()
+                    if confidence * 100 >= 80:
+                        #self.output = open(self.file_name, "a")
+                        self.output.write('"' + str(created) + '","' + tweet + '","' + sentimen_value + '"\n')
 
         except Exception:
             pass
@@ -71,10 +77,13 @@ class MyListener(StreamListener):
     def get_switch(self):
         return self.switch
 
+    def close_file(self):
+        self.output.close()
+
 
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
-myListener = MyListener(time_limit=600)
+myListener = MyListener(time_limit=120)
 
 while True:
     try:
@@ -83,6 +92,7 @@ while True:
 
         if not myListener.get_switch():
             print("break")
+            myListener.close_file()
             break
 
     except Exception:
