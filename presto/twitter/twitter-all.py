@@ -7,10 +7,13 @@ from tweepy.streaming import StreamListener
 import time
 import datetime
 import presto.sentan.sentan_twitter as s
+import logging
+import os
 
 from http.client import IncompleteRead
 from requests.packages.urllib3.exceptions import ProtocolError
 
+logging.basicConfig(level=logging.INFO, filename="log/twitter-all.log")
 
 ckey = 'PVeCKgGJ4TEDIXcpDxbwyIjDk'
 csecret = 'tMSjmo8XwcoMfnAGXTnx0XZoN5CHb4iQK3RXcYqaJhquAhvwpf'
@@ -40,7 +43,8 @@ class MyListener(StreamListener):
             return False
 
     def on_error(self, status_code):
-        print(status_code)
+        logging.error(status_code)
+        pass
 
 
     def do_process(self, status):
@@ -54,10 +58,8 @@ class MyListener(StreamListener):
 
 
                     sentimen_value, confidence = s.sentiment(tweet)
-                    print(tweet, sentimen_value, confidence)
-
+                    print(sentimen_value, confidence)
                     if confidence * 100 >= 80:
-                        #self.output = open(self.file_name, "a")
                         self.output.write('"' + str(created) + '","' + tweet + '","' + sentimen_value + '"\n')
 
         except Exception:
@@ -81,9 +83,13 @@ class MyListener(StreamListener):
         self.output.close()
 
 
+#########################################
+
+logging.info("starting " + os.path.basename(__file__))
+
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
-myListener = MyListener(time_limit=120)
+myListener = MyListener(time_limit=900)
 
 while True:
     try:
@@ -91,10 +97,10 @@ while True:
         twitterStream.filter(track=["the"], languages=["en"])
 
         if not myListener.get_switch():
-            print("break")
+            logging.info("Ending " + os.path.basename(__file__))
             myListener.close_file()
             break
 
-    except Exception:
-        # Oh well, reconnect and keep trucking
+    except Exception as e:
+        logging.error(e)
         continue
