@@ -9,55 +9,79 @@ import presto.sentan.sentan_twitter as s
 import logging
 import os
 
-logging.basicConfig(level=logging.INFO, filename="log/twitter-comp.log")
-
 
 def run_collect(company):
 
+    logger.info(company + " started")
+
+    # files and vars
     today = datetime.date.today()
     yesterday = today - datetime.timedelta(1)
     two_days_ago = today - datetime.timedelta(2)
-    file_name = "output/" + company +"/twitter-" + company + "-" + str(yesterday) + ".csv"
-    all = 0
+    file_name = os.path.dirname(os.path.realpath(__file__)) + "/output/" + company +"/twitter-" + company + "-" + str(yesterday) + ".csv"
+    output = open(file_name, "a")
     good = 0
 
     max_id = 999999999999999999
 
-    # change !!!
+    # collect max 44 000
     for page in range(0, 440):
 
-        tweets = api.search(q=company, lang="en", count=100, max_id=max_id, until=today)
-        output = open(file_name, "a")
+        logger.info("processing: " + str(page) + " of 440")
+
+        try:
+            tweets = api.search(q=company, lang="en", count=100, max_id=max_id, until=today)
+        except Exception as e:
+            logger.error(e)
+            continue
 
         for tweet in tweets:
 
-            text = tweet.text
-            created_at = tweet.created_at
-
-            if str(created_at)[0:10] == str(two_days_ago):
+            # keep yesterday only
+            if str(tweet.created_at)[0:10] == str(two_days_ago):
                 return
 
+            # clean data and save
             if '@' not in tweet.text:
                 if 'http' not in tweet.text:
-                    sentimen_value, confidence = s.sentiment(tweet.text)
-                    logging.debug(tweet.created_at, tweet.text, sentimen_value, confidence)
+                    sentiment_value, confidence = s.sentiment(tweet.text)
                     if confidence * 100 >= 80:
-                        output.write('"' + str(created_at) + '","' + text + '","' + sentimen_value + '"\n')
+                        logger.debug(str(tweet.created_at) + ', ' + tweet.text + ', ' + sentiment_value)
+                        output.write('"' + str(tweet.created_at) + '","' + tweet.text + '","' + sentiment_value + '"\n')
                         good += 1
 
-            all += 1
-
         max_id = tweet.id
-
 
     return
 
 
-############################
+##################
+# start
+
+# Logging settings
+logFormatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", datefmt='%Y%m%d-%H:%M')
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# file
+log_file = os.path.dirname(os.path.realpath(__file__)) + "/log/twitter-comp.log"
+fileHandler = logging.FileHandler(log_file)
+fileHandler.setFormatter(logFormatter)
+logger.addHandler(fileHandler)
+
+# console
+consoleHandler = logging.StreamHandler()
+consoleHandler.setFormatter(logFormatter)
+logger.addHandler(consoleHandler)
 
 
-logging.info("starting " + os.path.basename(__file__))
+logger.info("starting " + os.path.basename(__file__))
 
+
+#####
+
+
+# Auth settings
 ckey = 'PVeCKgGJ4TEDIXcpDxbwyIjDk'
 csecret = 'tMSjmo8XwcoMfnAGXTnx0XZoN5CHb4iQK3RXcYqaJhquAhvwpf'
 atoken = '4093147763-RX18hJKAMZD3cfADM0LfyRWOi7wBkjbkfdyGtNH'
@@ -68,15 +92,21 @@ auth.set_access_token(atoken, asecret)
 api = API(auth)
 
 
+#####
+
+
 companies = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla"]
-#companies = ["novosibirsk", "krasnoyarsk"]
 
 
 for company in companies:
     run_collect(company)
-    logging.info("finished " + company)
+    logger.info(company + " finished")
     sleep(900)
 
-logging.info("ending " + os.path.basename(__file__))
+logger.info("ending " + os.path.basename(__file__))
+
+
+# end
+###################
 
 

@@ -1,106 +1,113 @@
-# twitter-all.py
-# collects ordinary tweets
+# twitter-comp.py
+# collects tweets for the specified companies
 
-from tweepy import Stream
 from tweepy import OAuthHandler
-from tweepy.streaming import StreamListener
-import time
+from tweepy import API
+from time import sleep
 import datetime
 import presto.sentan.sentan_twitter as s
 import logging
 import os
 
-from http.client import IncompleteRead
-from requests.packages.urllib3.exceptions import ProtocolError
 
-logging.basicConfig(level=logging.INFO, filename="log/twitter-all.log")
+def run_collect(company):
 
+    logger.info(company + " started")
+
+    # files and vars
+    today = datetime.date.today()
+    yesterday = today - datetime.timedelta(1)
+    two_days_ago = today - datetime.timedelta(2)
+    file_name = os.path.dirname(os.path.realpath(__file__)) + "/output/all/twitter-all-" + str(yesterday) + ".csv"
+    output = open(file_name, "a")
+    good = 0
+
+    max_id = 999999999999999999
+
+    # collect max 44 000
+    for page in range(0, 440):
+
+        logger.info("processing: " + str(page) + " of 440")
+
+        try:
+            tweets = api.search(q=company, lang="en", count=100, max_id=max_id, until=today)
+        except Exception as e:
+            logger.error(e)
+            continue
+
+        for tweet in tweets:
+
+            # keep yesterday only
+            if str(tweet.created_at)[0:10] == str(two_days_ago):
+                return
+
+            # clean data and save
+            if '@' not in tweet.text:
+                if 'http' not in tweet.text:
+                    sentiment_value, confidence = s.sentiment(tweet.text)
+                    if confidence * 100 >= 80:
+                        logger.debug(str(tweet.created_at) + ', ' + tweet.text + ', ' + sentiment_value)
+                        output.write('"' + str(tweet.created_at) + '","' + tweet.text + '","' + sentiment_value + '"\n')
+                        good += 1
+
+        max_id = tweet.id
+
+    return
+
+
+##################
+# start
+
+# Logging settings
+logFormatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", datefmt='%Y%m%d-%H:%M')
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# file
+log_file = os.path.dirname(os.path.realpath(__file__)) + "/log/twitter-all.log"
+fileHandler = logging.FileHandler(log_file)
+fileHandler.setFormatter(logFormatter)
+logger.addHandler(fileHandler)
+
+# console
+consoleHandler = logging.StreamHandler()
+consoleHandler.setFormatter(logFormatter)
+logger.addHandler(consoleHandler)
+
+
+logger.info("starting " + os.path.basename(__file__))
+
+
+#####
+
+
+# Auth settings
 ckey = 'PVeCKgGJ4TEDIXcpDxbwyIjDk'
 csecret = 'tMSjmo8XwcoMfnAGXTnx0XZoN5CHb4iQK3RXcYqaJhquAhvwpf'
 atoken = '4093147763-RX18hJKAMZD3cfADM0LfyRWOi7wBkjbkfdyGtNH'
 asecret = 'XNLizhuodme9MdJQw4dTUSrObL1yu38FJuXg1GUaFAo89'
 
-
-class MyListener(StreamListener):
-
-    def __init__(self, time_limit=60):
-        self.switch = True
-        self.start_time = time.time()
-        self.limit = time_limit
-
-        file_name = "output/all/twitter-all-" + str(datetime.datetime.now().date()) + ".csv"
-        self.output = open(file_name, "a")
-
-        super(MyListener, self).__init__()
-
-    def on_status(self, status):
-
-        if time.time() - self.start_time < self.limit:
-            self.do_process(status)
-            return True
-        else:
-            self.switch = False
-            return False
-
-    def on_error(self, status_code):
-        logging.error(status_code)
-        pass
-
-
-    def do_process(self, status):
-
-        try:
-            tweet = status.text
-            created = status.created_at
-
-            if '@' not in tweet:
-                if 'http' not in tweet:
-
-
-                    sentimen_value, confidence = s.sentiment(tweet)
-                    print(sentimen_value, confidence)
-                    if confidence * 100 >= 80:
-                        self.output.write('"' + str(created) + '","' + tweet + '","' + sentimen_value + '"\n')
-
-        except Exception:
-            pass
-
-        # except KeyError:
-        #     pass
-
-        # except IncompleteRead:
-        #     pass
-
-        # except ProtocolError:
-        #     pass
-
-        return True
-
-    def get_switch(self):
-        return self.switch
-
-    def close_file(self):
-        self.output.close()
-
-
-#########################################
-
-logging.info("starting " + os.path.basename(__file__))
-
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
-myListener = MyListener(time_limit=900)
+api = API(auth)
 
-while True:
-    try:
-        twitterStream = Stream(auth, myListener)
-        twitterStream.filter(track=["the"], languages=["en"])
 
-        if not myListener.get_switch():
-            logging.info("Ending " + os.path.basename(__file__))
-            myListener.close_file()
-            break
+#####
 
-    except Exception as e:
-        logging.error(e)
-        continue
+
+#companies = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla"]
+companies = ["the"]
+
+
+for company in companies:
+    run_collect(company)
+    #logger.info(company + " finished")
+    #sleep(900)
+
+logger.info("ending " + os.path.basename(__file__))
+
+
+# end
+###################
+
+
