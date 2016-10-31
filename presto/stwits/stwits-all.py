@@ -18,15 +18,23 @@ def run_collect(company):
     max_id = '99999999'
 
 
-    for j in range(0,10):
+    for j in range(0,2):
 
-        logger.info("processing: " + str(j) + " of 10")
+        logger.info("processing: " + str(j) + " of 100")
 
-        url = 'https://api.stocktwits.com/api/2/streams/symbol/' + company + '.json?max=' + str(max_id)
+        if(company == "the"):
+            url = 'https://api.stocktwits.com/api/2/streams/suggested.json?max=' + str(max_id)
+        else:
+            url = 'https://api.stocktwits.com/api/2/streams/symbol/' + company + '.json?max=' + str(max_id)
+
         req = requests.get(url).json()
 
         for i in range(0,30):
 
+            if (req['messages'][i]['entities']['sentiment'] is not None):
+                sentiment = req['messages'][i]['entities']['sentiment']['basic']
+            else:
+                sentiment = "none"
             created_at = req['messages'][i]['created_at']
             text = req['messages'][i]['body']
 
@@ -35,13 +43,13 @@ def run_collect(company):
             if str(created_at)[0:10] == str(two_days_ago):
                 return
 
-            logger.debug(created_at + ', ' + text)
-            output.write('"' + created_at + '","' + text + '"\n')
+            logger.debug(created_at + ', ' + sentiment + ', ' + text)
+            output.write('"' + created_at + '","' + sentiment + '","' + text + '"\n')
 
         max_id = req['cursor']['max']
-        print('max_id: ' + str(max_id))
+        logger.debug('max_id: ' + str(max_id))
 
-    #print(json.dumps(req, indent=4, sort_keys=True))
+    logger.debug(json.dumps(req, indent=4, sort_keys=True))
 
     return
 
@@ -71,7 +79,7 @@ logger.info("starting " + os.path.basename(__file__))
 
 #####
 
-companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla"]
+companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia", "the"]
 #companies = ["msft"]
 
 

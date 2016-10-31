@@ -10,7 +10,9 @@ def fileToSet(fileName):
     feeds = set()
     with open(fileName, 'rt') as f:
         for line in f:
-            feeds.add(line.replace('\n', ''))
+            line = line.strip()
+            if not line.startswith('#'):
+                feeds.add(line.replace('\n', ''))
     return feeds
 
 
