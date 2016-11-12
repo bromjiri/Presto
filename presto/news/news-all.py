@@ -38,10 +38,10 @@ def processArticles(link_set, companies):
 
     # files and vars
     today = datetime.date.today()
-    file_comp = os.path.dirname(os.path.realpath(__file__)) + "/output/comp/twitter-comp-" + str(today) + ".csv"
-    file_the = os.path.dirname(os.path.realpath(__file__)) + "/output/the/twitter-the-" + str(today) + ".csv"
-    write_comp = open(file_comp, 'a')
-    write_the = open(file_the, 'a')
+    file_comp = os.path.dirname(os.path.realpath(__file__)) + "/output/comp/news-comp-" + str(today) + ".csv"
+    file_the = os.path.dirname(os.path.realpath(__file__)) + "/output/the/news-the-" + str(today) + ".csv"
+    write_comp = open(file_comp, 'w')
+    write_the = open(file_the, 'w')
     iter = 1
 
     for link in link_set:
@@ -101,7 +101,7 @@ logger.info("starting " + os.path.basename(__file__))
 
 #####
 
-feeds = fileToSet("feeds.txt")
+feeds = fileToSet(os.path.dirname(os.path.realpath(__file__)) + "/feeds.txt")
 articles = getArticleLinks(feeds)
 companies = ["microsoft", "coca-cola", "mcdonald", "samsung", "netflix", "nike", "tesla"]
 

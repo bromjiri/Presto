@@ -2,3 +2,5 @@ http://www.cnbc.com/id/100003114/device/rss/rss.html
 http://www.latimes.com/rss2.0.xml
 http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml
 http://feeds.nydailynews.com/nydnrss
+https://www.theguardian.com/business/economics/rss
+http://feeds.bbci.co.uk/news/business/rss.xml
