@@ -18,7 +18,7 @@ def run_collect(company):
     max_id = '99999999'
 
 
-    for j in range(0,2):
+    for j in range(0,100):
 
         logger.info("processing: " + str(j) + " of 100")
 
