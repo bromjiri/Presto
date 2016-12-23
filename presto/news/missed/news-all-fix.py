@@ -87,7 +87,7 @@ logger.info("starting " + os.path.basename(__file__))
 
 #####
 
-date = "2016-11-07"
+date = "2016-11-12"
 articles = getArticleLinks(date)
 companies = ["microsoft", "coca-cola", "mcdonald", "samsung", "netflix", "nike", "tesla"]
 

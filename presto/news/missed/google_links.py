@@ -1,7 +1,7 @@
 import re
 
 # input
-date = "2016-11-10"
+date = "2016-11-11"
 
 
 output_file = date + "/links.txt"
