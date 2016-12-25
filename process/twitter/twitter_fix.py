@@ -1,15 +1,12 @@
 # fix newlines
 
-MONTH = "11"
-SUBJECT = "cola"
 
+def fix_file(day, month, subject):
 
-def fix_file(day):
-
-    output_file = "../../presto/downloads/twitter/" + SUBJECT + "/twitter-" + SUBJECT + "-2016-" + MONTH + "-" + day + "-fix.csv"
+    output_file = "../../presto/downloads/twitter/" + subject + "/twitter-" + subject + "-2016-" + month + "-" + day + "-fix.csv"
     write_file = open(output_file, "w")
 
-    input_file = "../../presto/downloads/twitter/" + SUBJECT + "/twitter-" + SUBJECT + "-2016-11-" + day + ".csv"
+    input_file = "../../presto/downloads/twitter/" + subject + "/twitter-" + subject + "-2016-11-" + day + ".csv"
 
     with open(input_file, "rt") as twi:
         for row in twi:
@@ -24,7 +21,15 @@ def fix_file(day):
 
 
 
-for i in range(1,31):
-    day = str(i).zfill(2)
-    fix_file(day)
+month = "12"
+first_day = 1
+last_day = 20
+subjects = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
+
+for subject in subjects:
+
+    for i in range(first_day, last_day+1):
+        day = str(i).zfill(2)
+        print("Subject: " + subject + ", Day: " + day)
+        fix_file(day, month, subject)
 

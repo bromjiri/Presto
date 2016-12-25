@@ -1,13 +1,10 @@
 import csv
+from datetime import datetime
 
 
-MONTH = "11"
-SUBJECT = "cola"
+def process_day(day, month, subject):
 
-
-def process_day(day):
-
-    input_file = "../../presto/downloads/twitter/" + SUBJECT + "/twitter-" + SUBJECT + "-2016-" + MONTH + "-" + day + "-fix.csv"
+    input_file = "../../presto/downloads/twitter/" + subject + "/twitter-" + subject + "-2016-" + month + "-" + day + "-fix.csv"
 
 
     pos = 0
@@ -32,21 +29,36 @@ def process_day(day):
                 print("not recognized sentiment" + str(row))
 
     pos_per = pos/total
-    print("day: " + str(day) + " pos: " + "{:.2f}".format(pos_per*100))
+    print("Subject: " + subject + ", Day: " + day + " pos: " + "{:.2f}".format(pos_per*100))
     return "{:.2f}".format(pos_per*100)
 
 
 ### start processing ###
 
+year = 2016
+month = 11
+first_day = 1
+last_day = 30
+weekend = set([5,6])
 subjects = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
 
-output_file = "../sentiment/twitter/twitter-sent-" + SUBJECT + "-2016-" + MONTH + ".csv"
-output =  open(output_file, "w")
-writer = csv.writer(output, delimiter=',')
+us_holidays = "../sentiment/us_holidays.txt"
 
-for i in range(1,31):
-    day = str(i).zfill(2)
-    pos_day = process_day(day)
-    writer.writerow([MONTH, day, pos_day])
+year_str = str(year)
+month_str = str(month).zfill(2)
 
-output.close()
+
+for subject in subjects:
+
+    output_file = "../sentiment/twitter/twitter-sent-" + subject + "-2016-" + month_str + ".csv"
+    output =  open(output_file, "w")
+    writer = csv.writer(output, delimiter=',')
+
+    for i in range(first_day, last_day+1):
+        day_str = str(i).zfill(2)
+        date = datetime(year, month, i).date()
+        if (date.weekday() not in weekend and str(date) not in open(us_holidays).read()):
+            pos_day = process_day(day_str, month_str, subject)
+            writer.writerow([year_str, month_str, day_str, pos_day])
+
+    output.close()
