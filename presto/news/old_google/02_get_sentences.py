@@ -18,7 +18,10 @@ def get_sentences(date, subject):
     for link in link_set:
 
         try:
-            source_code = requests.get(link).text
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; rv:11.0) like Gecko',
+            }
+            source_code = requests.get(link, headers=headers).text
             soup = BeautifulSoup(source_code, "lxml")
 
             for post in soup.findAll(['p']):
@@ -26,7 +29,7 @@ def get_sentences(date, subject):
 
                 for sentence in sentences:
                     if subject in sentence.lower():
-                        sentences_file.write(sentence.lower().strip() + '\n')
+                        sentences_file.write(sentence.strip() + '\n')
 
             #logger.info(str(iter) + " of " + str(len(link_set)))
             iter += 1
@@ -66,7 +69,7 @@ month = "12"
 first_day = 1
 last_day = 31
 #subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
-subjects = ["microsoft"]
+subjects = ["coca-cola"]
 
 
 
