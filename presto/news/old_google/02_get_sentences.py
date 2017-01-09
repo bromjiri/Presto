@@ -15,6 +15,11 @@ def get_sentences(date, subject):
     sentences_file = open(output_file, 'w')
     iter = 1
 
+    if (subject == "mcdonalds"):
+        keyword = "mcdonald"
+    else:
+        keyword = subject
+
     for link in link_set:
 
         try:
@@ -28,7 +33,7 @@ def get_sentences(date, subject):
                 sentences = sent_tokenize(post.text)
 
                 for sentence in sentences:
-                    if subject in sentence.lower():
+                    if keyword in sentence.lower():
                         sentences_file.write(sentence.strip() + '\n')
 
             #logger.info(str(iter) + " of " + str(len(link_set)))
@@ -65,11 +70,12 @@ logger.info("starting " + os.path.basename(__file__))
 #####
 
 year = "2016"
-month = "12"
+month = "11"
 first_day = 1
-last_day = 31
+last_day = 20
 #subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
-subjects = ["coca-cola"]
+#subjects = ["coca-cola", "mcdonalds", "microsoft"]
+subjects = ["mcdonalds", "nike"]
 
 
 
