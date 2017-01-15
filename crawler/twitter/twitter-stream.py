@@ -6,7 +6,7 @@ from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
 import time
 import datetime
-import presto.sentan.sentan_twitter as s
+import crawler.sentan.sentan_twitter as s
 import logging
 import os
 

@@ -1,5 +1,6 @@
 import requests
 import logging
+import settings
 import datetime
 from nltk.tokenize import sent_tokenize
 import os
@@ -38,8 +39,8 @@ def processArticles(link_set, companies):
 
     # files and vars
     today = datetime.date.today()
-    file_comp = os.path.dirname(os.path.realpath(__file__)) + "/output/comp/news-comp-" + str(today) + ".csv"
-    file_the = os.path.dirname(os.path.realpath(__file__)) + "/output/the/news-the-" + str(today) + ".csv"
+    file_comp = settings.DOWNLOADS_NEWS + "/comp/news-comp-" + str(today) + ".csv"
+    file_the = settings.DOWNLOADS_NEWS + "/the/news-the-" + str(today) + ".csv"
     write_comp = open(file_comp, 'w')
     write_the = open(file_the, 'w')
     iter = 1

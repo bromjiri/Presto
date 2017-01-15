@@ -3,9 +3,10 @@
 
 from tweepy import OAuthHandler
 from tweepy import API
+import settings
 from time import sleep
 import datetime
-import presto.sentan.sentan_twitter as s
+import crawler.sentan.sentan_twitter as s
 import logging
 import os
 
@@ -18,7 +19,7 @@ def run_collect(company):
     today = datetime.date.today()
     yesterday = today - datetime.timedelta(1)
     two_days_ago = today - datetime.timedelta(2)
-    file_name = os.path.dirname(os.path.realpath(__file__)) + "/output/" + company +"/twitter-" + company + "-" + str(yesterday) + ".csv"
+    file_name = settings.DOWNLOADS_TWITTER + "/" + company + "/twitter-" + company + "-" + str(yesterday) + ".csv"
     output = open(file_name, "a")
     good = 0
 
@@ -39,7 +40,7 @@ def run_collect(company):
 
             # keep yesterday only
             if str(tweet.created_at)[0:10] == str(two_days_ago):
-                return
+                return False
 
             # clean data and save
             if '@' not in tweet.text:
@@ -52,6 +53,17 @@ def run_collect(company):
 
         max_id = tweet.id
 
+    return True
+
+
+def run_company(company):
+
+    for i in range(0,5):
+        logger.info(company + " cycle: " + str(i))
+        if(run_collect(company) == False):
+            logger.info(company + " reached yesterday")
+            return
+        sleep(900)
     return
 
 
@@ -64,7 +76,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 # file
-log_file = os.path.dirname(os.path.realpath(__file__)) + "/log/twitter-comp.log"
+log_file = os.path.dirname(os.path.realpath(__file__)) + "/log/twitter-all.log"
 fileHandler = logging.FileHandler(log_file)
 fileHandler.setFormatter(logFormatter)
 logger.addHandler(fileHandler)
@@ -95,11 +107,11 @@ api = API(auth)
 #####
 
 
-companies = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla"]
+companies = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
 
 
 for company in companies:
-    run_collect(company)
+    run_company(company)
     logger.info(company + " finished")
     sleep(900)
 

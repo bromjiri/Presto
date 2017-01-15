@@ -1,4 +1,5 @@
 import requests
+import settings
 import json
 import logging
 import os
@@ -12,7 +13,7 @@ def run_collect(company):
     today = datetime.date.today()
     yesterday = today - datetime.timedelta(1)
     two_days_ago = today - datetime.timedelta(2)
-    file_name = os.path.dirname(os.path.realpath(__file__)) + "/output/" + company + "/stwits-" + company + "-" + str(yesterday) + ".csv"
+    file_name = settings.DOWNLOADS_STWITS + "/" + company + "/stwits-" + company + "-" + str(yesterday) + ".csv"
     output = open(file_name, "a")
 
     max_id = '99999999'

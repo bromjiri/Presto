@@ -12,8 +12,8 @@ import re
 
 def get_links(date, subject):
 
-    input_file = settings.GOOGLE_HTML + "/" + subject + "/" + date + "/" + subject + " location_USA - Google Search.html"
-    output_file = settings.GOOGLE_HTML + "/" + subject + "/" + date + "/" + subject + "_old_links_" + date + ".txt"
+    input_file = settings.DOWNLOADS_GOOGLE + "/" + subject + "/" + date + "/" + subject + " location_USA - Google Search.html"
+    output_file = settings.DOWNLOADS_GOOGLE + "/" + subject + "/" + date + "/" + subject + "_old_links_" + date + ".txt"
     html_page = open(input_file, 'r')
     output = open(output_file, 'w')
 
@@ -45,11 +45,11 @@ def get_links(date, subject):
 
 
 year = "2016"
-month = "11"
+month = "12"
 first_day = 1
-last_day = 30
+last_day = 31
 #subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
-subjects = ["nike"]
+subjects = ["netflix"]
 
 for subject in subjects:
     for i in range(first_day, last_day+1):

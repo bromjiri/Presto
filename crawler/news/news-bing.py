@@ -101,7 +101,7 @@ def process_articles(link_set, subject):
     # files and vars
     today = datetime.date.today()
     yesterday = today - datetime.timedelta(1)
-    file_comp = settings.DOWNLOADS + "/news/bing/" + subject + "/news-" + subject + "-" + str(yesterday) + ".csv"
+    file_comp = settings.DOWNLOADS_NEWS + "/bing/" + subject + "/news-" + subject + "-" + str(yesterday) + ".csv"
     dir = os.path.dirname(os.path.realpath(file_comp))
     os.makedirs(dir, exist_ok=True)
     write_comp = open(file_comp, 'w')
