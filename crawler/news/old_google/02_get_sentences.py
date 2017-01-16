@@ -9,8 +9,8 @@ from nltk.tokenize import sent_tokenize
 def get_sentences(date, subject):
 
     # files and vars
-    input_file = settings.DOWNLOADS_GOOGLE + "/" + subject + "/" + date + "/" + subject + "_old_links_" + date + ".txt"
-    output_file = settings.DOWNLOADS_GOOGLE + "/" + subject + "/" + date + "/" + subject + "_old_sentences_" + date + ".txt"
+    input_file = settings.DOWNLOADS_NEWS + "/google/" + subject + "/" + date + "/" + subject + "_old_links_" + date + ".txt"
+    output_file = settings.DOWNLOADS_NEWS + "/google/" + subject + "/" + date + "/" + subject + "_old_sentences_" + date + ".txt"
     link_set = open(input_file, 'r')
     sentences_file = open(output_file, 'w')
     iter = 1
@@ -71,11 +71,11 @@ logger.info("starting " + os.path.basename(__file__))
 
 year = "2016"
 month = "12"
-first_day = 27
+first_day = 1
 last_day = 31
 #subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
 #subjects = ["coca-cola", "mcdonalds", "microsoft"]
-subjects = ["netflix"]
+subjects = ["coca-cola", "microsoft"]
 
 
 

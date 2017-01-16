@@ -118,7 +118,8 @@ logger.info("starting " + os.path.basename(__file__))
 
 # get text from input files
 all_inputs = []
-input_files = ["data/amazon_cells_labelled.txt", "data/imdb_labelled.txt", "data/yelp_labelled.txt"]
+#input_files = ["data/amazon_cells_labelled.txt", "data/imdb_labelled.txt", "data/yelp_labelled.txt"]
+input_files = ["data/amazon_cells_labelled.txt"]
 for input_file in input_files:
     file = open(input_file, "r")
     all_inputs += file
@@ -129,6 +130,7 @@ all_grams, labeled_sentences = read_input_file(all_inputs)
 
 # sort words
 sorted_words = nltk.FreqDist(all_grams).most_common(1000)
+
 word_features = list()
 for word in sorted_words:
     word_features.append(word[0])
@@ -138,8 +140,8 @@ featuresets = [(find_features(sentence, word_features), category) for (sentence,
 random.shuffle(featuresets)
 
 
-training_set = featuresets[:2500]
-testing_set = featuresets[2500:]
+training_set = featuresets[:800]
+testing_set = featuresets[800:]
 
 
 classifier = nltk.NaiveBayesClassifier.train(training_set)
@@ -167,19 +169,21 @@ LinearSVC_classifier._vectorizer.sort = False
 LinearSVC_classifier.train(training_set)
 print("LinearSVC_classifier accuracy percent:", (nltk.classify.accuracy(LinearSVC_classifier, testing_set)) * 100)
 
-NuSVC_classifier = SklearnClassifier(NuSVC())
+NuSVC_classifier = SklearnClassifier(NuSVC(probability=True))
 NuSVC_classifier._vectorizer.sort = False
 NuSVC_classifier.train(training_set)
 print("NuSVC_classifier accuracy percent:", (nltk.classify.accuracy(NuSVC_classifier, testing_set)) * 100)
 
 
-voted_classifier = VoteClassifier(
-    NuSVC_classifier,
-    LinearSVC_classifier,
-    MNB_classifier,
-    BernoulliNB_classifier,
-    LogisticRegression_classifier)
+# voted_classifier = VoteClassifier(
+#     NuSVC_classifier,
+#     LinearSVC_classifier,
+#     MNB_classifier,
+#     BernoulliNB_classifier,
+#     LogisticRegression_classifier)
+#
+# print("voted_classifier accuracy percent:", (nltk.classify.accuracy(voted_classifier, testing_set)) * 100)
 
-print("voted_classifier accuracy percent:", (nltk.classify.accuracy(voted_classifier, testing_set)) * 100)
-
-
+feats = find_features("Hi very good day everything great!", word_features)
+result = NuSVC_classifier
+print(result)
