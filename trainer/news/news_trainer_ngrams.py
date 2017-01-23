@@ -147,27 +147,27 @@ testing_set = featuresets[800:]
 classifier = nltk.NaiveBayesClassifier.train(training_set)
 print("Original Naive Bayes Algo accuracy percent:", (nltk.classify.accuracy(classifier, testing_set)) * 100)
 classifier.show_most_informative_features(15)
-
-MNB_classifier = SklearnClassifier(MultinomialNB())
-MNB_classifier._vectorizer.sort = False
-MNB_classifier.train(training_set)
-print("MNB_classifier accuracy percent:", (nltk.classify.accuracy(MNB_classifier, testing_set)) * 100)
-
-BernoulliNB_classifier = SklearnClassifier(BernoulliNB())
-BernoulliNB_classifier._vectorizer.sort = False
-BernoulliNB_classifier.train(training_set)
-print("BernoulliNB_classifier accuracy percent:", (nltk.classify.accuracy(BernoulliNB_classifier, testing_set)) * 100)
-
-LogisticRegression_classifier = SklearnClassifier(LogisticRegression())
-LogisticRegression_classifier._vectorizer.sort = False
-LogisticRegression_classifier.train(training_set)
-print("LogisticRegression_classifier accuracy percent:",
-      (nltk.classify.accuracy(LogisticRegression_classifier, testing_set)) * 100)
-
-LinearSVC_classifier = SklearnClassifier(LinearSVC())
-LinearSVC_classifier._vectorizer.sort = False
-LinearSVC_classifier.train(training_set)
-print("LinearSVC_classifier accuracy percent:", (nltk.classify.accuracy(LinearSVC_classifier, testing_set)) * 100)
+#
+# MNB_classifier = SklearnClassifier(MultinomialNB())
+# MNB_classifier._vectorizer.sort = False
+# MNB_classifier.train(training_set)
+# print("MNB_classifier accuracy percent:", (nltk.classify.accuracy(MNB_classifier, testing_set)) * 100)
+#
+# BernoulliNB_classifier = SklearnClassifier(BernoulliNB())
+# BernoulliNB_classifier._vectorizer.sort = False
+# BernoulliNB_classifier.train(training_set)
+# print("BernoulliNB_classifier accuracy percent:", (nltk.classify.accuracy(BernoulliNB_classifier, testing_set)) * 100)
+#
+# LogisticRegression_classifier = SklearnClassifier(LogisticRegression())
+# LogisticRegression_classifier._vectorizer.sort = False
+# LogisticRegression_classifier.train(training_set)
+# print("LogisticRegression_classifier accuracy percent:",
+#       (nltk.classify.accuracy(LogisticRegression_classifier, testing_set)) * 100)
+#
+# LinearSVC_classifier = SklearnClassifier(LinearSVC())
+# LinearSVC_classifier._vectorizer.sort = False
+# LinearSVC_classifier.train(training_set)
+# print("LinearSVC_classifier accuracy percent:", (nltk.classify.accuracy(LinearSVC_classifier, testing_set)) * 100)
 
 NuSVC_classifier = SklearnClassifier(NuSVC(probability=True))
 NuSVC_classifier._vectorizer.sort = False
@@ -185,5 +185,11 @@ print("NuSVC_classifier accuracy percent:", (nltk.classify.accuracy(NuSVC_classi
 # print("voted_classifier accuracy percent:", (nltk.classify.accuracy(voted_classifier, testing_set)) * 100)
 
 feats = find_features("Hi very good day everything great!", word_features)
-result = NuSVC_classifier
-print(result)
+result = NuSVC_classifier.prob_classify(feats)
+for label in result.samples():
+    print(label, result.prob(label))
+
+feats = find_features("Very bad shame stupid ugly boring!", word_features)
+result = NuSVC_classifier.prob_classify(feats)
+for label in result.samples():
+    print(label, result.prob(label))

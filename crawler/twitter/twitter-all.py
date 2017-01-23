@@ -43,13 +43,11 @@ def run_collect(company):
                 return False
 
             # clean data and save
-            if '@' not in tweet.text:
-                if 'http' not in tweet.text:
-                    sentiment_value, confidence = s.sentiment(tweet.text)
-                    if confidence * 100 >= 60:
-                        logger.debug(str(tweet.created_at) + ', ' + tweet.text + ', ' + sentiment_value)
-                        output.write('"' + str(tweet.created_at) + '","' + tweet.text + '","' + sentiment_value + '"\n')
-                        good += 1
+            sentiment_value, confidence = s.sentiment(tweet.text)
+            if confidence * 100 >= 60:
+                logger.debug(str(tweet.created_at) + ', ' + tweet.text + ', ' + sentiment_value)
+                output.write('"' + str(tweet.created_at) + '","' + tweet.text + '","' + sentiment_value + '"\n')
+                good += 1
 
         max_id = tweet.id
 
