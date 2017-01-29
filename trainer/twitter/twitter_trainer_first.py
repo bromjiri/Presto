@@ -8,7 +8,7 @@ import pickle
 from nltk.classify.scikitlearn import SklearnClassifier
 
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB
-from sklearn.linear_model import LogisticRegression, SGDClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC, NuSVC
 
 from nltk.classify import ClassifierI
@@ -53,7 +53,7 @@ ps = PorterStemmer()
 
 # append positive tweets
 
-reader = open("data/stanford_pos_2000.csv", "r").read()
+reader = open("../data/stanford_pos_2000.csv", "r").read()
 for row in reader.split('\n'):
     tweets.append((row, "pos"))
 
@@ -63,7 +63,7 @@ for row in reader.split('\n'):
             all_words.append(ps.stem(w.lower()))
 
 # append negative tweets
-reader = open("data/stanford_neg_2000.csv", "r").read()
+reader = open("../data/stanford_neg_2000.csv", "r").read()
 for row in reader.split('\n'):
     tweets.append((row, "neg"))
 

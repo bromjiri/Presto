@@ -49,7 +49,7 @@ month = "12"
 first_day = 1
 last_day = 31
 #subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
-subjects = ["netflix"]
+subjects = ["nike", "samsung", "tesla"]
 
 for subject in subjects:
     for i in range(first_day, last_day+1):

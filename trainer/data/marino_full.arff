@@ -1,9 +1,3 @@
-@relation testData
-
-@attribute _class_ {0,2,4}
-@attribute text String
-
-@data
 0,'Aw, my tattoo is burning like a motherfucker ugh and i miss someone already '
 0,'@Smarttart410 aww!  poor Blue. Why does he have the collar on?'
 0,'Eating dinner with Tubby. He doesn\'t want any cow\'s tongue '
