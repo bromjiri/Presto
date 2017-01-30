@@ -11,8 +11,7 @@ import myapi
 
 logger = settings.get_logger(os.path.realpath(__file__))
 
-
-def run_collect(company):
+def run_collect(company, max_id):
 
     logger.info(company + " started")
 
@@ -24,9 +23,6 @@ def run_collect(company):
     dir = os.path.dirname(os.path.realpath(file_name))
     os.makedirs(dir, exist_ok=True)
     output = open(file_name, "a")
-    good = 0
-
-    max_id = 999999999999999999
 
     # collect max 18 000
     for page in range(0, 180):
@@ -43,23 +39,25 @@ def run_collect(company):
 
             # keep yesterday only
             if str(tweet.created_at)[0:10] == str(two_days_ago):
-                return False
+                return 0
 
             # clean data and save
             logger.debug(str(tweet.created_at) + ', ' + tweet.text)
             output.write('"' + str(tweet.created_at) + '","' + tweet.text + '"\n')
-            good += 1
 
         max_id = tweet.id
 
-    return True
+    return max_id
 
 
 def run_company(company):
 
-    for i in range(0,1):
+    max_id = 999999999999999999
+
+    for i in range(0,2):
         logger.info(company + " cycle: " + str(i))
-        if(run_collect(company) == False):
+        max_id = run_collect(company, max_id)
+        if(max_id == 0):
             logger.info(company + " reached yesterday")
             return
         sleep(900)
@@ -82,7 +80,6 @@ companies = ["cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
 for company in companies:
     run_company(company)
     logger.info(company + " finished")
-    sleep(900)
 
 logger.info("ending " + os.path.basename(__file__))
 

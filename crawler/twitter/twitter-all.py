@@ -17,7 +17,7 @@ def run_collect(company):
 
     # files and vars
     # datetime.date.today()
-    today = datetime.date(2017, 1, 22)
+    today = datetime.date(2017, 1, 24)
     yesterday = today - datetime.timedelta(1)
     two_days_ago = today - datetime.timedelta(2)
     file_name = settings.DOWNLOADS_TWITTER + "/" + company + "/twitter-" + company + "-" + str(yesterday) + ".csv"
@@ -101,7 +101,7 @@ api = API(auth)
 #####
 
 
-companies = ["cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
+companies = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
 
 
 for company in companies:

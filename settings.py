@@ -1,5 +1,6 @@
 import os
 import logging
+from logging.handlers import RotatingFileHandler
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
@@ -26,7 +27,7 @@ def get_logger(file_path):
     log_file = os.path.dirname(file_path) + "/log/" + os.path.splitext(os.path.basename(file_path))[0] + ".log"
     dir = os.path.dirname(os.path.realpath(log_file))
     os.makedirs(dir, exist_ok=True)
-    fileHandler = logging.FileHandler(log_file)
+    fileHandler = RotatingFileHandler(log_file, mode='a', maxBytes=5000000)
     fileHandler.setFormatter(logFormatter)
     logger.addHandler(fileHandler)
 

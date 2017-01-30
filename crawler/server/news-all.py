@@ -88,7 +88,7 @@ def processArticles(link_set, companies):
 logger.info("starting " + os.path.basename(__file__))
 
 
-feeds = fileToSet(os.path.dirname(os.path.realpath(__file__)) + "data/feeds.txt")
+feeds = fileToSet(os.path.dirname(os.path.realpath(__file__)) + "/data/feeds.txt")
 articles = getArticleLinks(feeds)
 companies = ["microsoft", "coca-cola", "mcdonald", "samsung", "netflix", "nike", "tesla"]
 
