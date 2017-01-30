@@ -22,6 +22,14 @@ class Sentence:
         print(self.grams)
 
     @staticmethod
+    def filter_lower(words):
+        words_lower = list()
+        for w in words:
+            words_lower.append(w.lower())
+
+        return words_lower
+
+    @staticmethod
     def filter_bigram(words):
         bigrams = ngrams(words, 2)
         words_bigram = list()
@@ -64,7 +72,7 @@ class Sentence:
         return words_pos
 
 
-def create_grams(pos, stop, stem, bigram, sentence):
+def create_grams(pos, stop, stem, bigram, lower, sentence):
 
     words = nltk.word_tokenize(sentence)
 
@@ -80,6 +88,9 @@ def create_grams(pos, stop, stem, bigram, sentence):
     # bigrams
     if bigram is True:
         words = Sentence.filter_bigram(words)
+    if lower is True:
+        words = Sentence.filter_lower(words)
+
 
     return words
 
@@ -100,11 +111,11 @@ class Dataset:
         elif source == "stanford":
             self.sentence_list = self.read_stanford(count)
 
-    def create_grams(self, pos, stop, stem, bigram):
+    def create_grams(self, pos, stop, stem, bigram, lower):
 
         for sentence in self.sentence_list:
 
-            sentence.grams = create_grams(pos, stop, stem, bigram, sentence.original)
+            sentence.grams = create_grams(pos, stop, stem, bigram, lower, sentence.original)
 
             # add to all_grams
             for g in sentence.grams:

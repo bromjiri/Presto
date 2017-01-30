@@ -63,16 +63,16 @@ class VoteClassifier(ClassifierI):
 
 
 if __name__ == '__main__':
-    stanford_set = ds.Dataset("stanford")
+    stanford_set = ds.Dataset("stanford", count=2000)
+    stanford_set.create_grams(pos=None, stop=False, stem=False, bigram=False, lower=True)
     # stanford_set.create_grams(pos=["J", "V", "N", "R"], stop=True, stem=True, bigram=True)
-    stanford_set.create_grams(pos=["J", "V", "N", "R"], stop=True, stem=True, bigram=True)
     feature_set = get_feature_set(stanford_set)
 
     print(len(feature_set))
     print("feature_set loaded")
 
-    training_set = feature_set[:3500]
-    testing_set = feature_set[3500:]
+    training_set = feature_set[:1800]
+    testing_set = feature_set[1800:]
 
     classifier = nltk.NaiveBayesClassifier.train(training_set)
     print("Original Naive Bayes Algo accuracy percent:", (nltk.classify.accuracy(classifier, testing_set)) * 100)
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     LinearSVC_classifier.train(training_set)
     print("LinearSVC_classifier accuracy percent:", (nltk.classify.accuracy(LinearSVC_classifier, testing_set)) * 100)
 
-    NuSVC_classifier = SklearnClassifier(NuSVC(probability=True))
+    NuSVC_classifier = SklearnClassifier(NuSVC())
     NuSVC_classifier._vectorizer.sort = False
     NuSVC_classifier.train(training_set)
     print("NuSVC_classifier accuracy percent:", (nltk.classify.accuracy(NuSVC_classifier, testing_set)) * 100)

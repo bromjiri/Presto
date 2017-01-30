@@ -6,9 +6,10 @@ from tweepy import API
 import settings
 from time import sleep
 import datetime
-import myapi
-import logging
 import os
+import myapi
+
+logger = settings.get_logger(os.path.realpath(__file__))
 
 
 def run_collect(company):
@@ -16,11 +17,12 @@ def run_collect(company):
     logger.info(company + " started")
 
     # files and vars
-    # datetime.date.today()
-    today = datetime.date(2017, 1, 22)
+    today = datetime.date.today()
     yesterday = today - datetime.timedelta(1)
     two_days_ago = today - datetime.timedelta(2)
     file_name = settings.DOWNLOADS_TWITTER + "/" + company + "/twitter-" + company + "-" + str(yesterday) + ".csv"
+    dir = os.path.dirname(os.path.realpath(file_name))
+    os.makedirs(dir, exist_ok=True)
     output = open(file_name, "a")
     good = 0
 
@@ -44,7 +46,6 @@ def run_collect(company):
                 return False
 
             # clean data and save
-            # sentiment_value, confidence = s.sentiment(tweet.text)
             logger.debug(str(tweet.created_at) + ', ' + tweet.text)
             output.write('"' + str(tweet.created_at) + '","' + tweet.text + '"\n')
             good += 1
@@ -67,42 +68,16 @@ def run_company(company):
 
 ##################
 # start
-
-# Logging settings
-logFormatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", datefmt='%Y%m%d-%H:%M')
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
-# file
-log_file = os.path.dirname(os.path.realpath(__file__)) + "/log/twitter-all.log"
-fileHandler = logging.FileHandler(log_file)
-fileHandler.setFormatter(logFormatter)
-logger.addHandler(fileHandler)
-
-# console
-consoleHandler = logging.StreamHandler()
-consoleHandler.setFormatter(logFormatter)
-logger.addHandler(consoleHandler)
-
-
 logger.info("starting " + os.path.basename(__file__))
 
 
-#####
-
-
-# Auth settings
 # Auth settings
 auth = OAuthHandler(myapi.CKEY, myapi.CSECRET)
 auth.set_access_token(myapi.ATOKEN, myapi.ASECRET)
 api = API(auth)
 
 
-#####
-
-
 companies = ["cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
-
 
 for company in companies:
     run_company(company)
