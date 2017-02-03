@@ -18,6 +18,11 @@ class Sentence:
     sentiment = ""
     grams = list()
 
+    def __init__(self):
+        self.original = ""
+        self.sentiment = ""
+        self.grams = list()
+
     def print_grams(self):
         print(self.grams)
 
@@ -85,11 +90,13 @@ def create_grams(pos, stop, stem, bigram, lower, sentence):
     # stemming
     if stem is True:
         words = Sentence.filter_stem(words)
+    # lower
+    if lower is True:
+        words = Sentence.filter_lower(words)
     # bigrams
     if bigram is True:
         words = Sentence.filter_bigram(words)
-    if lower is True:
-        words = Sentence.filter_lower(words)
+
 
 
     return words
@@ -100,6 +107,8 @@ class Dataset:
     all_grams = list()
 
     def __init__(self, source=None, count=-1):
+        self.sentence_list = list()
+        self.all_grams = list()
         source = str(source)
 
         if source is None:
@@ -111,6 +120,9 @@ class Dataset:
         elif source == "stanford":
             self.sentence_list = self.read_stanford(count)
 
+    def __exit__(self, *err):
+        self.close()
+
     def create_grams(self, pos, stop, stem, bigram, lower):
 
         for sentence in self.sentence_list:
@@ -121,10 +133,13 @@ class Dataset:
             for g in sentence.grams:
                 self.all_grams.append(g)
 
+    def get_grams_count(self):
+        return len(self.all_grams)
+
     def get_sentence_list(self):
         return self.sentence_list
 
-    def get_common_grams(self, count):
+    def get_common_grams(self, count=None):
         numbered_grams = nltk.FreqDist(self.all_grams).most_common(count)
         common_grams = list()
         for gram in numbered_grams:

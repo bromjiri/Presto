@@ -59,6 +59,7 @@ def run_company(company):
         max_id = run_collect(company, max_id)
         if(max_id == 0):
             logger.info(company + " reached yesterday")
+            sleep(900)
             return
         sleep(900)
     return
@@ -75,7 +76,7 @@ auth.set_access_token(myapi.ATOKEN, myapi.ASECRET)
 api = API(auth)
 
 
-companies = ["cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
+companies = ["cola", "mcdonald", "microsoft",  "netflix", "nike", "samsung", "tesla", "the"]
 
 for company in companies:
     run_company(company)

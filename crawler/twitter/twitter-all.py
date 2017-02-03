@@ -17,7 +17,7 @@ def run_collect(company):
 
     # files and vars
     # datetime.date.today()
-    today = datetime.date(2017, 1, 24)
+    today = datetime.date(2017, 1, 27)
     yesterday = today - datetime.timedelta(1)
     two_days_ago = today - datetime.timedelta(2)
     file_name = settings.DOWNLOADS_TWITTER + "/" + company + "/twitter-" + company + "-" + str(yesterday) + ".csv"
@@ -60,6 +60,7 @@ def run_company(company):
         logger.info(company + " cycle: " + str(i))
         if(run_collect(company) == False):
             logger.info(company + " reached yesterday")
+            sleep(900)
             return
         sleep(900)
     return
@@ -101,13 +102,15 @@ api = API(auth)
 #####
 
 
-companies = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
+# companies = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
+companies = ["mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
+
+# companies = ["the"]
 
 
 for company in companies:
     run_company(company)
     logger.info(company + " finished")
-    sleep(900)
 
 logger.info("ending " + os.path.basename(__file__))
 

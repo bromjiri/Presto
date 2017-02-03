@@ -1,13 +1,19 @@
 
+from nltk.metrics import *
+import collections
+import nltk
 
-one = list()
-for x in range (0,10):
-    one.append([x,x+1])
 
-print(one)
 
-two = list()
-for x in range (0,10):
-    two.append((x,x+1))
+reference = 'DET NN VB DET JJ NN NN IN DET NN'.split()
+test    = 'DET VB VB DET NN NN NN IN DET NN'.split()
+print(accuracy(reference, test))
 
-print(two)
+COUNT = 500
+
+print(round(COUNT*8/10))
+
+array = [1,1,1,2,2,3]
+
+numbered_grams = nltk.FreqDist(array).most_common(None)
+print(numbered_grams)
