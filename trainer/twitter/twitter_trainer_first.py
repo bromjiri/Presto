@@ -44,6 +44,8 @@ class VoteClassifier(ClassifierI):
 print("start")
 
 tweets = []
+tweets_pos = []
+tweets_neg = []
 all_words = []
 
 stop_words = set(stopwords.words('english'))
@@ -56,6 +58,7 @@ ps = PorterStemmer()
 reader = open("../data/stanford_pos_2000.csv", "r").read()
 for row in reader.split('\n'):
     tweets.append((row, "pos"))
+    tweets_pos.append((row, "pos"))
 
     twe_pos_words = word_tokenize(row)
     for w in twe_pos_words:
@@ -66,15 +69,18 @@ for row in reader.split('\n'):
 reader = open("../data/stanford_neg_2000.csv", "r").read()
 for row in reader.split('\n'):
     tweets.append((row, "neg"))
+    tweets_neg.append((row, "neg"))
 
     twe_neg_words = word_tokenize(row)
     for w in twe_neg_words:
         if not w in stop_words:
             all_words.append(ps.stem(w.lower()))
 
+print(len(all_words))
 
+all_words = nltk.FreqDist(all_words).most_common()
+print(len(all_words))
 
-all_words = nltk.FreqDist(all_words).most_common(5000)
 word_features = list()
 for word in all_words:
     word_features.append(word[0])
@@ -103,15 +109,31 @@ def find_features(document):
     return features
 
 
-featuresets = [(find_features(tweet), category) for (tweet, category) in tweets]
+# featuresets = [(find_features(tweet), category) for (tweet, category) in tweets]
+featuresets_pos = [(find_features(tweet), category) for (tweet, category) in tweets_pos]
+featuresets_neg = [(find_features(tweet), category) for (tweet, category) in tweets_neg]
 # featuresets_f = open("pickled/featuresets.pickle", "wb")
 # pickle.dump(featuresets, featuresets_f)
 # featuresets_f.close()
 
-random.shuffle(featuresets)
+# random.shuffle(featuresets)
+featuresets_train = featuresets_pos[:1800] + featuresets_neg[:1800]
+print("featuresets_train")
+print(len(featuresets_train))
 
-training_set = featuresets[:3600]
-testing_set = featuresets[3600:]
+featuresets_test = featuresets_pos[1801:] + featuresets_neg[1801:]
+print("featuresets_test")
+print(len(featuresets_test))
+
+test_output = open("test_output1.txt", 'a')
+
+training_set = featuresets_train
+for x in training_set:
+    test_output.write(str(x))
+
+testing_set = featuresets_test
+for x in testing_set:
+    test_output.write(str(x))
 
 classifier = nltk.NaiveBayesClassifier.train(training_set)
 print("Original Naive Bayes Algo accuracy percent:", (nltk.classify.accuracy(classifier, testing_set)) * 100)

@@ -1,7 +1,7 @@
 # fix newlines
 import settings
 
-def fix_file(day, month, subject):
+def fix_file(year, month, day, subject):
 
     output_file_path = settings.DOWNLOADS_TWITTER + "/" + subject + "/twitter-" + subject + "-" + year + "-" + month + "-" + day + "-fix.csv"
     output_file = open(output_file_path, "w")
@@ -12,25 +12,27 @@ def fix_file(day, month, subject):
     # unique_list = list(set(input_list))
     output_list = list()
     line = ""
-    for row in input_file:
-        if not ("\"pos\"" in row or "\"neg\"" in row):
+    input_file = input_file.readlines()
 
-        # try:
-        #     last_char = row.strip()[-1]
-        # except:
-        #     continue
-        #
-        # if last_char != "\"":
-            line += row.rstrip()
+    previous = input_file[0].strip()
+    date = year + "-" + month + "-" + day
+
+    for row in input_file[1:]:
+
+        if row.strip() == "":
+            continue
+
+        if not date in row:
+            previous += row.strip()
         else:
-            line += row
-            output_list.append(line)
-            line = ""
+            output_list.append(previous + "\n")
+            previous = row.strip()
 
 
     unique_list = list(set(output_list))
     for line in unique_list:
-        output_file.write(line)
+        if line.strip() != "\n":
+            output_file.write(line)
 
     output_file.close()
 
@@ -46,5 +48,5 @@ for subject in subjects:
     for i in range(first_day, last_day+1):
         day = str(i).zfill(2)
         print("Subject: " + subject + ", Day: " + day)
-        fix_file(day, month, subject)
+        fix_file(year, month, day, subject)
 

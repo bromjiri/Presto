@@ -34,7 +34,7 @@ def find_features_train(sentence_grams, all_grams):
 
 def get_feature_set(dataset, common_count=None):
 
-    all_grams = dataset.get_common_grams()
+    all_grams = dataset.get_common_grams(common_count)
 
     sentence_list = dataset.get_sentence_list()
 
@@ -74,7 +74,7 @@ def run_classifiers(training_set, testing_set):
 
     classifier = nltk.NaiveBayesClassifier.train(training_set)
     print("Original Naive Bayes Algo accuracy percent:", (nltk.classify.accuracy(classifier, testing_set)) * 100)
-    # classifier.show_most_informative_features(20)
+    classifier.show_most_informative_features(15)
     nb = (nltk.classify.accuracy(classifier, testing_set)) * 100
     nb = round(nb, 1)
 
@@ -131,14 +131,14 @@ def run_classifiers(training_set, testing_set):
 
 
 
-COUNT = 2000
+COUNT = 4000
 
 if __name__ == '__main__':
 
     pos_array = [["J", "V", "N", "R"]]
-    stop_array = [False]
-    stem_array = [True, False]
-    bigram_array = [True, False]
+    stop_array = [True]
+    stem_array = [True]
+    bigram_array = [True]
 
     # pos_array = [None, ["J", "V", "N", "R"]]
     # stop_array = [False, True]
@@ -160,21 +160,34 @@ if __name__ == '__main__':
                     print("pos=" + str(pos) + ", stop=" + str(stop) + ", stem=" + str(stem) + ", bigram=" + str(bigram))
                     output.write("pos=" + str(pos) + ", stop=" + str(stop) + ", stem=" + str(stem) + ", bigram=" + str(bigram) + "\n")
 
-                    for x in range(0,5):
+
+                    common_count_array = [14000, 16000]
+
+                    for x in range(0, 3):
 
                         stanford_set = ds.Dataset("stanford", count=COUNT)
-
                         stanford_set.create_grams(pos=pos, stop=stop, stem=stem, bigram=bigram, lower=True)
                         print("all_grams: " + str(stanford_set.get_grams_count()))
                         output.write(str(stanford_set.get_grams_count()) + ", ")
 
-                        feature_set = get_feature_set(stanford_set, 10000)
-                        print("common_grams: " + str(len(feature_set[0][0])))
-                        output.write(str(len(feature_set[0][0])) + ", ")
+                        for common_count in common_count_array:
 
-                        training_set = feature_set[:round(COUNT * 8 / 10)]
-                        testing_set = feature_set[round(COUNT * 8 / 10):]
-                        run_classifiers(training_set, testing_set)
+                            feature_set = get_feature_set(stanford_set, common_count)
+                            print("common_grams: " + str(len(feature_set[0][0])))
+                            output.write(str(len(feature_set[0][0])) + ", ")
+
+                            # training_pos = feature_set[:1800]
+                            # training_neg = feature_set[2001:3800]
+                            # testing_pos = feature_set[1801:2000]
+                            # testing_neg = feature_set[3801:]
+                            #
+                            # training_set = training_pos + training_neg
+                            # testing_set = testing_pos + testing_neg
+
+
+                            training_set = feature_set[:round(COUNT * 9 / 10)]
+                            testing_set = feature_set[round(COUNT * 9 / 10):]
+                            run_classifiers(training_set, testing_set)
 
     #
     #
