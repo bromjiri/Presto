@@ -70,12 +70,12 @@ logger.info("starting " + os.path.basename(__file__))
 #####
 
 year = "2016"
-month = "12"
-first_day = 20
-last_day = 31
+month = "11"
+first_day = 1
+last_day = 30
 #subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
 #subjects = ["coca-cola", "mcdonalds", "microsoft"]
-subjects = ["nike"]
+subjects = ["the"]
 
 
 

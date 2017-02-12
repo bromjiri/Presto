@@ -12,8 +12,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC, NuSVC
 
 
-output_file = "output.txt"
-output = open(output_file, 'a')
+
 
 
 def find_features(sentence_original, all_grams):
@@ -131,9 +130,14 @@ def run_classifiers(training_set, testing_set):
 
 
 
-COUNT = 4000
+
 
 if __name__ == '__main__':
+
+    COUNT = 4000
+
+    output_file = "output.txt"
+    output = open(output_file, 'a')
 
     pos_array = [["J", "V", "N", "R"]]
     stop_array = [True]
@@ -147,8 +151,8 @@ if __name__ == '__main__':
 
 
 
-    output.write(str(datetime.datetime.today()) + "\n")
-    output.write("all_grams, common_grams, nb, mnb, bnb, lr, lsvc, nsvc, voted\n")
+    # output.write(str(datetime.datetime.today()) + "\n")
+    # output.write("all_grams, common_grams, nb, mnb, bnb, lr, lsvc, nsvc, voted\n")
 
 
     for pos in pos_array:

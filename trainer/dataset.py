@@ -11,6 +11,8 @@ marino_path = settings.TRAINER_DATA + "/marino_full.arff"
 sanders_path = settings.TRAINER_DATA + "/sanders_full.csv"
 stanford_pos = settings.TRAINER_DATA + "/stanford_pos_2000.csv"
 stanford_neg = settings.TRAINER_DATA + "/stanford_neg_2000.csv"
+bull_nflx = settings.TRAINER_DATA + "/bull_nflx.csv"
+bear_nflx = settings.TRAINER_DATA + "/bear_nflx.csv"
 
 
 class Sentence:
@@ -119,6 +121,8 @@ class Dataset:
             self.sentence_list = self.read_sanders()
         elif source == "stanford":
             self.sentence_list = self.read_stanford(count)
+        elif source == "stwits":
+            self.sentence_list = self.read_stwits(count)
 
     def __exit__(self, *err):
         self.close()
@@ -151,6 +155,28 @@ class Dataset:
             print(sentence.original)
             print(sentence.sentiment)
             print(sentence.grams)
+
+    @staticmethod
+    def read_stwits(count):
+
+        sentence_list = list()
+        with open(bull_nflx, 'r') as bull:
+            for line in bull:
+                sentence = Sentence()
+                sentence.original = line.strip()
+                sentence.sentiment = 4
+                sentence_list.append(sentence)
+
+        with open(bear_nflx, 'r') as bear:
+            for line in bear:
+                sentence = Sentence()
+                sentence.original = line.strip()
+                sentence.sentiment = 0
+                sentence_list.append(sentence)
+
+        random.shuffle(sentence_list)
+
+        return sentence_list[:count]
 
     @staticmethod
     def read_stanford(count):

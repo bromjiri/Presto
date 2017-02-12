@@ -45,11 +45,11 @@ def get_links(date, subject):
 
 
 year = "2016"
-month = "12"
+month = "11"
 first_day = 1
-last_day = 31
+last_day = 30
 #subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
-subjects = ["nike", "samsung", "tesla"]
+subjects = ["the"]
 
 for subject in subjects:
     for i in range(first_day, last_day+1):
