@@ -1,18 +1,14 @@
-import trainer.dataset as ds
-import random
-import nltk
-
 import datetime
 from statistics import mode
 
+import nltk
 from nltk.classify import ClassifierI
 from nltk.classify.scikitlearn import SklearnClassifier
-from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn.svm import LinearSVC, NuSVC
 
-
-
+import trainer.old.dataset as ds
 
 
 def find_features(sentence_original, all_grams):
@@ -125,8 +121,8 @@ def run_classifiers(training_set, testing_set):
     voted = (nltk.classify.accuracy(voted_classifier, testing_set)) * 100
     voted = round(voted, 1)
 
-    output.write(str(nb) + ", " + str(mnb) + ", " + str(bnb) + ", " + str(lr) + ", " + str(lsvc) + ", " + str(nsvc) + ", " + str(voted) + "\n")
-    output.flush()
+    return (str(nb) + ", " + str(mnb) + ", " + str(bnb) + ", " + str(lr) + ", " + str(lsvc) + ", " + str(nsvc) + ", " + str(voted) + "\n")
+
 
 
 
@@ -134,12 +130,13 @@ def run_classifiers(training_set, testing_set):
 
 if __name__ == '__main__':
 
-    COUNT = 4000
+    COUNT = 2000
 
     output_file = "output.txt"
     output = open(output_file, 'a')
 
-    pos_array = [["J", "V", "N", "R"]]
+    # pos_array = [["J", "V", "N", "R"]]
+    pos_array = [None]
     stop_array = [True]
     stem_array = [True]
     bigram_array = [True]
@@ -165,7 +162,7 @@ if __name__ == '__main__':
                     output.write("pos=" + str(pos) + ", stop=" + str(stop) + ", stem=" + str(stem) + ", bigram=" + str(bigram) + "\n")
 
 
-                    common_count_array = [14000, 16000]
+                    common_count_array = [10000, 120000]
 
                     for x in range(0, 3):
 

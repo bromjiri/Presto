@@ -6,13 +6,13 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.util import ngrams
 
-kaggle_path = settings.TRAINER_DATA + "/kaggle_full.txt"
-marino_path = settings.TRAINER_DATA + "/marino_full.arff"
-sanders_path = settings.TRAINER_DATA + "/sanders_full.csv"
-stanford_pos = settings.TRAINER_DATA + "/stanford_pos_2000.csv"
-stanford_neg = settings.TRAINER_DATA + "/stanford_neg_2000.csv"
-bull_nflx = settings.TRAINER_DATA + "/bull_nflx.csv"
-bear_nflx = settings.TRAINER_DATA + "/bear_nflx.csv"
+kaggle_path = settings.TRAINER_DATA + "/twitter/kaggle_full.txt"
+marino_path = settings.TRAINER_DATA + "/twitter/marino_full.arff"
+sanders_path = settings.TRAINER_DATA + "/twitter/sanders_full.csv"
+stanford_pos = settings.TRAINER_DATA + "/twitter/stanford_pos_5000.csv"
+stanford_neg = settings.TRAINER_DATA + "/twitter/stanford_neg_5000.csv"
+bull_nflx = settings.TRAINER_DATA + "/stwits/bull_spx.csv"
+bear_nflx = settings.TRAINER_DATA + "/stwits/bear_spx.csv"
 
 
 class Sentence:
@@ -123,6 +123,8 @@ class Dataset:
             self.sentence_list = self.read_stanford(count)
         elif source == "stwits":
             self.sentence_list = self.read_stwits(count)
+        elif source == "marino":
+            self.sentence_list = self.read_marino(count)
 
     def __exit__(self, *err):
         self.close()
@@ -157,6 +159,27 @@ class Dataset:
             print(sentence.grams)
 
     @staticmethod
+    def read_marino(count):
+
+        sentence_list = list()
+        with open(marino_path, 'r') as marino:
+            for line in marino:
+                if line[0] == "0":
+                    sentence = Sentence()
+                    sentence.original = line[3:-2]
+                    sentence.sentiment = 0
+                    sentence_list.append(sentence)
+                elif line[0] == "4":
+                    sentence = Sentence()
+                    sentence.original = line[3:-2]
+                    sentence.sentiment = 4
+                    sentence_list.append(sentence)
+
+
+        random.schuffle(sentence_list)
+        return sentence_list[:count]
+
+    @staticmethod
     def read_stwits(count):
 
         sentence_list = list()
@@ -181,24 +204,31 @@ class Dataset:
     @staticmethod
     def read_stanford(count):
 
+        sentence_list_pos = list()
+        sentence_list_neg = list()
         sentence_list = list()
         with open(stanford_pos, 'r') as stanford_p:
             for line in stanford_p:
                 sentence = Sentence()
                 sentence.original = line.strip()
                 sentence.sentiment = 4
-                sentence_list.append(sentence)
+                sentence_list_pos.append(sentence)
 
         with open(stanford_neg, 'r') as stanford_n:
             for line in stanford_n:
                 sentence = Sentence()
                 sentence.original = line.strip()
                 sentence.sentiment = 0
-                sentence_list.append(sentence)
+                sentence_list_neg.append(sentence)
+
+        if count != -1:
+            sentence_list = sentence_list_pos[:int(count/2)] + sentence_list_neg[:int(count/2)]
+        else:
+            sentence_list = sentence_list_pos + sentence_list_neg
 
         random.shuffle(sentence_list)
 
-        return sentence_list[:count]
+        return sentence_list
 
     @staticmethod
     def read_kaggle():
@@ -257,5 +287,6 @@ if __name__ == '__main__':
     # common_grams = kaggle_set.get_common_grams(10)
     # print(common_grams)
 
-    sanders_set = Dataset("sanders")
-    sanders_set.print_content(-1)
+    my_set = Dataset("stanford", 100)
+    my_set.create_grams(pos=None, stop=True, stem=False, bigram=True, lower=False)
+    my_set.print_content(-1)
