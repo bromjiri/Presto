@@ -117,8 +117,9 @@ class Features:
             word_scores[word] = pos_score + neg_score
 
         inf_limit = round(len(word_scores.items()) * self.inf_count)
-        print(len(word_scores.items()))
-        print(inf_limit)
+        print("inf_count:" + str(self.inf_count))
+        print("total: " + str(len(word_scores.items())))
+        print("limit: " + str(inf_limit))
 
         best = sorted(word_scores.items(), key=lambda tup: tup[1], reverse=True)[:inf_limit]
         bestwords = set([w for w, s in best])

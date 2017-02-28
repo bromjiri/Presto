@@ -7,9 +7,8 @@ import trainer.classifier_test as cls
 
 def run(dataset):
 
-    COUNT = 50000
-    cut = int((COUNT / 2) * 3 / 4)
-    array = [0.2, 0.4, 0.6, 0.8, 1]
+
+    array = [50000, 40000, 30000, 20000]
 
     nlt = dict()
     skl = dict()
@@ -21,18 +20,23 @@ def run(dataset):
         skl_file = "inf-" + dataset + "-" + var_name + "-skl.csv"
         nlt[var_name] = open(nlt_file, 'a')
         skl[var_name] = open(skl_file, 'a')
-        nlt[var_name].write(str(datetime.datetime.today()) + " COUNT= " + str(COUNT) + "\n")
-        skl[var_name].write(str(datetime.datetime.today()) + " COUNT= " + str(COUNT) + "\n")
+        # nlt[var_name].write(str(datetime.datetime.today()) + " COUNT= " + str(COUNT) + "\n")
+        # skl[var_name].write(str(datetime.datetime.today()) + " COUNT= " + str(COUNT) + "\n")
 
     # cycle
-    for x in range(0, 10):
-        print(x)
+    for variable in array:
+
+        COUNT = variable
+        cut = int((COUNT / 2) * 3 / 4)
+        print(str(variable))
+
         corpora = crp.Corpora(dataset, count=COUNT, shuffle=True)
 
-        for variable in array:
-            print(str(variable))
+        for x in range(0, 5):
+            print(x)
+
             var_name = str(variable)
-            features = ftr.Features(corpora, total=COUNT, inf_count=variable, bigram=True)
+            features = ftr.Features(corpora, total=COUNT, bigram=True)
 
             posfeats = features.get_features_pos()
             negfeats = features.get_fearures_neg()
@@ -40,7 +44,7 @@ def run(dataset):
             trainfeats = negfeats[:cut] + posfeats[:cut]
             testfeats = negfeats[cut:] + posfeats[cut:]
 
-            nlt_output, skl_output = cls.classify(trainfeats, testfeats)
+            nlt_output, skl_output = cls.train(trainfeats, testfeats)
 
             nlt[var_name].write(nlt_output)
             skl[var_name].write(skl_output)

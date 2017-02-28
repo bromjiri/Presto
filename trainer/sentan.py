@@ -110,5 +110,5 @@ def sent_twitter(text):
 
 if __name__ == '__main__':
 
-    sent, conf = sent_twitter("I have a problem, I am sick")
+    sent, conf = sent_twitter("Microsoft software is constantly being targeted by cyber criminals.")
     print(sent, conf)
