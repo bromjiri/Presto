@@ -1,70 +1,54 @@
+# get final sentences
 import settings
-
-file_path = settings.DOWNLOADS_NEWS + "/bing/coca-cola/news-coca-cola-2016-12-28.csv"
-file = open(file_path, "r")
-
-for line in file:
-    print(line)
+import nltk
+import os
+import re
+from langdetect import detect
 
 
-
-
-
-# fix newlines
-import settings
-
-def fix_file(year, month, day, subject):
+def fix_file(year, month, day, subject, source):
+    date = year + "-" + month + "-" + day
 
     try:
-
-        output_file_path = settings.DOWNLOADS_STWITS + "/" + subject + "/stwits-" + subject + "-" + year + "-" + month + "-" + day + "-fix.csv"
+        output_file_path = settings.DOWNLOADS_NEWS + "/final/" + subject + "/news-" + subject + "-" + year + "-" + month + "-" + day + "-final.csv"
+        dir = os.path.dirname(os.path.realpath(output_file_path))
+        os.makedirs(dir, exist_ok=True)
         output_file = open(output_file_path, "w")
 
-        input_file_path = settings.DOWNLOADS_STWITS + "/" + subject + "/stwits-" + subject + "-" + year + "-" + month + "-" + day + ".csv"
+        if source == "bing":
+            input_file_path = settings.DOWNLOADS_NEWS + "/bing/" + subject + "/news-" + subject + "-" + year + "-" + month + "-" + day + ".csv"
+        elif source == "google":
+            input_file_path = settings.DOWNLOADS_NEWS + "/google/" + subject + "/" + date + "/" + subject + "_old_sentences_" + date + ".txt"
+
         input_file = open(input_file_path, "r")
-        # input_list = input_file.readlines()
-        # unique_list = list(set(input_list))
-        output_list = list()
-        line = ""
-        input_file = input_file.readlines()
 
-        previous = input_file[0].strip()
-        date = year + "-" + month + "-" + day
+        for row in input_file:
+            row = re.sub(r'(\.)([A-Z])', r'\1 \2', row)
+            for sentence in nltk.sent_tokenize(row):
+                if subject not in sentence.lower():
+                    continue
+                else:
+                    if detect(sentence) == "es":
+                        continue
 
-        for row in input_file[1:]:
+                    output_file.write(sentence + "\n")
 
-            if row.strip() == "":
-                continue
-
-            if not date in row:
-                previous += row.strip()
-            else:
-                output_list.append(previous + "\n")
-                previous = row.strip()
-
-
-        unique_list = list(set(output_list))
-        for line in unique_list:
-            if line.strip() != "\n":
-                output_file.write(line)
-
-        output_file.close()
-
-    except:
+    except Exception as e:
+        print(e)
         pass
 
 
-
+source = "google"
 months = [{}]
-year = "2017"
-month = "02"
+year = "2016"
+month = "11"
 first_day = 1
-last_day = 20
-subjects = ["spx"]
+last_day = 2
+subjects = ["microsoft"]
 
 for subject in subjects:
 
     for i in range(first_day, last_day+1):
         day = str(i).zfill(2)
         print("Subject: " + subject + ", Day: " + day)
-        fix_file(year, month, day, subject)
+        fix_file(year, month, day, subject, source)

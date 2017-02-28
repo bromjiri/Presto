@@ -1,39 +1,50 @@
 import datetime
 
-import trainer.trainer_mod as tr
-
-import trainer.old.dataset as ds
+import trainer.corpora as crp
+import trainer.features as ftr
+import trainer.classifier as cls
 
 
 def run(dataset):
-    COUNT = 2000
-    DATASET = dataset
-    stop_array = [True, False]
 
+    COUNT = 10000
+    cut = int((COUNT / 2) * 3 / 4)
+    array = [False, True]
+
+    nlt = dict()
+    skl = dict()
 
     # file
-    output_file = "stop-" + DATASET + ".txt"
-    output = open(output_file, 'a')
-    output.write(dataset + ", " + str(datetime.datetime.today()) + "\n")
+    for variable in array:
+        nlt_file = "stop-" + dataset + "-" + str(variable) + "-nlt.csv"
+        skl_file = "stop-" + dataset + "-" + str(variable) + "-skl.csv"
+        nlt[str(variable)] = open(nlt_file, 'a')
+        skl[str(variable)] = open(skl_file, 'a')
+        nlt[str(variable)].write(str(datetime.datetime.today()) + " COUNT= " + str(COUNT) + "\n")
+        skl[str(variable)].write(str(datetime.datetime.today()) + " COUNT= " + str(COUNT) + "\n")
 
     # cycle
-    for x in range(0, 10):
-        stanford_set = ds.Dataset(DATASET, count=COUNT)
+    for x in range(0, 20):
+        print(x)
+        corpora = crp.Corpora(dataset, count=COUNT, shuffle=True)
 
-        for stop in stop_array:
+        for variable in array:
+            features = ftr.Features(corpora, total=COUNT, stop=variable)
 
-            output.write(str(stop) + ", ")
-            stanford_set.create_grams(pos=None, stop=stop, stem=False, bigram=False, lower=True)
-            feature_set = tr.get_feature_set(stanford_set)
-            training_set = feature_set[:round(COUNT * 8 / 10)]
-            testing_set = feature_set[round(COUNT * 8 / 10):]
-            output.write(tr.run_classifiers(training_set, testing_set))
+            posfeats = features.get_features_pos()
+            negfeats = features.get_fearures_neg()
 
-        output.write("\n")
-        output.flush()
+            trainfeats = negfeats[:cut] + posfeats[:cut]
+            testfeats = negfeats[cut:] + posfeats[cut:]
+
+            nlt_output, skl_output = cls.classify(trainfeats, testfeats)
+
+            nlt[str(variable)].write(nlt_output)
+            skl[str(variable)].write(skl_output)
 
 
-dataset_array = ["stanford", "stwits"]
+
+dataset_array = ["stanford"]
 
 for dataset in dataset_array:
     run(dataset)

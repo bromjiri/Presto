@@ -1,63 +1,191 @@
 import datetime
 
-import trainer.trainer_mod as tr
+import trainer.corpora as crp
+import trainer.features as ftr
+import trainer.classifier as cls
 
-import trainer.old.dataset as ds
 
-# variables
-COUNT = 2000
-DATASET = "stwits"
+def run(dataset):
 
-# file
-output_file = "pos-" + DATASET + ".txt"
-output = open(output_file, 'a')
-output.write(str(datetime.datetime.today()) + "\n")
+    COUNT = 10000
+    cut = int((COUNT / 2) * 3 / 4)
+    array = [False, True]
 
-# cycle
-for x in range(0, 10):
-    stanford_set = ds.Dataset(DATASET, count=COUNT)
+    nlt = dict()
+    skl = dict()
 
-    output.write(str(None) + ", ")
-    stanford_set.create_grams(pos=None, stop=False, stem=False, bigram=False, lower=True)
-    feature_set = tr.get_feature_set(stanford_set)
-    training_set = feature_set[:round(COUNT * 8 / 10)]
-    testing_set = feature_set[round(COUNT * 8 / 10):]
-    output.write(tr.run_classifiers(training_set, testing_set))
+    # file
+    # for variable in array:
+    #     nlt_file = "stop-" + dataset + "-" + str(variable) + "-nlt.csv"
+    #     skl_file = "stop-" + dataset + "-" + str(variable) + "-skl.csv"
+    #     nlt[str(variable)] = open(nlt_file, 'a')
+    #     skl[str(variable)] = open(skl_file, 'a')
+    #     nlt[str(variable)].write(str(datetime.datetime.today()) + " COUNT= " + str(COUNT) + "\n")
+    #     skl[str(variable)].write(str(datetime.datetime.today()) + " COUNT= " + str(COUNT) + "\n")
 
-    output.write("FUPJVNR, ")
-    stanford_set.create_grams(pos=["F", "U", "P", "J", "V", "N", "R"], stop=False, stem=False, bigram=False, lower=True)
-    feature_set = tr.get_feature_set(stanford_set)
-    training_set = feature_set[:round(COUNT * 8 / 10)]
-    testing_set = feature_set[round(COUNT * 8 / 10):]
-    output.write(tr.run_classifiers(training_set, testing_set))
+    # cycle
+    for x in range(0, 10):
+        print(x)
+        corpora = crp.Corpora(dataset, count=COUNT, shuffle=True)
 
-    output.write("UPJVNR, ")
-    stanford_set.create_grams(pos=["U", "P", "J", "V", "N", "R"], stop=False, stem=False, bigram=False, lower=True)
-    feature_set = tr.get_feature_set(stanford_set)
-    training_set = feature_set[:round(COUNT * 8 / 10)]
-    testing_set = feature_set[round(COUNT * 8 / 10):]
-    output.write(tr.run_classifiers(training_set, testing_set))
+        #####
 
-    output.write("PJVNR, ")
-    stanford_set.create_grams(pos=["P", "J", "V", "N", "R"], stop=False, stem=False, bigram=False, lower=True)
-    feature_set = tr.get_feature_set(stanford_set)
-    training_set = feature_set[:round(COUNT * 8 / 10)]
-    testing_set = feature_set[round(COUNT * 8 / 10):]
-    output.write(tr.run_classifiers(training_set, testing_set))
+        var = "NONE"
 
-    output.write("JVNR, ")
-    stanford_set.create_grams(pos=["J", "V", "N", "R"], stop=False, stem=False, bigram=False, lower=True)
-    feature_set = tr.get_feature_set(stanford_set)
-    training_set = feature_set[:round(COUNT * 8 / 10)]
-    testing_set = feature_set[round(COUNT * 8 / 10):]
-    output.write(tr.run_classifiers(training_set, testing_set))
+        nlt_file = "pos-" + dataset + "-" + var + "-nlt.csv"
+        skl_file = "pos-" + dataset + "-" + var + "-skl.csv"
+        nlt[var] = open(nlt_file, 'a')
+        skl[var] = open(skl_file, 'a')
 
-    output.write("JVR, ")
-    stanford_set.create_grams(pos=["J", "V", "R"], stop=False, stem=False, bigram=False, lower=True)
-    feature_set = tr.get_feature_set(stanford_set)
-    training_set = feature_set[:round(COUNT * 8 / 10)]
-    testing_set = feature_set[round(COUNT * 8 / 10):]
-    output.write(tr.run_classifiers(training_set, testing_set))
+        features = ftr.Features(corpora, total=COUNT, pos=None)
 
-    output.write("\n")
-    output.flush()
+        posfeats = features.get_features_pos()
+        negfeats = features.get_fearures_neg()
+
+        trainfeats = negfeats[:cut] + posfeats[:cut]
+        testfeats = negfeats[cut:] + posfeats[cut:]
+
+        nlt_output, skl_output = cls.classify(trainfeats, testfeats)
+
+        nlt[var].write(nlt_output)
+        skl[var].write(skl_output)
+
+        #####
+
+        var = "JVNR"
+
+        nlt_file = "pos-" + dataset + "-" + var + "-nlt.csv"
+        skl_file = "pos-" + dataset + "-" + var + "-skl.csv"
+        nlt[var] = open(nlt_file, 'a')
+        skl[var] = open(skl_file, 'a')
+
+        features = ftr.Features(corpora, total=COUNT, pos=["J", "V", "N", "R"])
+
+        posfeats = features.get_features_pos()
+        negfeats = features.get_fearures_neg()
+
+        trainfeats = negfeats[:cut] + posfeats[:cut]
+        testfeats = negfeats[cut:] + posfeats[cut:]
+
+        nlt_output, skl_output = cls.classify(trainfeats, testfeats)
+
+        nlt[var].write(nlt_output)
+        skl[var].write(skl_output)
+
+        #####
+
+        var = "PJVNR"
+
+        nlt_file = "pos-" + dataset + "-" + var + "-nlt.csv"
+        skl_file = "pos-" + dataset + "-" + var + "-skl.csv"
+        nlt[var] = open(nlt_file, 'a')
+        skl[var] = open(skl_file, 'a')
+
+        features = ftr.Features(corpora, total=COUNT, pos=["P", "J", "V", "N", "R"])
+
+        posfeats = features.get_features_pos()
+        negfeats = features.get_fearures_neg()
+
+        trainfeats = negfeats[:cut] + posfeats[:cut]
+        testfeats = negfeats[cut:] + posfeats[cut:]
+
+        nlt_output, skl_output = cls.classify(trainfeats, testfeats)
+
+        nlt[var].write(nlt_output)
+        skl[var].write(skl_output)
+
+        #####
+
+        var = "UJVNR"
+
+        nlt_file = "pos-" + dataset + "-" + var + "-nlt.csv"
+        skl_file = "pos-" + dataset + "-" + var + "-skl.csv"
+        nlt[var] = open(nlt_file, 'a')
+        skl[var] = open(skl_file, 'a')
+
+        features = ftr.Features(corpora, total=COUNT, pos=["U", "J", "V", "N", "R"])
+
+        posfeats = features.get_features_pos()
+        negfeats = features.get_fearures_neg()
+
+        trainfeats = negfeats[:cut] + posfeats[:cut]
+        testfeats = negfeats[cut:] + posfeats[cut:]
+
+        nlt_output, skl_output = cls.classify(trainfeats, testfeats)
+
+        nlt[var].write(nlt_output)
+        skl[var].write(skl_output)
+
+        #####
+
+        var = "UPJVNR"
+
+        nlt_file = "pos-" + dataset + "-" + var + "-nlt.csv"
+        skl_file = "pos-" + dataset + "-" + var + "-skl.csv"
+        nlt[var] = open(nlt_file, 'a')
+        skl[var] = open(skl_file, 'a')
+
+        features = ftr.Features(corpora, total=COUNT, pos=["U", "P", "J", "V", "N", "R"])
+
+        posfeats = features.get_features_pos()
+        negfeats = features.get_fearures_neg()
+
+        trainfeats = negfeats[:cut] + posfeats[:cut]
+        testfeats = negfeats[cut:] + posfeats[cut:]
+
+        nlt_output, skl_output = cls.classify(trainfeats, testfeats)
+
+        nlt[var].write(nlt_output)
+        skl[var].write(skl_output)
+
+        #####
+
+        var = "EUPJVNR"
+
+        nlt_file = "pos-" + dataset + "-" + var + "-nlt.csv"
+        skl_file = "pos-" + dataset + "-" + var + "-skl.csv"
+        nlt[var] = open(nlt_file, 'a')
+        skl[var] = open(skl_file, 'a')
+
+        features = ftr.Features(corpora, total=COUNT, pos=["E", "U", "P", "J", "V", "N", "R"])
+
+        posfeats = features.get_features_pos()
+        negfeats = features.get_fearures_neg()
+
+        trainfeats = negfeats[:cut] + posfeats[:cut]
+        testfeats = negfeats[cut:] + posfeats[cut:]
+
+        nlt_output, skl_output = cls.classify(trainfeats, testfeats)
+
+        nlt[var].write(nlt_output)
+        skl[var].write(skl_output)
+
+
+        #####
+
+        var = "FEUPJVNR"
+
+        nlt_file = "pos-" + dataset + "-" + var + "-nlt.csv"
+        skl_file = "pos-" + dataset + "-" + var + "-skl.csv"
+        nlt[var] = open(nlt_file, 'a')
+        skl[var] = open(skl_file, 'a')
+
+        features = ftr.Features(corpora, total=COUNT, pos=["F", "E", "U", "P", "J", "V", "N", "R"])
+
+        posfeats = features.get_features_pos()
+        negfeats = features.get_fearures_neg()
+
+        trainfeats = negfeats[:cut] + posfeats[:cut]
+        testfeats = negfeats[cut:] + posfeats[cut:]
+
+        nlt_output, skl_output = cls.classify(trainfeats, testfeats)
+
+        nlt[var].write(nlt_output)
+        skl[var].write(skl_output)
+
+
+
+dataset_array = ["stanford"]
+
+for dataset in dataset_array:
+    run(dataset)

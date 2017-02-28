@@ -12,8 +12,9 @@ DOWNLOADS_NEWS = os.path.join(PROJECT_ROOT, "crawler/downloads/news")
 
 DOWNLOADS_GOOGLE = os.path.join(PROJECT_ROOT, "crawler/downloads/news/google")
 
-
+TRAINER = os.path.join(PROJECT_ROOT, "trainer")
 TRAINER_DATA = os.path.join(PROJECT_ROOT, "trainer/data")
+TRAINER_TWITTER = os.path.join(PROJECT_ROOT, "trainer/twitter")
 
 PROCESS_SENTIMENT = os.path.join(PROJECT_ROOT, "predictor/data/sentiment")
 

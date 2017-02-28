@@ -2,7 +2,7 @@
 import settings
 import csv
 import re
-
+import nltk
 
 
 def read_file(year, month, day, subject):
@@ -25,7 +25,7 @@ def read_file(year, month, day, subject):
 
                 ref = re.compile(r"([@])(\w+)\b")
                 my_regex = re.compile(ref)
-                post = my_regex.sub('', post)
+                post = my_regex.sub('ref', post)
 
                 other_ticker = re.compile(r"([$])(\w+)\b")
                 my_regex = re.compile(other_ticker)
@@ -33,17 +33,30 @@ def read_file(year, month, day, subject):
 
                 http = re.compile('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
                 my_regex = re.compile(http)
-                post = my_regex.sub('', post)
+                post = my_regex.sub('url', post)
 
-                if(len(post) < 10):
-                    pass
+                post = re.sub("\d+", "num", post)
+
+                post = re.sub("[,\.\-:;|]", " ", post)
+
+                post = re.sub("\s\s+", " ", post)
+
+                post_words = nltk.word_tokenize(post)
+                word_count = 0
+                for word in post_words:
+                    if word != "sbjct":
+                        word_count+=1
+
+                if(word_count < 3):
+                    continue
+
 
                 if row[1] == "Bullish":
                     bull_file.write(post + "\n")
-                    print(post)
+                    # print(post)
                 elif row[1] == "Bearish":
                     bear_file.write(post + "\n")
-                    print(post)
+                    # print(post)
                 else:
                     pass
 
@@ -55,15 +68,15 @@ def read_file(year, month, day, subject):
 
 ######################
 
-year = "2017"
-month = "02"
+year = "2016"
+month = "12"
 first_day = 1
-last_day = 20
-subjects = ["spx"]
+last_day = 30
+subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia"]
 
-bull_file_path = "bull_spx.csv"
+bull_file_path = "bull_mix.csv"
 bull_file = open(bull_file_path, "a")
-bear_file_path = "bear_spx.csv"
+bear_file_path = "bear_mix.csv"
 bear_file = open(bear_file_path, "a")
 
 for subject in subjects:
