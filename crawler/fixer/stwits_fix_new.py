@@ -42,10 +42,10 @@ def fix_file(year, month, day, subject):
         pass
 
 
-year = "2016"
-month = "12"
+year = "2017"
+month = "02"
 first_day = 1
-last_day = 30
+last_day = 28
 subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia"]
 
 for subject in subjects:

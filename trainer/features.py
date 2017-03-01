@@ -24,7 +24,7 @@ class Features:
     features_neg = list()
     bestwords = list()
 
-    def __init__(self, corpora, total, inf_count=1, bigram_count=1, pos=None, stop=False, stem="none", bigram=False, lower=True):
+    def __init__(self, corpora, total, inf_count=-1, bigram_count=50, pos=None, stop=False, stem="none", bigram=False, lower=True):
         self.features_pos = list()
         self.features_neg = list()
         self.unigrams_pos = list()
@@ -84,7 +84,7 @@ class Features:
         if bigram:
             score_fn = BigramAssocMeasures.chi_sq
             bigram_finder = BigramCollocationFinder.from_words(words)
-            bigrams = bigram_finder.nbest(score_fn, b_count)
+            bigrams = bigram_finder.nbest(score_fn, self.bigram_count)
             d = dict([(bigram, True) for bigram in bigrams])
             d.update(dict([(word, True) for word in words if word in self.bestwords]))
             return d
@@ -116,12 +116,12 @@ class Features:
                                                    (freq, neg_word_count), total_word_count)
             word_scores[word] = pos_score + neg_score
 
-        inf_limit = round(len(word_scores.items()) * self.inf_count)
+        # inf_limit = round(len(word_scores.items()) * self.inf_count)
         print("inf_count:" + str(self.inf_count))
         print("total: " + str(len(word_scores.items())))
-        print("limit: " + str(inf_limit))
+        # print("limit: " + str(inf_limit))
 
-        best = sorted(word_scores.items(), key=lambda tup: tup[1], reverse=True)[:inf_limit]
+        best = sorted(word_scores.items(), key=lambda tup: tup[1], reverse=True)[:self.inf_count]
         bestwords = set([w for w, s in best])
         self.bestwords = bestwords
 

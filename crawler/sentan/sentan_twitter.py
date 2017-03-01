@@ -95,3 +95,9 @@ voted_classifier = VoteClassifier(
 def sentiment(text):
     feats = find_features(text)
     return voted_classifier.classify(feats),voted_classifier.confidence(feats)
+
+
+if __name__ == '__main__':
+
+    sent, conf = sentiment("Samsung is rumored to have plans of reintroducing the Note series with the Galaxy Note 8.")
+    print(sent, conf)

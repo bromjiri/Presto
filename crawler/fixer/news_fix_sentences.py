@@ -25,6 +25,10 @@ def fix_file(year, month, day, subject, source):
         for row in input_file:
             row = re.sub(r'(\.)([A-Z])', r'\1 \2', row)
             for sentence in nltk.sent_tokenize(row):
+
+                if len(sentence) > 140:
+                    continue
+
                 if subject not in sentence.lower():
                     continue
                 else:
@@ -38,13 +42,12 @@ def fix_file(year, month, day, subject, source):
         pass
 
 
-source = "google"
-months = [{}]
-year = "2016"
-month = "11"
+source = "bing"
+year = "2017"
+month = "01"
 first_day = 1
-last_day = 2
-subjects = ["microsoft"]
+last_day = 31
+subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
 
 for subject in subjects:
 

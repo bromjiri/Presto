@@ -138,11 +138,11 @@ def train(trainfeats, testfeats):
 
 
 if __name__ == '__main__':
-    COUNT = 50000
+    COUNT = 4000
     cut = int((COUNT/2)*3/4)
 
-    corpora = crp.Corpora("stanford", count=COUNT)
-    features = ftr.Features(corpora, total=COUNT, bigram=True, stem="porter", pos=["CD"])
+    corpora = crp.Corpora("stanford", count=COUNT, shuffle=True)
+    features = ftr.Features(corpora, total=COUNT, bigram=True, stem="porter")
     features_f = open("pickled/features.pickle", "wb")
     pickle.dump(features, features_f)
     features_f.close()

@@ -4,8 +4,8 @@ import random
 
 stanford_pos = settings.TRAINER_DATA + "/twitter/stanford_pos_25k.csv"
 stanford_neg = settings.TRAINER_DATA + "/twitter/stanford_neg_25k.csv"
-bull_nflx = settings.TRAINER_DATA + "/stwits/bull_mix_5000.csv"
-bear_nflx = settings.TRAINER_DATA + "/stwits/bear_mix_5000.csv"
+bull_nflx = settings.TRAINER_DATA + "/stwits/bull_mix_10k.csv"
+bear_nflx = settings.TRAINER_DATA + "/stwits/bear_mix_10k.csv"
 
 
 

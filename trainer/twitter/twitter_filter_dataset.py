@@ -1,4 +1,7 @@
 # fix newlines
+
+# not used
+
 import settings
 import csv
 import re

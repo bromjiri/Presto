@@ -2,7 +2,7 @@ import datetime
 
 import trainer.corpora as crp
 import trainer.features as ftr
-import trainer.classifier as cls
+import trainer.classifier_test as cls
 
 
 def run(dataset):
@@ -24,7 +24,7 @@ def run(dataset):
         # skl[stem].write(str(datetime.datetime.today()) + "\n")
 
     # cycle
-    for x in range(0, 10):
+    for x in range(0, 5):
         print(x)
         corpora = crp.Corpora(dataset, count=COUNT, shuffle=True)
 
@@ -37,14 +37,15 @@ def run(dataset):
             trainfeats = negfeats[:cut] + posfeats[:cut]
             testfeats = negfeats[cut:] + posfeats[cut:]
 
-            nlt_output, skl_output = cls.classify(trainfeats, testfeats)
+            nlt_output, skl_output = cls.train(trainfeats, testfeats, skl=False)
+            # print(nlt_output)
 
             nlt[stem].write(nlt_output)
             skl[stem].write(skl_output)
 
 
 
-dataset_array = ["stanford"]
+dataset_array = ["stwits"]
 
 for dataset in dataset_array:
     run(dataset)

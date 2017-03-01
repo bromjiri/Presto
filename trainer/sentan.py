@@ -10,50 +10,44 @@ from nltk.metrics import BigramAssocMeasures
 
 class Features:
 
+
     @staticmethod
-    def find_features(tweet, pos=["CD"], stop=False, stem="porter", bigram=True, lower=True):
+    def find_features(tweet, bigram_count=1, pos=None, stop=False, stem=False, bigram=True, lower=True):
 
         words = nltk.word_tokenize(tweet)
-        print(words)
+        # print(words)
 
         unigrams = Features.create_unigrams(pos, stop, stem, lower, words)
-        print(unigrams)
+        # print(unigrams)
 
-        features = Features.create_features(bigram, unigrams)
-        print(features)
+        features = Features.create_features(bigram_count, unigrams)
+        # print(features)
 
         return features
 
     @staticmethod
     def create_unigrams(pos, stop, stem, lower, words):
 
-        if pos != None:
-            words = Features.filter_pos(words, pos)
-        if stem != "none":
-            words = Features.filter_stem(words, stem)
+        # if pos != None:
+        #     words = Features.filter_pos(words, pos)
+        if stem:
+            words = Features.filter_stem(words)
         if lower:
             words = Features.filter_lower(words)
-        if stop:
-            words = Features.filter_stop(words)
+        # if stop:
+        #     words = Features.filter_stop(words)
 
         return words
 
     @staticmethod
-    def create_features(bigram, words):
+    def create_features(bigram_count, words):
 
-        b_count = round(len(words))
-
-        # create dictionaries
-        if not bigram:
-            return dict([(word, True) for word in words])
-
-        if bigram:
-            score_fn = BigramAssocMeasures.chi_sq
-            bigram_finder = BigramCollocationFinder.from_words(words)
-            bigrams = bigram_finder.nbest(score_fn, b_count)
-            d = dict([(bigram, True) for bigram in bigrams])
-            d.update(dict([(word, True) for word in words]))
-            return d
+        score_fn = BigramAssocMeasures.chi_sq
+        bigram_finder = BigramCollocationFinder.from_words(words)
+        bigrams = bigram_finder.nbest(score_fn, bigram_count)
+        d = dict([(bigram, True) for bigram in bigrams])
+        d.update(dict([(word, True) for word in words]))
+        return d
 
     @staticmethod
     def filter_stop(words):
@@ -73,23 +67,17 @@ class Features:
         return words_lower
 
     @staticmethod
-    def filter_stem(words, stem):
+    def filter_stem(words):
 
-        if stem == "porter":
-            ps = PorterStemmer()
-            words_stem = list()
-            for w in words:
-                try:
-                    words_stem.append(ps.stem(w))
-                except:
-                    continue
-            return words_stem
-        elif stem == "lemma":
-            lm = WordNetLemmatizer()
-            words_stem = list()
-            for w in words:
-                words_stem.append(lm.lemmatize(w))
-            return  words_stem
+        ps = PorterStemmer()
+        words_stem = list()
+        for w in words:
+            try:
+                words_stem.append(ps.stem(w))
+            except:
+                continue
+        return words_stem
+
 
     @staticmethod
     def filter_pos(words, disallowed_types):
@@ -104,11 +92,16 @@ class Features:
 
 
 def sent_twitter(text):
-    features = Features.find_features(text)
-    return cls.classify(features, "twitter", "60000")
+    features = Features.find_features(text, stem=True, bigram_count=5)
+    return cls.classify(features, "twitter", "4k-75.6-full")
+
+
+def sent_stwits(text):
+    features = Features.find_features(text, bigram_count=5)
+    return cls.classify(features, "stwits", "20k-77.6-full")
 
 
 if __name__ == '__main__':
 
-    sent, conf = sent_twitter("Microsoft software is constantly being targeted by cyber criminals.")
+    sent, conf = sent_twitter("Samsung is rumored to have plans of reintroducing the Note series with the Galaxy Note 8.")
     print(sent, conf)

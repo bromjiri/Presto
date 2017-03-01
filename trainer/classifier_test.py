@@ -38,95 +38,104 @@ class VoteClassifier(ClassifierI):
         return conf
 
 
-def train(trainfeats, testfeats):
+def train(trainfeats, testfeats, nlt = True, skl = True):
     # print('train on %d instances, test on %d instances' % (len(trainfeats), len(testfeats)))
 
-    my_classifier = NaiveBayesClassifier.train(trainfeats)
-    refsets = collections.defaultdict(set)
-    testsets = collections.defaultdict(set)
+    nltk_output = "none"
+    sklearn_output = "none"
 
-    for i, (feats, label) in enumerate(testfeats):
-        refsets[label].add(i)
-        observed = my_classifier.classify(feats)
-        testsets[observed].add(i)
+    if nlt:
 
-    # precision and recall
-    accuracy = nltk.classify.util.accuracy(my_classifier, testfeats) * 100
-    pos_prec = precision(refsets['pos'], testsets['pos']) * 100
-    pos_rec = recall(refsets['pos'], testsets['pos']) * 100
-    neg_prec = precision(refsets['neg'], testsets['neg']) * 100
-    neg_rec = recall(refsets['neg'], testsets['neg']) * 100
+        my_classifier = NaiveBayesClassifier.train(trainfeats)
+        refsets = collections.defaultdict(set)
+        testsets = collections.defaultdict(set)
 
-    # round
-    accuracy = round(accuracy, 1)
-    pos_prec = round(pos_prec, 1)
-    pos_rec = round(pos_rec, 1)
-    neg_prec = round(neg_prec, 1)
-    neg_rec = round(neg_rec, 1)
+        for i, (feats, label) in enumerate(testfeats):
+            refsets[label].add(i)
+            observed = my_classifier.classify(feats)
+            testsets[observed].add(i)
 
-    # print('pos F-measure:', f_measure(refsets['pos'], testsets['pos']))
-    # print('neg F-measure:', f_measure(refsets['neg'], testsets['neg']))
-    my_classifier.show_most_informative_features(50)
+        # precision and recall
+        accuracy = nltk.classify.util.accuracy(my_classifier, testfeats) * 100
+        pos_prec = precision(refsets['pos'], testsets['pos']) * 100
+        pos_rec = recall(refsets['pos'], testsets['pos']) * 100
+        neg_prec = precision(refsets['neg'], testsets['neg']) * 100
+        neg_rec = recall(refsets['neg'], testsets['neg']) * 100
 
+        # round
+        accuracy = round(accuracy, 1)
+        pos_prec = round(pos_prec, 1)
+        pos_rec = round(pos_rec, 1)
+        neg_prec = round(neg_prec, 1)
+        neg_rec = round(neg_rec, 1)
 
-    MNB_classifier = SklearnClassifier(MultinomialNB())
-    MNB_classifier._vectorizer.sort = False
-    MNB_classifier.train(trainfeats)
-    mnb = (nltk.classify.accuracy(MNB_classifier, testfeats)) * 100
-    mnb = round(mnb, 1)
-    print(mnb)
+        # print('pos F-measure:', f_measure(refsets['pos'], testsets['pos']))
+        # print('neg F-measure:', f_measure(refsets['neg'], testsets['neg']))
+        my_classifier.show_most_informative_features(50)
 
-    BernoulliNB_classifier = SklearnClassifier(BernoulliNB())
-    BernoulliNB_classifier._vectorizer.sort = False
-    BernoulliNB_classifier.train(trainfeats)
-    bnb = (nltk.classify.accuracy(BernoulliNB_classifier, testfeats)) * 100
-    bnb = round(bnb, 1)
-    print(bnb)
+        nltk_output = "nlt, " + str(accuracy) + ", " + str(pos_prec) + ", " + str(neg_prec) + ", " + str(
+            pos_rec) + ", " + str(neg_rec) + "\n"
 
-    LogisticRegression_classifier = SklearnClassifier(LogisticRegression())
-    LogisticRegression_classifier._vectorizer.sort = False
-    LogisticRegression_classifier.train(trainfeats)
-    lr = (nltk.classify.accuracy(LogisticRegression_classifier, testfeats)) * 100
-    lr = round(lr, 1)
-    print(lr)
+    if skl:
 
-    LinearSVC_classifier = SklearnClassifier(LinearSVC())
-    LinearSVC_classifier._vectorizer.sort = False
-    LinearSVC_classifier.train(trainfeats)
-    lsvc = (nltk.classify.accuracy(LinearSVC_classifier, testfeats)) * 100
-    lsvc = round(lsvc, 1)
-    print(lsvc)
+        MNB_classifier = SklearnClassifier(MultinomialNB())
+        MNB_classifier._vectorizer.sort = False
+        MNB_classifier.train(trainfeats)
+        mnb = (nltk.classify.accuracy(MNB_classifier, testfeats)) * 100
+        mnb = round(mnb, 1)
+        print(mnb)
 
-    NuSVC_classifier = SklearnClassifier(NuSVC())
-    NuSVC_classifier._vectorizer.sort = False
-    NuSVC_classifier.train(trainfeats)
-    nsvc = (nltk.classify.accuracy(NuSVC_classifier, testfeats)) * 100
-    nsvc = round(nsvc, 1)
-    print(nsvc)
+        BernoulliNB_classifier = SklearnClassifier(BernoulliNB())
+        BernoulliNB_classifier._vectorizer.sort = False
+        BernoulliNB_classifier.train(trainfeats)
+        bnb = (nltk.classify.accuracy(BernoulliNB_classifier, testfeats)) * 100
+        bnb = round(bnb, 1)
+        print(bnb)
 
-    voted_classifier = VoteClassifier(
-        NuSVC_classifier,
-        LinearSVC_classifier,
-        MNB_classifier,
-        BernoulliNB_classifier,
-        LogisticRegression_classifier)
-    voted = (nltk.classify.accuracy(voted_classifier, testfeats)) * 100
-    voted = round(voted, 1)
-    print(voted)
+        LogisticRegression_classifier = SklearnClassifier(LogisticRegression())
+        LogisticRegression_classifier._vectorizer.sort = False
+        LogisticRegression_classifier.train(trainfeats)
+        lr = (nltk.classify.accuracy(LogisticRegression_classifier, testfeats)) * 100
+        lr = round(lr, 1)
+        print(lr)
 
-    nltk_output = "nlt, " + str(accuracy) + ", " + str(pos_prec) + ", " + str(neg_prec) + ", " + str(pos_rec) + ", " + str(neg_rec) + "\n"
-    sklearn_output = "skl, " + str(mnb) + ", " + str(bnb) + ", " + str(lr) + ", " + str(lsvc) + ", " + str(nsvc) + ", " + str(voted) + "\n"
+        LinearSVC_classifier = SklearnClassifier(LinearSVC())
+        LinearSVC_classifier._vectorizer.sort = False
+        LinearSVC_classifier.train(trainfeats)
+        lsvc = (nltk.classify.accuracy(LinearSVC_classifier, testfeats)) * 100
+        lsvc = round(lsvc, 1)
+        print(lsvc)
+
+        NuSVC_classifier = SklearnClassifier(NuSVC())
+        NuSVC_classifier._vectorizer.sort = False
+        NuSVC_classifier.train(trainfeats)
+        nsvc = (nltk.classify.accuracy(NuSVC_classifier, testfeats)) * 100
+        nsvc = round(nsvc, 1)
+        print(nsvc)
+
+        voted_classifier = VoteClassifier(
+            NuSVC_classifier,
+            LinearSVC_classifier,
+            MNB_classifier,
+            BernoulliNB_classifier,
+            LogisticRegression_classifier)
+        voted = (nltk.classify.accuracy(voted_classifier, testfeats)) * 100
+        voted = round(voted, 1)
+        print(voted)
+
+        sklearn_output = "skl, " + str(mnb) + ", " + str(bnb) + ", " + str(lr) + ", " + str(lsvc) + ", " + str(nsvc) + ", " + str(voted) + "\n"
+
 
     return (nltk_output, sklearn_output)
 
 
 
 if __name__ == '__main__':
-    COUNT = 40000
+    COUNT = 20000
     cut = int((COUNT/2)*3/4)
 
-    corpora = crp.Corpora("stanford", count=COUNT)
-    features = ftr.Features(corpora, total=COUNT, bigram=True, stem="porter", pos=["CD"])
+    corpora = crp.Corpora("stwits", count=COUNT)
+    features = ftr.Features(corpora, total=COUNT, bigram=False)
 
     posfeats = features.get_features_pos()
     negfeats = features.get_fearures_neg()
@@ -135,5 +144,5 @@ if __name__ == '__main__':
     testfeats = negfeats[cut:] + posfeats[cut:]
 
     print('train on %d instances, test on %d instances' % (len(trainfeats), len(testfeats)))
-    nlt, skl = train(trainfeats, testfeats)
+    nlt, skl = train(trainfeats, testfeats, skl=False)
     print(nlt, skl)

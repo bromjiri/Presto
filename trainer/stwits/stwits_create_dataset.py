@@ -35,9 +35,9 @@ def read_file(year, month, day, subject):
                 my_regex = re.compile(http)
                 post = my_regex.sub('url', post)
 
-                post = re.sub("\d+", "num", post)
+                # post = re.sub("\d+", "num", post)
 
-                post = re.sub("[,\.\-:;|]", " ", post)
+                post = re.sub("[,\-:;|]", " ", post)
 
                 post = re.sub("\s\s+", " ", post)
 
@@ -68,21 +68,27 @@ def read_file(year, month, day, subject):
 
 ######################
 
-year = "2016"
-month = "12"
+periods = [["2016", "11"], ["2016", "12"], ["2017", "01"], ["2017", "02"]]
 first_day = 1
 last_day = 30
-subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia"]
+# subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia"]
+subjects = ["compq", "spx", "djia"]
 
-bull_file_path = "bull_mix.csv"
+
+bull_file_path = "bull_mix_3.csv"
 bull_file = open(bull_file_path, "a")
-bear_file_path = "bear_mix.csv"
+bear_file_path = "bear_mix_3.csv"
 bear_file = open(bear_file_path, "a")
 
-for subject in subjects:
+for period in periods:
 
-    for i in range(first_day, last_day+1):
-        day = str(i).zfill(2)
-        print("Subject: " + subject + ", Day: " + day)
-        read_file(year, month, day, subject)
-        # exit()
+    year = period[0]
+    month = period[1]
+
+    for subject in subjects:
+
+        for i in range(first_day, last_day+1):
+            day = str(i).zfill(2)
+            print("Subject: " + subject + ", Day: " + day)
+            read_file(year, month, day, subject)
+            # exit()

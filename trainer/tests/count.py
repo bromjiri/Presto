@@ -8,7 +8,7 @@ import trainer.classifier_test as cls
 def run(dataset):
 
 
-    array = [50000, 40000, 30000, 20000]
+    array = [20000, 15000, 10000]
 
     nlt = dict()
     skl = dict()
@@ -30,9 +30,11 @@ def run(dataset):
         cut = int((COUNT / 2) * 3 / 4)
         print(str(variable))
 
-        corpora = crp.Corpora(dataset, count=COUNT, shuffle=True)
+
 
         for x in range(0, 5):
+            corpora = crp.Corpora(dataset, count=COUNT, shuffle=True)
+
             print(x)
 
             var_name = str(variable)
@@ -51,7 +53,7 @@ def run(dataset):
 
 
 
-dataset_array = ["stanford"]
+dataset_array = ["stwits"]
 
 for dataset in dataset_array:
     run(dataset)
