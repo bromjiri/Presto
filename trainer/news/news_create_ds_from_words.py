@@ -1,35 +1,49 @@
-# fix newlines
+# create news datasets
 import settings
-import csv
 import re
-import nltk
-
-import trainer.sentan as stn
 
 
 def read_file(year, month, day, subject):
 
+    input_file_path = settings.DOWNLOADS_NEWS + "/final/" + subject + "/news-" + subject + "-" + year + "-" + month +\
+                      "-" + day + "-final.csv"
 
-
-    input_file_path = settings.DOWNLOADS_NEWS + "/final/" + subject + "/news-" + subject + "-" + year + "-" + month + "-" + day + "-final.csv"
-
-    i = 0
     try:
         with open(input_file_path, "r") as news_file:
             for row in news_file:
-                # print(row)
-                for word in neg_words:
 
-                    re_word = r"\b" + word + r"\b"
-                    my_regex = re.compile(re_word, re.IGNORECASE)
-                    match = re.search(my_regex, row)
-                    if match:
-                        neg_file.write(row)
-                        print(word)
-                        print(row)
+                pos_match = False
+                neg_match = False
 
+                for neg_word in neg_words:
+                    re_word = r"\b" + neg_word + r"\b"
+                    my_regex = re.compile(re_word)
+                    neg_match = re.search(my_regex, row)
+                    if neg_match:
+                        break
 
+                for pos_word in pos_words:
+                    re_word = r"\b" + pos_word + r"\b"
+                    my_regex = re.compile(re_word)
+                    pos_match = re.search(my_regex, row)
+                    if pos_match:
+                        break
 
+                if pos_match and neg_match:
+                    neu_file.write(row)
+                    neu_file.flush()
+                    print(pos_word, neg_word)
+                    print(row)
+                elif pos_match:
+                    pos_file.write(row)
+                    pos_file.flush()
+                    print("pos: " + pos_word)
+                    print(row)
+                elif neg_match:
+                    neg_file.write(row)
+                    neg_file.flush()
+                    print("neg: " + neg_word)
+                    print(row)
 
     except Exception as e:
         print(e)
@@ -38,34 +52,43 @@ def read_file(year, month, day, subject):
 
 ######################
 
-# months = [["2016", "11"], ["2016", "12"], ["2017", "01"], ["2017", "02"]]
-year = "2017"
-month = "01"
+periods = [["2017", "01"], ["2017", "02"]]
 first_day = 1
 last_day = 30
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
 subjects = ["the"]
 
 
-neg_words_path = "data/neg_words.txt"
+neg_words_path = "data/neg_words_hu.txt"
 neg_words_file = open(neg_words_path, "r")
-neg_words = set()
-for line in neg_words_file:
-    neg_words.add(line.strip().lower())
+neg_words = list()
+for n_word in neg_words_file:
+    neg_words.append(n_word.strip())
 
+pos_words_path = "data/pos_words_hu.txt"
+pos_words_file = open(pos_words_path, "r")
+pos_words = list()
+for p_word in pos_words_file:
+    pos_words.append(p_word.strip())
+
+print(neg_words)
 print(len(neg_words))
 
+for period in periods:
 
-for subject in subjects:
+    year = period[0]
+    month = period[1]
 
-    pos_file_path = "news_pos_" + subject + "-" + year + "-" + month + ".csv"
-    pos_file = open(pos_file_path, "w")
-    neg_file_path = "news_neg_" + subject + "-" + year + "-" + month + ".csv"
-    neg_file = open(neg_file_path, "w")
+    for subject in subjects:
 
+        pos_file_path = "news_pos_" + subject + "-" + year + "-" + month + ".csv"
+        pos_file = open(pos_file_path, "w")
+        neg_file_path = "news_neg_" + subject + "-" + year + "-" + month + ".csv"
+        neg_file = open(neg_file_path, "w")
+        neu_file_path = "news_neu_" + subject + "-" + year + "-" + month + ".csv"
+        neu_file = open(neu_file_path, "w")
 
-    for i in range(first_day, last_day+1):
-        day = str(i).zfill(2)
-        print("Subject: " + subject + ", Day: " + day)
-        read_file(year, month, day, subject)
-        # exit()
+        for i in range(first_day, last_day+1):
+            day = str(i).zfill(2)
+            print("Subject: " + subject + ", Day: " + day)
+            read_file(year, month, day, subject)

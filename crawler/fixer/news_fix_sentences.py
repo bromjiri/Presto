@@ -35,7 +35,7 @@ def fix_file(year, month, day, subject, source):
                     if detect(sentence) == "es":
                         continue
 
-                    output_file.write(sentence + "\n")
+                    output_file.write(sentence.strip() + "\n")
 
     except Exception as e:
         print(e)
@@ -47,7 +47,8 @@ year = "2017"
 month = "01"
 first_day = 1
 last_day = 31
-subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
+# subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
+subjects = ["the"]
 
 for subject in subjects:
 
