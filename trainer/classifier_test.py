@@ -38,7 +38,7 @@ class VoteClassifier(ClassifierI):
         return conf
 
 
-def train(trainfeats, testfeats, nlt = True, skl = True):
+def train(trainfeats, testfeats, nlt = True, skl = True, most = 0):
     # print('train on %d instances, test on %d instances' % (len(trainfeats), len(testfeats)))
 
     nltk_output = "none"
@@ -71,7 +71,7 @@ def train(trainfeats, testfeats, nlt = True, skl = True):
 
         # print('pos F-measure:', f_measure(refsets['pos'], testsets['pos']))
         # print('neg F-measure:', f_measure(refsets['neg'], testsets['neg']))
-        my_classifier.show_most_informative_features(50)
+        my_classifier.show_most_informative_features(most)
 
         nltk_output = "nlt, " + str(accuracy) + ", " + str(pos_prec) + ", " + str(neg_prec) + ", " + str(
             pos_rec) + ", " + str(neg_rec) + "\n"
@@ -131,11 +131,12 @@ def train(trainfeats, testfeats, nlt = True, skl = True):
 
 
 if __name__ == '__main__':
-    COUNT = 20000
+    COUNT = 5000
     cut = int((COUNT/2)*3/4)
 
-    corpora = crp.Corpora("stwits", count=COUNT, shuffle=True)
-    features = ftr.Features(corpora, total=COUNT, bigram=False)
+    corpora = crp.Corpora("news", count=COUNT, shuffle=True)
+    features = ftr.Features(corpora, total=COUNT, bigram=False, pos=["J", "V", "N", "R"])
+    features = ftr.Features(corpora, total=COUNT, bigram=False, stem="porter")
 
     posfeats = features.get_features_pos()
     negfeats = features.get_fearures_neg()
@@ -144,5 +145,5 @@ if __name__ == '__main__':
     testfeats = negfeats[cut:] + posfeats[cut:]
 
     print('train on %d instances, test on %d instances' % (len(trainfeats), len(testfeats)))
-    nlt, skl = train(trainfeats, testfeats, skl=False)
+    nlt, skl = train(trainfeats, testfeats, skl=False, most=50)
     print(nlt, skl)

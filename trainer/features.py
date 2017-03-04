@@ -117,8 +117,8 @@ class Features:
             word_scores[word] = pos_score + neg_score
 
         # inf_limit = round(len(word_scores.items()) * self.inf_count)
-        print("inf_count:" + str(self.inf_count))
-        print("total: " + str(len(word_scores.items())))
+        # print("inf_count:" + str(self.inf_count))
+        # print("total: " + str(len(word_scores.items())))
         # print("limit: " + str(inf_limit))
 
         best = sorted(word_scores.items(), key=lambda tup: tup[1], reverse=True)[:self.inf_count]
@@ -167,7 +167,7 @@ class Features:
         pos = nltk.pos_tag(words)
         words_pos = list()
         for p in pos:
-            if p[1] not in disallowed_types:
+            if p[1][0] in disallowed_types:
                 words_pos.append(p[0])
 
         return words_pos
@@ -185,7 +185,7 @@ class Features:
 
 if __name__ == '__main__':
 
-    COUNT = 20000
+    COUNT = 5000
     cut = int((COUNT/2)*3/4)
 
     crp = corp.Corpora("stanford", count=COUNT)

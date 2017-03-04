@@ -4,15 +4,14 @@ import trainer.corpora as crp
 import trainer.features as ftr
 import trainer.classifier_test as cls
 
-# vars
-type = "lower"
-nltk_run = True
-sklearn_run = False
-COUNT = 5000
-cut = int((COUNT / 2) * 3 / 4)
-array = [False, True]
 
-def run(dataset):
+
+
+
+def run_test(dataset, type, iter=10, count=5000, shuffle=False, nltk_run=True, sklearn_run=True, inf_count=-1,
+                 bigram_count=50, pos=None, stop=False, stem="none", bigram=False, lower=True):
+
+    cut = int((count / 2) * 3 / 4)
 
     nlt = dict()
     skl = dict()
@@ -32,14 +31,14 @@ def run(dataset):
             skl[var_name].write(str(datetime.datetime.today()) + "\n")
 
     # cycle
-    for x in range(0, 3):
+    for x in range(0, iter):
         print(x)
-        corpora = crp.Corpora(dataset, count=COUNT, shuffle=True)
+        corpora = crp.Corpora(dataset, count, shuffle)
 
         for variable in array:
-            print(str(variable))
-            var_name = str(variable)
-            features = ftr.Features(corpora, total=COUNT, lower=variable)
+            print(str(variable[1]))
+            var_name = str(variable[0]) + str(variable[1])
+            features = ftr.Features(corpora, count, inf_count, bigram_count, pos, stop, stem, bigram, lower)
 
             posfeats = features.get_features_pos()
             negfeats = features.get_fearures_neg()
@@ -54,13 +53,12 @@ def run(dataset):
                 nlt[var_name].write(nlt_output)
                 nlt[var_name].flush()
             if sklearn_run:
-                print(str(skl_output))
+                print(str(nlt_output))
                 skl[var_name].write(skl_output)
-                skl[var_name].flush()
+                nlt[var_name].flush()
 
 
-
-dataset_array = ["stwits"]
-
-for dataset in dataset_array:
-    run(dataset)
+# dataset_array = ["stwits"]
+#
+# for dataset in dataset_array:
+#     run(dataset)
