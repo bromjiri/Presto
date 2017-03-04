@@ -42,16 +42,22 @@ def fix_file(year, month, day, subject):
         pass
 
 
-year = "2017"
-month = "02"
+periods = [["2016", "11"], ["2016", "12"], ["2017", "01"], ["2017", "02"]]
 first_day = 1
-last_day = 28
+last_day = 31
 subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia"]
+subjects = ["the"]
 
-for subject in subjects:
 
-    for i in range(first_day, last_day+1):
-        day = str(i).zfill(2)
-        print("Subject: " + subject + ", Day: " + day)
-        fix_file(year, month, day, subject)
+for period in periods:
+
+    year = period[0]
+    month = period[1]
+
+    for subject in subjects:
+
+        for i in range(first_day, last_day+1):
+            day = str(i).zfill(2)
+            print("Subject: " + subject + ", Day: " + day)
+            fix_file(year, month, day, subject)
 

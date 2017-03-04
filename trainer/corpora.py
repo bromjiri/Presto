@@ -2,11 +2,12 @@ import settings
 from nltk.corpus import movie_reviews
 import random
 
-stanford_pos = settings.TRAINER_DATA + "/twitter/stanford_pos_25k.csv"
-stanford_neg = settings.TRAINER_DATA + "/twitter/stanford_neg_25k.csv"
-bull_nflx = settings.TRAINER_DATA + "/stwits/bull_mix_10k.csv"
-bear_nflx = settings.TRAINER_DATA + "/stwits/bear_mix_10k.csv"
-
+stanford_pos = settings.TRAINER_DATA + "/twitter/stanford_pos_20k.csv"
+stanford_neg = settings.TRAINER_DATA + "/twitter/stanford_neg_20k.csv"
+stwits_pos = settings.TRAINER_DATA + "/stwits/stwits_pos_the.csv"
+stwits_neg = settings.TRAINER_DATA + "/stwits/stwits_neg_the.csv"
+news_pos = settings.TRAINER_DATA + "/news/news_pos_80_2500.csv"
+news_neg = settings.TRAINER_DATA + "/news/news_neg_80_2500.csv"
 
 
 class Corpora:
@@ -26,6 +27,8 @@ class Corpora:
             pos_list, neg_list = self.read_stanford(shuffle)
         elif source == "stwits":
             pos_list, neg_list = self.read_stwits(shuffle)
+        elif source == "news":
+            pos_list, neg_list = self.read_news(shuffle)
         elif source == "movie":
             pos_list, neg_list = self.read_movie()
 
@@ -79,12 +82,12 @@ class Corpora:
     def read_stwits(self, shuffle):
 
         stwits_pos_list = list()
-        with open(bull_nflx, 'r') as bull:
+        with open(stwits_pos, 'r') as bull:
             for line in bull:
                 stwits_pos_list.append(line.strip())
 
         stwits_neg_list = list()
-        with open(bear_nflx, 'r') as bear:
+        with open(stwits_neg, 'r') as bear:
             for line in bear:
                 stwits_neg_list.append(line.strip())
 
@@ -93,6 +96,24 @@ class Corpora:
             random.shuffle(stwits_neg_list)
 
         return stwits_pos_list, stwits_neg_list
+
+    def read_news(self, shuffle):
+
+        news_pos_list = list()
+        with open(news_pos, 'r') as n_pos:
+            for line in n_pos:
+                news_pos_list.append(line.strip())
+
+        news_neg_list = list()
+        with open(news_neg, 'r') as n_neg:
+            for line in n_neg:
+                news_neg_list.append(line.strip())
+
+        if shuffle:
+            random.shuffle(news_pos_list)
+            random.shuffle(news_neg_list)
+
+        return news_pos_list, news_neg_list
 
     def read_movie(self):
 
