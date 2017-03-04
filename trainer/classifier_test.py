@@ -134,7 +134,7 @@ if __name__ == '__main__':
     COUNT = 20000
     cut = int((COUNT/2)*3/4)
 
-    corpora = crp.Corpora("stwits", count=COUNT)
+    corpora = crp.Corpora("stwits", count=COUNT, shuffle=True)
     features = ftr.Features(corpora, total=COUNT, bigram=False)
 
     posfeats = features.get_features_pos()
