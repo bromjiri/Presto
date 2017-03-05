@@ -6,8 +6,8 @@ stanford_pos = settings.TRAINER_DATA + "/twitter/stanford_pos_20k.csv"
 stanford_neg = settings.TRAINER_DATA + "/twitter/stanford_neg_20k.csv"
 stwits_pos = settings.TRAINER_DATA + "/stwits/stwits_pos_the.csv"
 stwits_neg = settings.TRAINER_DATA + "/stwits/stwits_neg_the.csv"
-news_pos = settings.TRAINER_DATA + "/news/news_pos_80_2500.csv"
-news_neg = settings.TRAINER_DATA + "/news/news_neg_80_2500.csv"
+news_pos = settings.TRAINER_DATA + "/news/news_pos_the-2017-01.csv"
+news_neg = settings.TRAINER_DATA + "/news/news_neg_the-2017-01.csv"
 
 
 class Corpora:

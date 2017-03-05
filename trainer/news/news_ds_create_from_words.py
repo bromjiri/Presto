@@ -62,6 +62,9 @@ def read_file(year, month, day, subject):
                         neg_file.flush()
                         print("neg: " + neg_word)
                         print(row)
+                else:
+                    rest_file.write(row)
+                    rest_file.flush()
 
     except Exception as e:
         print(e)
@@ -70,7 +73,7 @@ def read_file(year, month, day, subject):
 
 ######################
 
-periods = [["2017", "01"], ["2017", "02"]]
+periods = [["2017", "01"]]
 first_day = 1
 last_day = 30
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
@@ -109,6 +112,8 @@ for period in periods:
         not_pos_file = open(not_pos_file_path, "w")
         not_neg_file_path = "news_not_neg_" + subject + "-" + year + "-" + month + ".csv"
         not_neg_file = open(not_neg_file_path, "w")
+        rest_file_path = "news_rest_" + subject + "-" + year + "-" + month + ".csv"
+        rest_file = open(rest_file_path, "w")
 
         for i in range(first_day, last_day+1):
             day = str(i).zfill(2)

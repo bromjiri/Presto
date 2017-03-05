@@ -131,7 +131,7 @@ def train(trainfeats, testfeats, nlt = True, skl = True, most = 0):
 
 
 if __name__ == '__main__':
-    COUNT = 5000
+    COUNT = 4400
     cut = int((COUNT/2)*3/4)
 
     corpora = crp.Corpora("news", count=COUNT, shuffle=True)

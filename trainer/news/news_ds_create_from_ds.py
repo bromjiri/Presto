@@ -16,12 +16,12 @@ def read_file(year, month, day, subject):
                 pos_match = False
                 neg_match = False
 
-                # for neg_word in neg_words:
-                #     re_word = r"\b" + neg_word + r"\b"
-                #     my_regex = re.compile(re_word)
-                #     neg_match = re.search(my_regex, row)
-                #     if neg_match:
-                #         break
+                for neg_word in neg_words:
+                    re_word = r"\b" + neg_word + r"\b"
+                    my_regex = re.compile(re_word)
+                    neg_match = re.search(my_regex, row)
+                    if neg_match:
+                        break
 
                 for pos_word in pos_words:
                     re_word = r"\b" + pos_word + r"\b"
@@ -40,20 +40,20 @@ def read_file(year, month, day, subject):
                 nt_match = re.search(my_regex, row)
 
 
-                # if pos_match and neg_match:
-                #     neu_file.write(row)
-                #     neu_file.flush()
-                #     print(pos_word, neg_word)
-                #     print(row)
-                if pos_match:
-                    if not_match or nt_match:
-                        not_pos_file.write(row)
-                        not_pos_file.flush()
-                    else:
-                        pos_file.write(row)
-                        pos_file.flush()
-                        print("pos: " + pos_word)
-                        print(row)
+                if pos_match and neg_match:
+                    neu_file.write(row)
+                    neu_file.flush()
+                    print(pos_word, neg_word)
+                    print(row)
+                # if pos_match:
+                #     if not_match or nt_match:
+                #         not_pos_file.write(row)
+                #         not_pos_file.flush()
+                #     else:
+                #         pos_file.write(row)
+                #         pos_file.flush()
+                #         print("pos: " + pos_word)
+                #         print(row)
                 # if neg_match:
                 #     if not_match or nt_match:
                 #         not_neg_file.write(row)
@@ -101,15 +101,15 @@ for period in periods:
     for subject in subjects:
 
         pos_file_path = "news_pos_" + subject + "-" + year + "-" + month + ".csv"
-        pos_file = open(pos_file_path, "a")
+        pos_file = open(pos_file_path, "w")
         neg_file_path = "news_neg_" + subject + "-" + year + "-" + month + ".csv"
-        neg_file = open(neg_file_path, "a")
+        neg_file = open(neg_file_path, "w")
         neu_file_path = "news_neu_" + subject + "-" + year + "-" + month + ".csv"
-        neu_file = open(neu_file_path, "a")
+        neu_file = open(neu_file_path, "w")
         not_pos_file_path = "news_not_pos_" + subject + "-" + year + "-" + month + ".csv"
-        not_pos_file = open(not_pos_file_path, "a")
+        not_pos_file = open(not_pos_file_path, "w")
         not_neg_file_path = "news_not_neg_" + subject + "-" + year + "-" + month + ".csv"
-        not_neg_file = open(not_neg_file_path, "a")
+        not_neg_file = open(not_neg_file_path, "w")
 
         for i in range(first_day, last_day+1):
             day = str(i).zfill(2)
