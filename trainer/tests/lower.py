@@ -32,7 +32,7 @@ def run(dataset):
             skl[var_name].write(str(datetime.datetime.today()) + "\n")
 
     # cycle
-    for x in range(0, 3):
+    for x in range(0, 10):
         print(x)
         corpora = crp.Corpora(dataset, count=COUNT, shuffle=True)
 
@@ -60,7 +60,7 @@ def run(dataset):
 
 
 
-dataset_array = ["stwits"]
+dataset_array = ["stanford", "stwits", "news"]
 
 for dataset in dataset_array:
     run(dataset)

@@ -19,7 +19,7 @@ array = [1,1,1,2,2,3]
 numbered_grams = nltk.FreqDist(array).most_common(None)
 print(numbered_grams)
 
-res = word_tokenize("$NFLX number on thing I have learned trading is don&#39;t chase")
+res = word_tokenize("$NFLX number on thing I have not learned trading is don&#39;t chase")
 print(res)
 
 pos = nltk.pos_tag(res)

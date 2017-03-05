@@ -7,7 +7,7 @@ from os.path import isfile, join
 
 COLUMNS = 6
 
-mypath = settings.TRAINER + "/tests/output/news"
+mypath = settings.TRAINER + "/tests/output/news/stop"
 
 files_list = list()
 for f in listdir(mypath):

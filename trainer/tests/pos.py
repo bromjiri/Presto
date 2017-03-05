@@ -1,5 +1,5 @@
 import datetime
-
+import os
 import trainer.corpora as crp
 import trainer.features as ftr
 import trainer.classifier_test as cls
@@ -13,6 +13,9 @@ def run(dataset):
     nlt = dict()
     skl = dict()
 
+    dir = "output/" + dataset + "/pos/"
+    os.makedirs(dir, exist_ok=True)
+
     # cycle
     for x in range(0, 10):
         print(x)
@@ -21,7 +24,7 @@ def run(dataset):
         #####
 
         var = "NONE"
-        nlt_file = "output/" + dataset + "/" + dataset + "-" + "pos" + "-" + var + "-nlt.csv"
+        nlt_file = dir + dataset + "-" + "pos" + "-" + var + "-nlt.csv"
         # skl_file = "output/" + dataset + "/" + dataset + "-" + "pos" + "-" + var + "-skl.csv"
         nlt[var] = open(nlt_file, 'a')
         # skl[var] = open(skl_file, 'a')
@@ -45,7 +48,7 @@ def run(dataset):
 
         var = "JVNR"
 
-        nlt_file = "output/" + dataset + "/" + dataset + "-" + "pos" + "-" + var + "-nlt.csv"
+        nlt_file = dir + dataset + "-" + "pos" + "-" + var + "-nlt.csv"
         # skl_file = "output/" + dataset + "/" + dataset + "-" + "pos" + "-" + var + "-skl.csv"
         nlt[var] = open(nlt_file, 'a')
         # skl[var] = open(skl_file, 'a')
@@ -69,7 +72,7 @@ def run(dataset):
 
         var = "EUJVNR"
 
-        nlt_file = "output/" + dataset + "/" + dataset + "-" + "pos" + "-" + var + "-nlt.csv"
+        nlt_file = dir + dataset + "-" + "pos" + "-" + var + "-nlt.csv"
         # skl_file = "output/" + dataset + "/" + dataset + "-" + "pos" + "-" + var + "-skl.csv"
         nlt[var] = open(nlt_file, 'a')
         # skl[var] = open(skl_file, 'a')
@@ -94,7 +97,7 @@ def run(dataset):
 
         var = "FEUPJVNR"
 
-        nlt_file = "output/" + dataset + "/" + dataset + "-" + "pos" + "-" + var + "-nlt.csv"
+        nlt_file = dir + dataset + "-" + "pos" + "-" + var + "-nlt.csv"
         # skl_file = "output/" + dataset + "/" + dataset + "-" + "pos" + "-" + var + "-skl.csv"
         nlt[var] = open(nlt_file, 'a')
         # skl[var] = open(skl_file, 'a')
@@ -116,7 +119,7 @@ def run(dataset):
 
 
 
-dataset_array = ["stanford", "stwits", "news"]
+dataset_array = ["stanford"]
 
 for dataset in dataset_array:
     print(dataset)

@@ -95,13 +95,23 @@ def sent_twitter(text):
     features = Features.find_features(text, stem=True, bigram_count=5)
     return cls.classify(features, "twitter", "4k-75.6-full")
 
-
 def sent_stwits(text):
     features = Features.find_features(text, bigram_count=5)
     return cls.classify(features, "stwits", "20k-77.6-full")
 
+def sent_news(text):
+    features = Features.find_features(text, bigram=False, stem=True)
+    return cls.classify(features, "news", "5k-87.6-bgr-f")
 
 if __name__ == '__main__':
 
-    sent, conf = sent_twitter("Samsung is rumored to have plans of reintroducing the Note series with the Galaxy Note 8.")
+    sentence = "And the new was not good."
+
+    sent, conf = sent_news(sentence)
+    print(sent, conf)
+
+    sent, conf = sent_stwits(sentence)
+    print(sent, conf)
+
+    sent, conf = sent_twitter(sentence)
     print(sent, conf)

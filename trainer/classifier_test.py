@@ -131,12 +131,12 @@ def train(trainfeats, testfeats, nlt = True, skl = True, most = 0):
 
 
 if __name__ == '__main__':
-    COUNT = 4400
+    COUNT = 5000
     cut = int((COUNT/2)*3/4)
 
     corpora = crp.Corpora("news", count=COUNT, shuffle=True)
-    features = ftr.Features(corpora, total=COUNT, bigram=False, pos=["J", "V", "N", "R"])
-    features = ftr.Features(corpora, total=COUNT, bigram=False, stem="porter")
+    features = ftr.Features(corpora, total=COUNT, bigram=True, pos=["J", "V", "N", "R"], stem="porter")
+    # features = ftr.Features(corpora, total=COUNT, bigram=True, stem="porter")
 
     posfeats = features.get_features_pos()
     negfeats = features.get_fearures_neg()
