@@ -134,8 +134,8 @@ if __name__ == '__main__':
     COUNT = 5000
     cut = int((COUNT/2)*3/4)
 
-    corpora = crp.Corpora("news", count=COUNT, shuffle=True)
-    features = ftr.Features(corpora, total=COUNT, bigram=True, pos=["J", "V", "N", "R"], stem="porter")
+    corpora = crp.Corpora("stanford", count=COUNT, shuffle=True)
+    features = ftr.Features(corpora, total=COUNT, stem="porter", bigram=False, lower=True)
     # features = ftr.Features(corpora, total=COUNT, bigram=True, stem="porter")
 
     posfeats = features.get_features_pos()

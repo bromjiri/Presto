@@ -38,9 +38,9 @@ def fix_file(year, month, day, subject):
 
 
 year = "2017"
-month = "01"
-first_day = 21
-last_day = 29
+month = "02"
+first_day = 1
+last_day = 28
 subjects = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
 
 for subject in subjects:
@@ -48,5 +48,7 @@ for subject in subjects:
     for i in range(first_day, last_day+1):
         day = str(i).zfill(2)
         print("Subject: " + subject + ", Day: " + day)
-        fix_file(year, month, day, subject)
-
+        try:
+            fix_file(year, month, day, subject)
+        except Exception as e:
+            print(e)

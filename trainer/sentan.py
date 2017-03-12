@@ -93,7 +93,8 @@ class Features:
 
 def sent_twitter(text):
     features = Features.find_features(text, stem=True, bigram_count=5)
-    return cls.classify(features, "twitter", "4k-75.6-full")
+    # return cls.classify(features, "twitter", "4k-75.6-full")
+    return cls.classify(features, "twitter", "40k-78-no-bigram")
 
 def sent_stwits(text):
     features = Features.find_features(text, bigram_count=5)
@@ -105,7 +106,7 @@ def sent_news(text):
 
 if __name__ == '__main__':
 
-    sentence = "And the new was not good."
+    sentence = "The stock lost $17.68 to $231.95."
 
     sent, conf = sent_news(sentence)
     print(sent, conf)

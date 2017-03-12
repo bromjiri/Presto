@@ -3,6 +3,7 @@ import datetime
 import trainer.corpora as crp
 import trainer.features as ftr
 import trainer.classifier_test as cls
+import os
 
 # vars
 type = "lower"
@@ -17,17 +18,20 @@ def run(dataset):
     nlt = dict()
     skl = dict()
 
+    dir = "output/" + dataset + "/" + type + "/"
+    os.makedirs(dir, exist_ok=True)
+
     # file
     for variable in array:
         var_name = str(variable)
 
         if nltk_run:
-            nlt_file = "output/" + dataset + "/" + dataset + "-" + type + "-" + var_name + "-nlt.csv"
+            nlt_file = dir + dataset + "-" + type + "-" + var_name + "-nlt.csv"
             nlt[var_name] = open(nlt_file, 'a')
             nlt[var_name].write(str(datetime.datetime.today()) + "\n")
 
         if sklearn_run:
-            skl_file = "output/" + dataset + "/" + dataset + "-" + type + "-" + var_name + "-skl.csv"
+            skl_file = dir + dataset + "-" + type + "-" + var_name + "-skl.csv"
             skl[var_name] = open(skl_file, 'a')
             skl[var_name].write(str(datetime.datetime.today()) + "\n")
 
@@ -39,7 +43,7 @@ def run(dataset):
         for variable in array:
             print(str(variable))
             var_name = str(variable)
-            features = ftr.Features(corpora, total=COUNT, lower=variable)
+            features = ftr.Features(corpora, total=COUNT, bigram=False, lower=variable)
 
             posfeats = features.get_features_pos()
             negfeats = features.get_fearures_neg()
@@ -60,7 +64,7 @@ def run(dataset):
 
 
 
-dataset_array = ["stanford", "stwits", "news"]
+dataset_array = ["stwits", "stanford"]
 
 for dataset in dataset_array:
     run(dataset)

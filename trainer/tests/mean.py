@@ -7,7 +7,10 @@ from os.path import isfile, join
 
 COLUMNS = 6
 
-mypath = settings.TRAINER + "/tests/output/news/stop"
+dataset = "stwits"
+my_type = "stop"
+
+mypath = settings.TRAINER + "/tests/output/" + dataset + "/" + my_type
 
 files_list = list()
 for f in listdir(mypath):

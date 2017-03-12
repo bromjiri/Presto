@@ -119,7 +119,7 @@ def run(dataset):
 
 
 
-dataset_array = ["stanford"]
+dataset_array = ["stwits"]
 
 for dataset in dataset_array:
     print(dataset)

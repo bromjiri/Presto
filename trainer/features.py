@@ -24,7 +24,7 @@ class Features:
     features_neg = list()
     bestwords = list()
 
-    def __init__(self, corpora, total, inf_count=-1, bigram_count=50, pos=None, stop=False, stem="none", bigram=False, lower=True):
+    def __init__(self, corpora, total, inf_count=1, bigram_count=50, pos=None, stop=False, stem="none", bigram=False, lower=True):
         self.features_pos = list()
         self.features_neg = list()
         self.unigrams_pos = list()

@@ -64,7 +64,7 @@ def run(dataset):
 
 
 
-dataset_array = ["news"]
+dataset_array = ["stanford"]
 
 for dataset in dataset_array:
     run(dataset)

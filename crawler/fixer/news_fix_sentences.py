@@ -9,6 +9,8 @@ from langdetect import detect
 def fix_file(year, month, day, subject, source):
     date = year + "-" + month + "-" + day
 
+
+
     try:
         output_file_path = settings.DOWNLOADS_NEWS + "/final/" + subject + "/news-" + subject + "-" + year + "-" + month + "-" + day + "-final.csv"
         dir = os.path.dirname(os.path.realpath(output_file_path))
@@ -21,6 +23,9 @@ def fix_file(year, month, day, subject, source):
             input_file_path = settings.DOWNLOADS_NEWS + "/google/" + subject + "/" + date + "/" + subject + "_old_sentences_" + date + ".txt"
 
         input_file = open(input_file_path, "r")
+
+        if subject == "mcdonalds":
+            subject = "mcdonald"
 
         for row in input_file:
             row = re.sub(r'(\.)([A-Z])', r'\1 \2', row)
@@ -44,11 +49,11 @@ def fix_file(year, month, day, subject, source):
 
 source = "bing"
 year = "2017"
-month = "01"
+month = "02"
 first_day = 1
-last_day = 31
+last_day = 28
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
-subjects = ["the"]
+subjects = ["mcdonalds"]
 
 for subject in subjects:
 

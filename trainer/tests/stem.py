@@ -6,7 +6,7 @@ import trainer.classifier_test as cls
 import os
 
 # vars
-type = "stem"
+type = "stem-lower"
 nltk_run = True
 sklearn_run = False
 COUNT = 5000
@@ -43,7 +43,7 @@ def run(dataset):
         for variable in array:
             print(str(variable))
             var_name = str(variable)
-            features = ftr.Features(corpora, total=COUNT, bigram=False, stem=variable)
+            features = ftr.Features(corpora, total=COUNT, bigram=False, stem=variable, lower=True)
 
             posfeats = features.get_features_pos()
             negfeats = features.get_fearures_neg()
@@ -64,7 +64,7 @@ def run(dataset):
 
 
 
-dataset_array = ["news"]
+dataset_array = ["stwits", "stanford"]
 
 for dataset in dataset_array:
     run(dataset)
