@@ -6,7 +6,7 @@ import trainer.classifier_test as cls
 import os
 
 # vars
-type = "inf-porter-bigram-lower"
+type = "inf-porter-bigram-lower-2"
 nltk_run = True
 sklearn_run = False
 COUNT = 5000

@@ -16,7 +16,7 @@ from nltk.probability import FreqDist, ConditionalFreqDist
 class Features:
     total = 0
     inf_count = 0
-    bigram_count = 0
+    # bigram_count = 0
     total_word_count = 0
     unigrams_pos = list()
     unigrams_neg = list()
@@ -31,7 +31,7 @@ class Features:
         self.unigrams_neg = list()
         self.total = total
         self.inf_count = inf_count
-        self.bigram_count = bigram_count
+        # self.bigram_count = bigram_count
 
         # create unigrams
         for line in corpora.get_lines_pos():
@@ -75,7 +75,7 @@ class Features:
 
     def create_features(self, bigram, words, ):
 
-        b_count = round(len(words) * self.bigram_count)
+        # b_count = round(len(words) * self.bigram_count)
 
         # create dictionaries
         if not bigram:
@@ -84,25 +84,44 @@ class Features:
         if bigram:
             score_fn = BigramAssocMeasures.chi_sq
             bigram_finder = BigramCollocationFinder.from_words(words)
-            bigrams = bigram_finder.nbest(score_fn, self.bigram_count)
-            d = dict([(bigram, True) for bigram in bigrams])
+            bigrams = bigram_finder.nbest(score_fn, len(words))
+            d = dict([(bigram, True) for bigram in bigrams if bigram in self.bestwords])
             d.update(dict([(word, True) for word in words if word in self.bestwords]))
             return d
 
     def create_bestwords(self):
         word_fd = FreqDist()
         label_word_fd = ConditionalFreqDist()
+        score_fn = BigramAssocMeasures.chi_sq
 
         cut = int((self.total / 2) * 3 / 4)
         for unigrams in self.unigrams_pos[:cut]:
+            bigram_finder = BigramCollocationFinder.from_words(unigrams)
+            try:
+                bigrams = bigram_finder.nbest(score_fn, len(unigrams))
+                print(len(bigrams))
+                print(len(unigrams))
+            except:
+                continue
             for word in unigrams:
                 word_fd[word] += 1
                 label_word_fd['pos'][word] += 1
+            for bigram in bigrams:
+                word_fd[bigram] += 1
+                label_word_fd['pos'][bigram] += 1
 
         for unigrams in self.unigrams_neg[:cut]:
+            bigram_finder = BigramCollocationFinder.from_words(unigrams)
+            try:
+                bigrams = bigram_finder.nbest(score_fn, len(unigrams))
+            except:
+                continue
             for word in unigrams:
                 word_fd[word] += 1
                 label_word_fd['neg'][word] += 1
+            for bigram in bigrams:
+                word_fd[bigram] += 1
+                label_word_fd['neg'][bigram] += 1
 
         pos_word_count = label_word_fd['pos'].N()
         neg_word_count = label_word_fd['neg'].N()
@@ -116,12 +135,14 @@ class Features:
                                                    (freq, neg_word_count), total_word_count)
             word_scores[word] = pos_score + neg_score
 
-        # inf_limit = round(len(word_scores.items()) * self.inf_count)
+        inf_limit = round(len(word_scores.items()) * self.inf_count)
         # print("inf_count:" + str(self.inf_count))
         # print("total: " + str(len(word_scores.items())))
         # print("limit: " + str(inf_limit))
 
-        best = sorted(word_scores.items(), key=lambda tup: tup[1], reverse=True)[:self.inf_count]
+        best = sorted(word_scores.items(), key=lambda tup: tup[1], reverse=True)[:inf_limit]
+        # print(best)
+        # print(len(best))
         bestwords = set([w for w, s in best])
         self.bestwords = bestwords
 

@@ -7,8 +7,8 @@ from os.path import isfile, join
 
 COLUMNS = 6
 
-dataset = "stwits"
-my_type = "stop"
+dataset = "stanford"
+my_type = "inf-porter-bigram-lower-2"
 
 mypath = settings.TRAINER + "/tests/output/" + dataset + "/" + my_type
 

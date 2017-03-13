@@ -135,7 +135,7 @@ if __name__ == '__main__':
     cut = int((COUNT/2)*3/4)
 
     corpora = crp.Corpora("stanford", count=COUNT, shuffle=True)
-    features = ftr.Features(corpora, total=COUNT, stem="porter", bigram=False, lower=True)
+    features = ftr.Features(corpora, total=COUNT, stem="porter", bigram=True, lower=True)
     # features = ftr.Features(corpora, total=COUNT, bigram=True, stem="porter")
 
     posfeats = features.get_features_pos()

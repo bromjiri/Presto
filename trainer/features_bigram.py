@@ -134,12 +134,12 @@ class Features:
                                                    (freq, neg_word_count), total_word_count)
             word_scores[word] = pos_score + neg_score
 
-        # inf_limit = round(len(word_scores.items()) * self.inf_count)
+        inf_limit = round(len(word_scores.items()) * self.inf_count)
         # print("inf_count:" + str(self.inf_count))
         # print("total: " + str(len(word_scores.items())))
         # print("limit: " + str(inf_limit))
 
-        best = sorted(word_scores.items(), key=lambda tup: tup[1], reverse=True)[:self.inf_count]
+        best = sorted(word_scores.items(), key=lambda tup: tup[1], reverse=True)[:inf_limit]
         print(best)
         print(len(best))
         bestwords = set([w for w, s in best])
