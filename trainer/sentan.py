@@ -94,19 +94,19 @@ class Features:
 def sent_twitter(text):
     features = Features.find_features(text, stem=True, bigram_count=5)
     # return cls.classify(features, "twitter", "4k-75.6-full")
-    return cls.classify(features, "twitter", "40k-78-no-bigram")
+    return cls.classify(features, "twitter", "20-15-78.7")
 
 def sent_stwits(text):
     features = Features.find_features(text, bigram_count=5)
-    return cls.classify(features, "stwits", "20k-77.6-full")
+    return cls.classify(features, "stwits", "4-25-82.0")
 
 def sent_news(text):
     features = Features.find_features(text, bigram=False, stem=True)
-    return cls.classify(features, "news", "5k-87.6-bgr-f")
+    return cls.classify(features, "news", "4-25-84.8")
 
 if __name__ == '__main__':
 
-    sentence = "The stock lost $17.68 to $231.95."
+    sentence = "Totally bearish"
 
     sent, conf = sent_news(sentence)
     print(sent, conf)

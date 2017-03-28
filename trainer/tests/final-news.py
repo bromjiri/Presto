@@ -6,12 +6,12 @@ import trainer.classifier_test as cls
 import os
 
 # vars
-type = "inf-20k"
+type = "final"
 nltk_run = True
-sklearn_run = False
-COUNT = 20000
-cut = int((COUNT / 2) * 3 / 4)
-array = [5000, 10000, 15000, 20000, 25000, 30000, 150000]
+sklearn_run = True
+COUNT = 5000
+cut = int((COUNT / 2) * 4 / 5)
+array = [25000]
 
 def run(dataset):
 
@@ -43,7 +43,7 @@ def run(dataset):
         for variable in array:
             print(str(variable))
             var_name = str(variable)
-            features = ftr.Features(corpora, total=COUNT, bigram=True, stop=False, stem="porter", lower=True, inf_count=variable)
+            features = ftr.Features(corpora, total=COUNT, bigram=False, stop=False, stem="porter", lower=True, inf_count=variable)
 
             posfeats = features.get_features_pos()
             negfeats = features.get_fearures_neg()
@@ -64,7 +64,7 @@ def run(dataset):
 
 
 
-dataset_array = ["stanford"]
+dataset_array = ["news"]
 
 for dataset in dataset_array:
     run(dataset)

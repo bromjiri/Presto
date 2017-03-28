@@ -6,12 +6,12 @@ import trainer.classifier_test as cls
 import os
 
 # vars
-type = "inf-20k"
+type = "final"
 nltk_run = True
-sklearn_run = False
-COUNT = 20000
-cut = int((COUNT / 2) * 3 / 4)
-array = [5000, 10000, 15000, 20000, 25000, 30000, 150000]
+sklearn_run = True
+COUNT = 25000
+cut = int((COUNT / 2) * 4 / 5)
+array = [15000]
 
 def run(dataset):
 
@@ -36,7 +36,7 @@ def run(dataset):
             skl[var_name].write(str(datetime.datetime.today()) + "\n")
 
     # cycle
-    for x in range(0, 10):
+    for x in range(0, 8):
         print(x)
         corpora = crp.Corpora(dataset, count=COUNT, shuffle=True)
 

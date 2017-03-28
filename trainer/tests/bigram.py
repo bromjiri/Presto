@@ -6,12 +6,12 @@ import trainer.classifier_test as cls
 import os
 
 # vars
-type = "bigram"
+type = "bigram-stop"
 nltk_run = True
 sklearn_run = False
 COUNT = 5000
 cut = int((COUNT / 2) * 3 / 4)
-array = [0, 5, 10, 15, 25, 50]
+array = [[True, False], [False, True], [True, True]]
 
 def run(dataset):
 
@@ -23,7 +23,7 @@ def run(dataset):
 
     # file
     for variable in array:
-        var_name = str(variable)
+        var_name = str(variable[0]) + str(variable[1])
 
         if nltk_run:
             nlt_file = dir + dataset + "-" + type + "-" + var_name + "-nlt.csv"
@@ -42,8 +42,8 @@ def run(dataset):
 
         for variable in array:
             print(str(variable))
-            var_name = str(variable)
-            features = ftr.Features(corpora, total=COUNT, bigram=True, bigram_count=variable)
+            var_name = str(variable[0]) + str(variable[1])
+            features = ftr.Features(corpora, total=COUNT, bigram=variable[0], stop=variable[1])
 
             posfeats = features.get_features_pos()
             negfeats = features.get_fearures_neg()
@@ -64,7 +64,7 @@ def run(dataset):
 
 
 
-dataset_array = ["stanford"]
+dataset_array = ["stwits"]
 
 for dataset in dataset_array:
     run(dataset)

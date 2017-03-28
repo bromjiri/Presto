@@ -24,7 +24,7 @@ class Features:
     features_neg = list()
     bestwords = list()
 
-    def __init__(self, corpora, total, inf_count=1, bigram_count=50, pos=None, stop=False, stem="none", bigram=False, lower=True):
+    def __init__(self, corpora, total, inf_count=10000, bigram_count=50, pos=None, stop=False, stem="none", bigram=False, lower=True):
         self.features_pos = list()
         self.features_neg = list()
         self.unigrams_pos = list()
@@ -32,6 +32,9 @@ class Features:
         self.total = total
         self.inf_count = inf_count
         # self.bigram_count = bigram_count
+
+        self.stop_words = set(stopwords.words('english'))
+        self.stop_words.remove("not")
 
         # create unigrams
         for line in corpora.get_lines_pos():
@@ -70,7 +73,7 @@ class Features:
         if lower:
             words = Features.filter_lower(words)
         if stop:
-            words = Features.filter_stop(words)
+            words = self.filter_stop(words)
         return words
 
     def create_features(self, bigram, words, ):
@@ -99,8 +102,6 @@ class Features:
             bigram_finder = BigramCollocationFinder.from_words(unigrams)
             try:
                 bigrams = bigram_finder.nbest(score_fn, len(unigrams))
-                print(len(bigrams))
-                print(len(unigrams))
             except:
                 continue
             for word in unigrams:
@@ -135,23 +136,22 @@ class Features:
                                                    (freq, neg_word_count), total_word_count)
             word_scores[word] = pos_score + neg_score
 
-        inf_limit = round(len(word_scores.items()) * self.inf_count)
+        # inf_limit = round(len(word_scores.items()) * self.inf_count)
         # print("inf_count:" + str(self.inf_count))
         # print("total: " + str(len(word_scores.items())))
         # print("limit: " + str(inf_limit))
 
-        best = sorted(word_scores.items(), key=lambda tup: tup[1], reverse=True)[:inf_limit]
+        best = sorted(word_scores.items(), key=lambda tup: tup[1], reverse=True)[:self.inf_count]
         # print(best)
-        # print(len(best))
+        print(len(best))
         bestwords = set([w for w, s in best])
         self.bestwords = bestwords
 
-    @staticmethod
-    def filter_stop(words):
-        stop_words = set(stopwords.words('english'))
+    def filter_stop(self, words):
+
         words_stop = list()
         for w in words:
-            if w not in stop_words:
+            if w not in self.stop_words:
                 words_stop.append(w)
 
         return words_stop

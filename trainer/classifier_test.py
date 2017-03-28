@@ -132,10 +132,10 @@ def train(trainfeats, testfeats, nlt = True, skl = True, most = 0):
 
 if __name__ == '__main__':
     COUNT = 5000
-    cut = int((COUNT/2)*3/4)
+    cut = int((COUNT/2)*4/5)
 
-    corpora = crp.Corpora("stanford", count=COUNT, shuffle=True)
-    features = ftr.Features(corpora, total=COUNT, stem="porter", bigram=True, lower=True)
+    corpora = crp.Corpora("stwits", count=COUNT, shuffle=True)
+    features = ftr.Features(corpora, total=COUNT, stem="porter", bigram=True, stop=True, inf_count=-1, lower=True)
     # features = ftr.Features(corpora, total=COUNT, bigram=True, stem="porter")
 
     posfeats = features.get_features_pos()
