@@ -16,7 +16,9 @@ TRAINER = os.path.join(PROJECT_ROOT, "trainer")
 TRAINER_DATA = os.path.join(PROJECT_ROOT, "trainer/data")
 TRAINER_TWITTER = os.path.join(PROJECT_ROOT, "trainer/twitter")
 
-PROCESS_SENTIMENT = os.path.join(PROJECT_ROOT, "predictor/data/sentiment")
+PREDICTOR = os.path.join(PROJECT_ROOT, "predictor")
+PREDICTOR_SENTIMENT = os.path.join(PROJECT_ROOT, "predictor/data/sentiment")
+PREDICTOR_STOCK = os.path.join(PROJECT_ROOT, "predictor/data/stock")
 
 def get_logger(file_path):
     # Logging settings

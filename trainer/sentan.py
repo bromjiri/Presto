@@ -12,7 +12,7 @@ class Features:
 
 
     @staticmethod
-    def find_features(tweet, bigram_count=1, pos=None, stop=False, stem=False, bigram=True, lower=True):
+    def find_features(tweet, pos=None, stop=False, stem=False, bigram=False, lower=False):
 
         words = nltk.word_tokenize(tweet)
         # print(words)
@@ -20,7 +20,7 @@ class Features:
         unigrams = Features.create_unigrams(pos, stop, stem, lower, words)
         # print(unigrams)
 
-        features = Features.create_features(bigram_count, unigrams)
+        features = Features.create_features(bigram, unigrams)
         # print(features)
 
         return features
@@ -34,24 +34,28 @@ class Features:
             words = Features.filter_stem(words)
         if lower:
             words = Features.filter_lower(words)
-        # if stop:
-        #     words = Features.filter_stop(words)
+        if stop:
+            words = Features.filter_stop(words)
 
         return words
 
     @staticmethod
-    def create_features(bigram_count, words):
+    def create_features(bigram, words):
 
-        score_fn = BigramAssocMeasures.chi_sq
-        bigram_finder = BigramCollocationFinder.from_words(words)
-        bigrams = bigram_finder.nbest(score_fn, bigram_count)
-        d = dict([(bigram, True) for bigram in bigrams])
-        d.update(dict([(word, True) for word in words]))
-        return d
+        if not bigram:
+            return dict([(word, True) for word in words])
+        else:
+            score_fn = BigramAssocMeasures.chi_sq
+            bigram_finder = BigramCollocationFinder.from_words(words)
+            bigrams = bigram_finder.nbest(score_fn, len(words))
+            d = dict([(bigram, True) for bigram in bigrams])
+            d.update(dict([(word, True) for word in words]))
+            return d
 
     @staticmethod
     def filter_stop(words):
         stop_words = set(stopwords.words('english'))
+        stop_words.remove("not")
         words_stop = list()
         for w in words:
             if w not in stop_words:
@@ -92,27 +96,26 @@ class Features:
 
 
 def sent_twitter(text):
-    features = Features.find_features(text, stem=True, bigram_count=5)
-    # return cls.classify(features, "twitter", "4k-75.6-full")
+    features = Features.find_features(text, stem=True, bigram=True, lower=True)
     return cls.classify(features, "twitter", "20-15-78.7")
 
 def sent_stwits(text):
-    features = Features.find_features(text, bigram_count=5)
+    features = Features.find_features(text, stop=True, stem=True, bigram=True, lower=True)
     return cls.classify(features, "stwits", "4-25-82.0")
 
 def sent_news(text):
-    features = Features.find_features(text, bigram=False, stem=True)
+    features = Features.find_features(text, stem=True, lower=True)
     return cls.classify(features, "news", "4-25-84.8")
 
 if __name__ == '__main__':
 
-    sentence = "Totally bearish"
+    sentence = "make america great again"
 
-    sent, conf = sent_news(sentence)
+    sent, conf = sent_twitter(sentence)
     print(sent, conf)
 
     sent, conf = sent_stwits(sentence)
     print(sent, conf)
 
-    sent, conf = sent_twitter(sentence)
+    sent, conf = sent_news(sentence)
     print(sent, conf)
