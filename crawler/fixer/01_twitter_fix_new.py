@@ -3,7 +3,7 @@ import settings
 
 def fix_file(year, month, day, subject):
 
-    output_file_path = settings.DOWNLOADS_TWITTER + "/" + subject + "/twitter-" + subject + "-" + year + "-" + month + "-" + day + "-fix.csv"
+    output_file_path = settings.DOWNLOADS_TWITTER_FINAL + "/" + subject + "/twitter-" + subject + "-" + year + "-" + month + "-" + day + "-fix.csv"
     output_file = open(output_file_path, "w")
 
     input_file_path = settings.DOWNLOADS_TWITTER + "/" + subject + "/twitter-" + subject + "-" + year + "-" + month + "-" + day + ".csv"
@@ -38,9 +38,9 @@ def fix_file(year, month, day, subject):
 
 
 year = "2017"
-month = "02"
+month = "03"
 first_day = 1
-last_day = 28
+last_day = 31
 subjects = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
 
 for subject in subjects:

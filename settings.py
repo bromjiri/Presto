@@ -9,6 +9,9 @@ DOWNLOADS = os.path.join(PROJECT_ROOT, "crawler/downloads")
 DOWNLOADS_STWITS = os.path.join(PROJECT_ROOT, "crawler/downloads/stwits")
 DOWNLOADS_TWITTER = os.path.join(PROJECT_ROOT, "crawler/downloads/twitter")
 DOWNLOADS_NEWS = os.path.join(PROJECT_ROOT, "crawler/downloads/news")
+DOWNLOADS_STWITS_FINAL = os.path.join(PROJECT_ROOT, "crawler/downloads/stwits/final")
+DOWNLOADS_TWITTER_FINAL = os.path.join(PROJECT_ROOT, "crawler/downloads/twitter/final")
+DOWNLOADS_NEWS_FINAL = os.path.join(PROJECT_ROOT, "crawler/downloads/news/final")
 
 DOWNLOADS_GOOGLE = os.path.join(PROJECT_ROOT, "crawler/downloads/news/google")
 

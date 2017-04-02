@@ -17,7 +17,7 @@ def run_collect(company):
 
     # files and vars
     # datetime.date.today()
-    today = datetime.date(2017, 1, 30)
+    today = datetime.date(2017, 4, 1)
     yesterday = today - datetime.timedelta(1)
     two_days_ago = today - datetime.timedelta(2)
     file_name = settings.DOWNLOADS_TWITTER + "/" + company + "/twitter-" + company + "-" + str(yesterday) + ".csv"
@@ -27,12 +27,12 @@ def run_collect(company):
     max_id = 999999999999999999
 
     # collect max 18 000
-    for page in range(0, 100):
+    for page in range(0, 180):
 
         logger.info("processing: " + str(page) + " of 180")
 
         try:
-            tweets = api.search(q=company, lang="en", count=100, max_id=max_id, until=today)
+            tweets = api.search(q=company, lang="en", count=180, max_id=max_id, until=today)
         except Exception as e:
             logger.error(e)
             continue
@@ -60,9 +60,9 @@ def run_company(company):
         logger.info(company + " cycle: " + str(i))
         if(run_collect(company) == False):
             logger.info(company + " reached yesterday")
-            sleep(660)
+            sleep(900)
             return
-        sleep(600)
+        sleep(900)
     return
 
 
@@ -102,8 +102,8 @@ api = API(auth)
 #####
 
 
-# companies = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
-companies = ["nike", "tesla", "the", "cola"]
+companies = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
+# companies = ["samsung", "tesla", "the"]
 
 # companies = ["the"]
 

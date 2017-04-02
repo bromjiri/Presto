@@ -19,7 +19,7 @@ class SentList:
         for month in range(self.start_month, self.end_month + 1):
 
             month_str = str(month).zfill(2)
-            file_name = "../sentiment/twitter/twitter-sent-" + self.subject + "-2016-" + month_str + ".csv"
+            file_name = "../data/sentiment/twitter/twitter-sent-" + self.subject + "-2016-" + month_str + ".csv"
             with open(file_name, "r") as sent_file:
                 csv_reader = csv.reader(sent_file, delimiter=',')
                 for row in csv_reader:

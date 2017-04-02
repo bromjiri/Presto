@@ -44,12 +44,12 @@ def get_links(date, subject):
     return link_count
 
 
-year = "2016"
-month = "12"
-first_day = 1
-last_day = 31
-#subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
-subjects = ["the"]
+year = "2017"
+month = "03"
+first_day = 30
+last_day = 30
+subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
+# subjects = ["the"]
 
 for subject in subjects:
     for i in range(first_day, last_day+1):

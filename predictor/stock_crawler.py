@@ -12,14 +12,14 @@ def download_stock(key):
     try:
         df = web.DataReader(stock_list[key], 'yahoo', start, end)
         output_file = "data/stock/" + key + ".csv"
-        print(np.round(df[['Close']], 2))
+        # print(np.round(df[['Close']], 2))
 
         np.round(df[['Close']], 2).to_csv(output_file, sep=',', header=None)
     except Exception as e:
         print(e)
 
-stock_list = {"coca-cola": "KO", "mcdonalds": "MCD", "microsoft": "MSFT", "netflix": "NFLX", "nike": "NKE", "samsung": "005930.KS", "tesla": "TSLA"}
-# stock_list = ["TSLA"]
+stock_list = {"coca-cola": "KO", "mcdonalds": "MCD", "microsoft": "MSFT", "netflix": "NFLX", "nike": "NKE",
+              "samsung": "005930.KS", "tesla": "TSLA", "nasdaq": "NDAQ", "djia": "DJIA", "snp": "^GSPC"}
 
 for key in stock_list:
     print(key)

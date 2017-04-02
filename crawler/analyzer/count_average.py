@@ -21,6 +21,7 @@ def run_process(year, month, day, subject):
     input_file = open(input_file_path, "r")
 
     length = len(input_file.readlines())
+    print(length)
     sums_dict[subject] += length
 
 
@@ -32,7 +33,7 @@ month = "02"
 first_day = 1
 last_day = 28
 
-dataset = "news"
+dataset = "twitter"
 
 # twitter
 # subjects = ["cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
@@ -62,4 +63,4 @@ for subject in subjects:
     print(subject + " = " + str(sums_dict[subject]))
     average = round(sums_dict[subject] / 31)
     print(average)
-    output_file.write(subject + "," + str(average) + "\n")
+    # output_file.write(subject + "," + str(average) + "\n")
