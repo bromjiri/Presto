@@ -54,7 +54,7 @@ def run_company(company):
 
     max_id = 999999999999999999
 
-    for i in range(0,2):
+    for i in range(0,1):
         logger.info(company + " cycle: " + str(i))
         max_id = run_collect(company, max_id)
         if(max_id == 0):

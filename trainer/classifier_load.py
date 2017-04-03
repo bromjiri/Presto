@@ -7,15 +7,7 @@ import pickle
 from statistics import mode
 import os
 
-import trainer.corpora as crp
-import trainer.features as ftr
-
 from nltk.classify import ClassifierI
-from nltk.classify.scikitlearn import SklearnClassifier
-from sklearn.naive_bayes import MultinomialNB, BernoulliNB
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import LinearSVC, NuSVC
-
 
 class VoteClassifier(ClassifierI):
     def __init__(self, *classifiers):

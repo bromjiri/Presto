@@ -69,8 +69,8 @@ for f in features_list:
 
 random.shuffle(features_list)
 
-training_set = features_list[:60]
-testing_set = features_list[60:]
+training_set = features_list[:70]
+testing_set = features_list[70:]
 
 classifier = nltk.NaiveBayesClassifier.train(training_set)
 print("Original Naive Bayes Algo accuracy percent:", (nltk.classify.accuracy(classifier, testing_set)) * 100)

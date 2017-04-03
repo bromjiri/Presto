@@ -97,7 +97,7 @@ class Features:
 
 def sent_twitter(text):
     features = Features.find_features(text, stem=True, bigram=True, lower=True)
-    return cls.classify(features, "twitter", "20-15-78.7")
+    return cls.classify(features, "twitter", "20-5-78.3")
 
 def sent_stwits(text):
     features = Features.find_features(text, stop=True, stem=True, bigram=True, lower=True)
@@ -108,6 +108,7 @@ def sent_news(text):
     return cls.classify(features, "news", "4-25-84.8")
 
 if __name__ == '__main__':
+    print("start")
 
     sentence = "make america great again"
 

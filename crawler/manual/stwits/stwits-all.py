@@ -10,7 +10,7 @@ def run_collect(company):
     logger.info(company + " started")
 
     # files and vars
-    today = datetime.date.today()
+    today = datetime.date(2017, 3, 31)
     yesterday = today - datetime.timedelta(1)
     two_days_ago = today - datetime.timedelta(2)
     file_name = settings.DOWNLOADS_STWITS + "/" + company + "/stwits-" + company + "-" + str(yesterday) + ".csv"
@@ -19,7 +19,7 @@ def run_collect(company):
     max_id = '99999999'
 
 
-    for j in range(0,100):
+    for j in range(0,200):
 
         logger.info("processing: " + str(j) + " of 100")
 
@@ -80,8 +80,8 @@ logger.info("starting " + os.path.basename(__file__))
 
 #####
 
-companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia", "the"]
-#companies = ["msft"]
+# companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia"]
+companies = ["tsla"]
 
 
 for company in companies:

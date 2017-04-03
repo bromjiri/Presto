@@ -3,6 +3,7 @@ import csv
 import os
 import trainer.sentan as st
 
+
 from datetime import timedelta, date
 
 logger = settings.get_logger(os.path.realpath(__file__))
@@ -18,6 +19,8 @@ class Counter:
         self.counter_list = [0.6, 0.8, 1.0]
         self.pos_dict = dict([(res, 0) for res in self.counter_list])
         self.tot_dict = dict([(res, 0) for res in self.counter_list])
+        self.stwits_bull = 0
+        self.stwits_tot = 0
 
     def inc(self, sent, conf):
         for limit in self.counter_list:
@@ -35,6 +38,15 @@ class Counter:
         logger.info(self.tot_dict)
         return per_dict
 
+    def get_percentage_bull(self):
+        bull_per = self.stwits_bull / self.stwits_tot
+        bull_per = "{:.2f}".format(bull_per * 100)
+        return bull_per
+
+    def get_percentage_comb(self):
+        pass
+
+
 def count_twitter(day, subject):
 
     if subject == "coca-cola":
@@ -49,7 +61,7 @@ def count_twitter(day, subject):
 
     with open(input_file, "r") as twi:
         reader = csv.reader(twi, delimiter=',')
-        head = [next(reader) for x in range(twi_max)]
+        head = [row for row in reader][:twi_max]
         for row in head:
             try:
                 sent, conf = st.sent_twitter(row[1].strip())
@@ -62,13 +74,25 @@ def count_twitter(day, subject):
     return per_dict
 
 
-
 def count_stwits(day, subject):
     stwits_stock = {"coca-cola": "ko", "mcdonalds": "mcd", "microsoft": "msft", "netflix": "nflx", "nike": "nke",
                     "samsung": "ssnlf", "tesla": "tsla", "compq": "compq", "djia": "djia", "spx": "spx"}
     new_subject = stwits_stock[subject]
     input_file = settings.DOWNLOADS_STWITS_FINAL + "/" + new_subject + "/" + "twitter-" + new_subject + "-" + day + ".csv"
-    pass
+    counter = Counter()
+
+    with open(input_file, "r") as stwi:
+        reader = csv.reader(stwi, delimiter=',')
+        for row in reader:
+            try:
+                sent, conf = st.sent_stwits(row[1].strip())
+                counter.inc(sent, conf)
+            except Exception as e:
+                logger.error(e)
+                continue
+
+    per_dict = counter.get_percentage()
+    return per_dict
 
 
 def count_news(day, subject):
@@ -120,13 +144,13 @@ def count_sent(day, subject):
 # vars
 source = "twitter"
 start_date = date(2016, 11, 1)
-end_date = date(2017, 2, 28)
-twi_max = 50
+end_date = date(2017, 3, 31)
+twi_max = 5000
 
 
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the", "djia", "compq", "spx"]
-subjects = ["microsoft"]
+subjects = ["tesla", "the"]
 
 for subject in subjects:
     logger.info(subject)
