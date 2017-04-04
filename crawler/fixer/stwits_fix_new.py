@@ -5,7 +5,7 @@ def fix_file(year, month, day, subject):
 
     try:
 
-        output_file_path = settings.DOWNLOADS_STWITS + "/" + subject + "/stwits-" + subject + "-" + year + "-" + month + "-" + day + "-fix.csv"
+        output_file_path = settings.DOWNLOADS_STWITS + "/final/" + subject + "/stwits-" + subject + "-" + year + "-" + month + "-" + day + "-fix.csv"
         output_file = open(output_file_path, "w")
 
         input_file_path = settings.DOWNLOADS_STWITS + "/" + subject + "/stwits-" + subject + "-" + year + "-" + month + "-" + day + ".csv"
@@ -42,11 +42,12 @@ def fix_file(year, month, day, subject):
         pass
 
 
-periods = [["2016", "11"], ["2016", "12"], ["2017", "01"], ["2017", "02"]]
+# periods = [["2016", "11"], ["2016", "12"], ["2017", "01"], ["2017", "02"]]
+periods = [["2017", "03"]]
 first_day = 1
 last_day = 31
 subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia"]
-subjects = ["the"]
+# subjects = ["the"]
 
 
 for period in periods:

@@ -39,7 +39,6 @@ def run_collect(company):
             created_at = req['messages'][i]['created_at']
             text = req['messages'][i]['body']
 
-
             # keep yesterday only
             if str(created_at)[0:10] == str(two_days_ago):
                 return
@@ -48,7 +47,7 @@ def run_collect(company):
             output.write('"' + created_at + '","' + sentiment + '","' + text + '"\n')
 
         max_id = req['cursor']['max']
-        logger.debug('max_id: ' + str(max_id))
+        logger.info('max_id: ' + str(max_id))
 
     logger.debug(json.dumps(req, indent=4, sort_keys=True))
 
@@ -81,7 +80,7 @@ logger.info("starting " + os.path.basename(__file__))
 #####
 
 # companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia"]
-companies = ["tsla"]
+companies = ["the"]
 
 
 for company in companies:
