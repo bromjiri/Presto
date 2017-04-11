@@ -4,10 +4,11 @@ import json
 import logging
 import os
 import datetime
+from time import sleep
 
 logger = settings.get_logger(os.path.realpath(__file__))
 
-def run_collect(company):
+def run_collect(company, total_req):
 
     logger.info(company + " started")
 
@@ -23,9 +24,14 @@ def run_collect(company):
     max_id = '99999999'
 
 
-    for j in range(0,100):
 
-        logger.info("processing: " + str(j) + " of 100")
+    for j in range(0,1000):
+        total_req +=1
+        if total_req == 200:
+            sleep(3600)
+            total_req = 1
+
+        logger.info(company + ": " + str(j))
 
         if(company == "the"):
             url = 'https://api.stocktwits.com/api/2/streams/suggested.json?max=' + str(max_id)
@@ -46,7 +52,8 @@ def run_collect(company):
 
             # keep yesterday only
             if str(created_at)[0:10] == str(two_days_ago):
-                return
+                logger.info(company + " last id: " + str(req['cursor']['max']))
+                return total_req
 
             logger.debug(created_at + ', ' + sentiment + ', ' + text)
             output.write('"' + created_at + '","' + sentiment + '","' + text + '"\n')
@@ -56,7 +63,7 @@ def run_collect(company):
 
     logger.debug(json.dumps(req, indent=4, sort_keys=True))
 
-    return
+    return total_req
 
 
 ##################
@@ -67,8 +74,11 @@ logger.info("starting " + os.path.basename(__file__))
 companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia", "the"]
 #companies = ["msft"]
 
+
+total_req = 1
+
 for company in companies:
-    run_collect(company)
+    total_req = run_collect(company, total_req)
     logger.info(company + " finished")
 
 
