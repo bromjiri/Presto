@@ -13,14 +13,11 @@ def daterange(start_date, end_date):
     for n in range(int ((end_date - start_date).days + 1)):
         yield start_date + timedelta(n)
 
-
 class Counter:
     def __init__(self):
         self.counter_list = [0.6, 0.8, 1.0]
         self.pos_dict = dict([(res, 0) for res in self.counter_list])
         self.tot_dict = dict([(res, 0) for res in self.counter_list])
-        self.stwits_bull = 0
-        self.stwits_tot = 0
 
     def inc(self, sent, conf):
         for limit in self.counter_list:
@@ -32,19 +29,108 @@ class Counter:
     def get_percentage(self):
         per_dict = dict()
         for limit in self.counter_list:
-            per_dict[limit] = self.pos_dict[limit] / self.tot_dict[limit]
-            per_dict[limit] = "{:.2f}".format(per_dict[limit] * 100)
+            if self.tot_dict[limit] < 1:
+                per_dict[limit] = -1
+            else:
+                per_dict[limit] = self.pos_dict[limit] / self.tot_dict[limit]
+                per_dict[limit] = "{:.2f}".format(per_dict[limit] * 100)
 
-        logger.info(self.tot_dict)
+        # logger.info("get_percentage")
+        # logger.info(self.tot_dict)
         return per_dict
 
-    def get_percentage_bull(self):
-        bull_per = self.stwits_bull / self.stwits_tot
-        bull_per = "{:.2f}".format(bull_per * 100)
-        return bull_per
+class CounterStwits():
+    def __init__(self):
 
-    def get_percentage_comb(self):
-        pass
+        # initialize output
+        output_file = settings.PREDICTOR_SENTIMENT + "/" + source + "/" + source + "-sent-" + subject + ".csv"
+        dir = os.path.dirname(os.path.realpath(output_file))
+        os.makedirs(dir, exist_ok=True)
+        output = open(output_file, "a")
+        self.writer = csv.writer(output, delimiter=',')
+        self.writer.writerow(["date", "sent0.6", "sent0.8", "sent1.0", "comb0.6",
+                              "comb0.8", "comb1.0", "bull", "lines", "explicit"])
+
+    def init_counter(self):
+        self.counter = Counter()
+        self.part_counter = Counter()
+
+        self.stwits_bull = 0
+        self.stwits_tot = 0
+
+    def bull_inc(self, sent):
+        self.stwits_tot += 1
+        if sent == "Bullish":
+            self.stwits_bull += 1
+
+    def get_percentage_bull(self):
+        if self.stwits_tot < 1:
+            per_bull = -1
+        else:
+            per_bull = self.stwits_bull / self.stwits_tot
+            per_bull = "{:.2f}".format(per_bull * 100)
+        return per_bull
+
+    def add_bull(self, part_counter):
+
+        for key in part_counter.counter_list:
+            # logger.info("tot_dict " + str(self.part_counter.tot_dict[key]))
+            # logger.info(self.stwits_tot)
+            part_counter.tot_dict[key] += self.stwits_tot
+            part_counter.pos_dict[key] += self.stwits_bull
+            # logger.info(self.part_counter.tot_dict[key])
+
+    def count_day(self, day, subject):
+        self.init_counter()
+
+        stwits_stock = {"coca-cola": "ko", "mcdonalds": "mcd", "microsoft": "msft", "netflix": "nflx", "nike": "nke",
+                        "samsung": "ssnlf", "tesla": "tsla", "compq": "compq", "djia": "djia", "spx": "spx"}
+        new_subject = stwits_stock[subject]
+        input_file = settings.DOWNLOADS_STWITS_FINAL + "/" + new_subject + "/" + "stwits-" + new_subject + "-" + day + "-fix.csv"
+        try:
+            with open(input_file, "r") as stwi:
+                reader = csv.reader(stwi, delimiter=',')
+                for row in reader:
+                    try:
+                        # all lines
+                        sent, conf = st.sent_stwits(row[2].strip())
+                        self.counter.inc(sent, conf)
+
+                        # explicit sentiment
+                        if row[1] != "none":
+                            self.bull_inc(row[1])
+
+                        # non explicit sentiment
+                        else:
+                            self.part_counter.inc(sent, conf)
+
+                    except Exception as e:
+                        logger.error(e)
+                        continue
+        except Exception as e:
+            logger.error(day + " : " + e)
+
+        per_dict = self.counter.get_percentage()
+
+        # for debug
+        pos_dict_old = self.part_counter.pos_dict.copy()
+        tot_dict_old = self.part_counter.tot_dict.copy()
+
+        self.add_bull(self.part_counter)
+        per_comb_dict = self.part_counter.get_percentage()
+        per_bull = self.get_percentage_bull()
+
+        tot_list = [self.counter.tot_dict] + [tot_dict_old] + [self.part_counter.tot_dict] + [self.stwits_tot]
+        pos_list = [self.counter.pos_dict] + [pos_dict_old] + [self.part_counter.pos_dict] + [self.stwits_bull]
+        output_line = [day] + [per_dict[key] for key in self.counter.counter_list] + \
+                      [per_comb_dict[key] for key in self.counter.counter_list] + [per_bull, self.counter.tot_dict[0.6],
+                                                                                   self.stwits_tot]
+
+        logger.info(day)
+        # logger.info("pos: " + str(pos_list))
+        # logger.info("tot: " + str(tot_list))
+        # logger.info("perc: " + str(output_line))
+        self.writer.writerow(output_line)
 
 
 def count_twitter(day, subject):
@@ -65,27 +151,6 @@ def count_twitter(day, subject):
         for row in head:
             try:
                 sent, conf = st.sent_twitter(row[1].strip())
-                counter.inc(sent, conf)
-            except Exception as e:
-                logger.error(e)
-                continue
-
-    per_dict = counter.get_percentage()
-    return per_dict
-
-
-def count_stwits(day, subject):
-    stwits_stock = {"coca-cola": "ko", "mcdonalds": "mcd", "microsoft": "msft", "netflix": "nflx", "nike": "nke",
-                    "samsung": "ssnlf", "tesla": "tsla", "compq": "compq", "djia": "djia", "spx": "spx"}
-    new_subject = stwits_stock[subject]
-    input_file = settings.DOWNLOADS_STWITS_FINAL + "/" + new_subject + "/" + "twitter-" + new_subject + "-" + day + ".csv"
-    counter = Counter()
-
-    with open(input_file, "r") as stwi:
-        reader = csv.reader(stwi, delimiter=',')
-        for row in reader:
-            try:
-                sent, conf = st.sent_stwits(row[1].strip())
                 counter.inc(sent, conf)
             except Exception as e:
                 logger.error(e)
@@ -117,48 +182,36 @@ def count_news(day, subject):
 
 
 
-
-def count_sent(day, subject):
-
-    if source == "twitter":
-        per_dict = count_twitter(day, subject)
-    elif source == "stwits":
-        pos, total = count_stwits(day, subject)
-    else:
-        pos, total = count_news(day, subject)
-
-    logger.info(day, per_dict)
-
-    for key in per_dict:
-        output_file = settings.PREDICTOR_SENTIMENT + "/" + source + "/" + source + "-sent-" + subject + "-" + str(key) + ".csv"
-        output = open(output_file, "a")
-        writer = csv.writer(output, delimiter=',')
-        writer.writerow([day, per_dict[key]])
-
-
-
 ###############
 #### start ####
 ###############
 
 # vars
-source = "twitter"
+source = "stwits"
 start_date = date(2016, 11, 1)
 end_date = date(2017, 3, 31)
 twi_max = 5000
 
 
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
-# subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the", "djia", "compq", "spx"]
-subjects = ["tesla", "the"]
+subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the", "djia", "compq", "spx"]
+# subjects = ["coca-cola"]
 
 for subject in subjects:
     logger.info(subject)
 
+
+    counter_stwits = CounterStwits()
+
     for single_date in daterange(start_date, end_date):
         day = single_date.strftime("%Y-%m-%d")
         try:
-            count_sent(day, subject)
+            if source == "twitter":
+                count_twitter(day, subject)
+            elif source == "stwits":
+                counter_stwits.count_day(day, subject)
+            else:
+                count_news(day, subject)
         except Exception as e:
             logger.error(e)
             continue

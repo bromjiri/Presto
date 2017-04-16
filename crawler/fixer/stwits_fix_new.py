@@ -38,7 +38,8 @@ def fix_file(year, month, day, subject):
 
         output_file.close()
 
-    except:
+    except Exception as e:
+        print(e)
         pass
 
 
@@ -46,8 +47,8 @@ def fix_file(year, month, day, subject):
 periods = [["2017", "03"]]
 first_day = 1
 last_day = 31
-subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia"]
-# subjects = ["the"]
+# subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia"]
+subjects = ["the"]
 
 
 for period in periods:

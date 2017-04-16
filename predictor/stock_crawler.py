@@ -18,7 +18,7 @@ def download_stock(key):
         df_new['Diff'] = np.round(df_new['Close'].diff(), 2)
         df_new['Binary'] = np.where(df_new['Diff'] > 0, 4, 0)
         print(df_new)
-        df_new.to_csv(output_file, sep=',', header=None)
+        df_new.to_csv(output_file, sep=',')
 
     except Exception as e:
         print(e)
