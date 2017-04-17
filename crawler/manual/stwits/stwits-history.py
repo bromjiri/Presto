@@ -4,24 +4,33 @@ import json
 import logging
 import os
 import datetime
+from time import sleep
 
-def run_collect(company):
+logger = settings.get_logger(os.path.realpath(__file__))
+
+def run_collect(company, total_req):
 
     logger.info(company + " started")
 
     # files and vars
-    today = datetime.date(2017, 3, 31)
-    yesterday = today - datetime.timedelta(1)
-    two_days_ago = today - datetime.timedelta(2)
-    file_name = settings.DOWNLOADS_STWITS + "/" + company + "/stwits-" + company + "-" + str(yesterday) + ".csv"
-    output = open(file_name, "a")
+    # today = datetime.date.today()
+    # yesterday = today - datetime.timedelta(1)
+    # two_days_ago = today - datetime.timedelta(2)
+    # file_name = settings.DOWNLOADS_STWITS + "/" + company + "/stwits-" + company + "-" + str(yesterday) + ".csv"
+    # dir = os.path.dirname(os.path.realpath(file_name))
+    # os.makedirs(dir, exist_ok=True)
+    # output = open(file_name, "a")
 
-    max_id = '79020559'
+    max_id = '77445860'
+    previous_date = datetime.date.today()
 
+    for j in range(0,10000):
+        total_req +=1
+        if total_req == 200:
+            sleep(3600)
+            total_req = 1
 
-    for j in range(0,200):
-
-        logger.info("processing: " + str(j) + " of 100")
+        logger.info(company + ": " + str(j))
 
         if(company == "the"):
             url = 'https://api.stocktwits.com/api/2/streams/suggested.json?max=' + str(max_id)
@@ -29,68 +38,59 @@ def run_collect(company):
             url = 'https://api.stocktwits.com/api/2/streams/symbol/' + company + '.json?max=' + str(max_id)
 
         req = requests.get(url).json()
+        if req['response']['status'] == 429:
+            logger.error("sleeping : " + str(e))
+            sleep(3600)
+            continue
 
         for i in range(0,30):
 
-            if (req['messages'][i]['entities']['sentiment'] is not None):
-                sentiment = req['messages'][i]['entities']['sentiment']['basic']
-            else:
-                sentiment = "none"
-            created_at = req['messages'][i]['created_at']
-            text = req['messages'][i]['body']
+            try:
+                if (req['messages'][i]['entities']['sentiment'] is not None):
+                    sentiment = req['messages'][i]['entities']['sentiment']['basic']
+                else:
+                    sentiment = "none"
+                created_at = req['messages'][i]['created_at']
+                text = req['messages'][i]['body']
+            except Exception as e:
+                print(e)
+                continue
 
-            # keep yesterday only
-            if str(created_at)[0:10] == str(two_days_ago):
-                return
+            created_date = str(created_at)[0:10]
+            if created_date != previous_date:
+                previous_date = created_date
+                logger.info("date: " + previous_date)
 
+            file_name = settings.DOWNLOADS_STWITS + "/" + company + "/stwits-" + company + "-" + created_date + "-hist.csv"
+            output = open(file_name, "a")
             logger.debug(created_at + ', ' + sentiment + ', ' + text)
             output.write('"' + created_at + '","' + sentiment + '","' + text + '"\n')
 
         max_id = req['cursor']['max']
-        logger.info('max_id: ' + str(max_id))
+        logger.info("max_id: " + str(max_id))
 
-    logger.debug(json.dumps(req, indent=4, sort_keys=True))
+    # logger.debug(json.dumps(req, indent=4, sort_keys=True))
 
-    return
+    return total_req
 
 
 ##################
 # start
-
-# Logging settings
-logFormatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", datefmt='%Y%m%d-%H:%M')
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
-# file
-log_file = os.path.dirname(os.path.realpath(__file__)) + "/log/stwits-all.log"
-fileHandler = logging.FileHandler(log_file)
-fileHandler.setFormatter(logFormatter)
-logger.addHandler(fileHandler)
-
-# console
-consoleHandler = logging.StreamHandler()
-consoleHandler.setFormatter(logFormatter)
-logger.addHandler(consoleHandler)
-
-
 logger.info("starting " + os.path.basename(__file__))
 
 
-#####
+# companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia", "the"]
+companies = ["tsla"]
 
-# companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia"]
-companies = ["the"]
 
+total_req = 1
 
 for company in companies:
-    run_collect(company)
+    total_req = run_collect(company, total_req)
     logger.info(company + " finished")
 
 
 logger.info("ending " + os.path.basename(__file__))
-
-
 # end
 ###################
 

@@ -16,7 +16,7 @@ def run_collect(company):
     file_name = settings.DOWNLOADS_STWITS + "/" + company + "/stwits-" + company + "-" + str(yesterday) + ".csv"
     output = open(file_name, "a")
 
-    max_id = '79020559'
+    max_id = '78805085'
 
 
     for j in range(0,200):

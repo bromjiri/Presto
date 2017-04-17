@@ -1,1 +1,2 @@
 scp -r root@31.31.74.193:/root/Presto/crawler/downloads/ /home/george/Downloads
+scp -r root@31.31.74.193:/root/Presto/predictor/data/sentiment/twitter/* /home/george/PycharmProjects/Presto/predictor/data/sentiment/twitter/

@@ -1,6 +1,7 @@
 import settings
 import pandas as pd
 import numpy as np
+import os
 
 
 class Stock:
@@ -17,26 +18,31 @@ class Sent:
 
     def __init__(self, source, subject):
         input_file = settings.PREDICTOR_SENTIMENT + "/" + source + "/" + source + "-sent-" + subject + ".csv"
-        self.sent_df = pd.read_csv(input_file, sep=',', index_col='date')
+        self.sent_df = pd.read_csv(input_file, sep=',', index_col='Date')
 
     def get_diff(self, col_name, from_date, to_date):
-        self.diff_df = self.sent_df.diff()
+        self.diff_df = np.round(self.sent_df.diff(), 2)
         return self.diff_df[col_name].loc[from_date:to_date]
 
 
-from_date = '2017-01-01'
+from_date = '2016-11-01'
 to_date = '2017-03-31'
-subject = "spx"
+source = "twitter"
+subject = "microsoft"
 
-stock = Stock("snp")
+stock = Stock("microsoft")
 stock_df = stock.get_diff(from_date, to_date)
 # print(stock_df)
 
-sent = Sent("stwits", subject)
-sent_df = sent.get_diff('comb1.0', from_date, to_date)
+sent = Sent(source, subject)
+sent_df = sent.get_diff('Sent1.0', from_date, to_date)
 # print(sent_df)
 
 
 new_df = stock_df.to_frame().join(sent_df.to_frame(), how='left')
 print(new_df)
-new_df.to_csv('data/output/output-' + subject + '.csv')
+
+file_path = settings.PREDICTOR_DIFF + '/' + source + '/' + source + '-diff-' + subject + '.csv'
+dir = os.path.dirname(os.path.realpath(file_path))
+os.makedirs(dir, exist_ok=True)
+new_df.to_csv(file_path)
