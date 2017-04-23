@@ -21,7 +21,7 @@ def run_collect(company, total_req):
     # os.makedirs(dir, exist_ok=True)
     # output = open(file_name, "a")
 
-    max_id = '77445860'
+    max_id = '73164307'
     previous_date = datetime.date.today()
 
     for j in range(0,10000):
@@ -36,10 +36,14 @@ def run_collect(company, total_req):
             url = 'https://api.stocktwits.com/api/2/streams/suggested.json?max=' + str(max_id)
         else:
             url = 'https://api.stocktwits.com/api/2/streams/symbol/' + company + '.json?max=' + str(max_id)
+        try:
+            req = requests.get(url).json()
+        except Exception as e:
+            print(e)
+            sleep(3600)
 
-        req = requests.get(url).json()
         if req['response']['status'] == 429:
-            logger.error("sleeping : " + str(e))
+            logger.error("sleeping 429")
             sleep(3600)
             continue
 
@@ -80,7 +84,7 @@ logger.info("starting " + os.path.basename(__file__))
 
 
 # companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia", "the"]
-companies = ["tsla"]
+companies = ["the"]
 
 
 total_req = 1
