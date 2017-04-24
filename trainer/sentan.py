@@ -110,7 +110,7 @@ def sent_news(text):
 if __name__ == '__main__':
     print("start")
 
-    sentence = "make america great again"
+    sentence = "The Coca Cola ad with the brothers is one of the best things I've ever seen"
 
     sent, conf = sent_twitter(sentence)
     print(sent, conf)

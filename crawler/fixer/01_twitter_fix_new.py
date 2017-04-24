@@ -31,24 +31,47 @@ def fix_file(year, month, day, subject):
 
     unique_list = list(set(output_list))
     for line in unique_list:
-        if line.strip() != "\n":
-            output_file.write(line)
+
+        if line.strip() == "":
+            continue
+
+        if subject == "cola":
+            if not ("coca-cola" in line.lower() or "coca cola" in line.lower()):
+                continue
+
+        if subject == "netflix":
+            if "chill" in line.lower():
+                continue
+
+        if subject == "mcdonald":
+            if not ("mcdonalds" in line.lower() or "mcdonald's" in line.lower()):
+                continue
+
+        output_file.write(line)
 
     output_file.close()
 
 
-year = "2017"
-month = "03"
+
+periods = [["2016", "11"], ["2016", "12"], ["2017", "01"], ["2017", "02"], ["2017", "03"]]
+# periods = [["2017", "03"]]
 first_day = 1
 last_day = 31
-subjects = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
+# subjects = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
+subjects = ["mcdonald"]
 
-for subject in subjects:
 
-    for i in range(first_day, last_day+1):
-        day = str(i).zfill(2)
-        print("Subject: " + subject + ", Day: " + day)
-        try:
-            fix_file(year, month, day, subject)
-        except Exception as e:
-            print(e)
+for period in periods:
+
+    year = period[0]
+    month = period[1]
+
+    for subject in subjects:
+
+        for i in range(first_day, last_day+1):
+            day = str(i).zfill(2)
+            print("Subject: " + subject + ", Day: " + day)
+            try:
+                fix_file(year, month, day, subject)
+            except Exception as e:
+                print(e)
