@@ -2,7 +2,7 @@ import datetime
 
 import trainer.corpora as crp
 import trainer.features as ftr
-import trainer.classifier_test as cls
+import trainer.classifier_test_verbose as cls
 import os
 
 # vars
@@ -51,16 +51,16 @@ def run(dataset):
             trainfeats = negfeats[:cut] + posfeats[:cut]
             testfeats = negfeats[cut:] + posfeats[cut:]
 
-            nlt_output, skl_output = cls.train(trainfeats, testfeats, nlt=nltk_run, skl=sklearn_run)
+            nlt_output, skl_output = cls.train(trainfeats, testfeats, dataset, nlt=nltk_run, skl=sklearn_run)
 
-            if nltk_run:
-                print(str(nlt_output))
-                nlt[var_name].write(nlt_output)
-                nlt[var_name].flush()
-            if sklearn_run:
-                print(str(skl_output))
-                skl[var_name].write(skl_output)
-                skl[var_name].flush()
+            # if nltk_run:
+            #     print(str(nlt_output))
+            #     nlt[var_name].write(nlt_output)
+            #     nlt[var_name].flush()
+            # if sklearn_run:
+            #     print(str(skl_output))
+            #     skl[var_name].write(skl_output)
+            #     skl[var_name].flush()
 
 
 

@@ -4,7 +4,7 @@ import numpy as np
 
 
 start = dt.datetime(2016,11,1)
-end = dt.datetime(2017,3,31)
+end = dt.datetime(2017,4,30)
 
 
 def download_stock(key):

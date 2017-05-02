@@ -47,10 +47,10 @@ def fix_file(year, month, day, subject, source):
         pass
 
 
-source = "google"
+source = "bing"
 year = "2017"
-month = "03"
-first_day = 30
+month = "04"
+first_day = 1
 last_day = 30
 subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
 # subjects = ["mcdonalds"]

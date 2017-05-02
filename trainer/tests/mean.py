@@ -5,10 +5,10 @@ from os.path import isfile, join
 
 
 
-COLUMNS = 7
+COLUMNS = 6
 
-dataset = "stanford"
-my_type = "final"
+dataset = "news"
+my_type = "algos0.8"
 
 mypath = settings.TRAINER + "/tests/output/" + dataset + "/" + my_type
 
@@ -19,7 +19,7 @@ for f in listdir(mypath):
         files_list.append(file_path)
 
 for f in files_list:
-    if "skl" in f:
+    if "s" in f:
         input_file_path = f
 
         with open(input_file_path, "r") as test_file:

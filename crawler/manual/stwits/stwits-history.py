@@ -21,7 +21,7 @@ def run_collect(company, total_req):
     # os.makedirs(dir, exist_ok=True)
     # output = open(file_name, "a")
 
-    max_id = '73164307'
+    max_id = '66044358'
     previous_date = datetime.date.today()
 
     for j in range(0,10000):

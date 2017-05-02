@@ -236,9 +236,9 @@ class CounterNews():
 ###############
 
 # vars
-source = "news"
-start_date = date(2016, 11, 1)
-end_date = date(2017, 3, 31)
+source = "twitter"
+start_date = date(2017, 4, 1)
+end_date = date(2017, 4, 30)
 twi_max = 20000
 
 

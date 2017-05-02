@@ -53,12 +53,12 @@ def fix_file(year, month, day, subject):
 
 
 
-periods = [["2016", "11"], ["2016", "12"], ["2017", "01"], ["2017", "02"], ["2017", "03"]]
-# periods = [["2017", "03"]]
+# periods = [["2016", "11"], ["2016", "12"], ["2017", "01"], ["2017", "02"], ["2017", "03"]]
+periods = [["2017", "04"]]
 first_day = 1
-last_day = 31
-# subjects = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
-subjects = ["mcdonald"]
+last_day = 30
+subjects = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
+# subjects = ["mcdonald"]
 
 
 for period in periods:
