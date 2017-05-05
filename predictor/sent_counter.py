@@ -242,9 +242,9 @@ end_date = date(2017, 4, 30)
 twi_max = 20000
 
 
-subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
+# subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the", "djia", "compq", "spx"]
-# subjects = ["nike"]
+subjects = ["nike", "samsung", "tesla", "the"]
 
 for subject in subjects:
     logger.info(subject)
