@@ -21,50 +21,51 @@ class Sent:
         input_file = settings.PREDICTOR_SENTIMENT + "/" + source + "/" + source + "-sent-" + subject + ".csv"
         self.sent_df = pd.read_csv(input_file, sep=',', index_col='Date')
 
-    def get_weekend(self, col_name, dates):
+    def get_weekend(self, col_name, stock_dates):
 
         weekend_df = np.round(self.sent_df, 2)
-        new_df = pd.DataFrame(index=dates, columns=['new'])
 
-
-        aggeg = 0
+        aggreg = 0
         days = 1
         for idx, row in weekend_df.iterrows():
             value = row[col_name]
             date = pd.to_datetime(idx)
             date_plus = date + datetime.timedelta(days=1)
-            if str(date_plus.date()) not in dates:
-                print("weekend")
-                value += aggeg
-                aggeg = value
+            if str(date_plus.date()) not in stock_dates:
+                # print("weekend")
+                value += aggreg
+                aggreg = value
                 days += 1
             else:
-                total = value + aggeg
-                value = total / days
-                aggeg = 0
+                total = value + aggreg
+                mean = total / days
+                aggreg = 0
                 days = 1
+                weekend_df.set_value(idx, col_name, mean)
 
 
-            print(date.date(), row[col_name], value)
+            # print(date.date(), row[col_name], value)
 
-        print(weekend_df)
+        return np.round(weekend_df[col_name].to_frame().diff(), 2)
 
-    def create_diff(self, col_name, dates):
+    def create_diff(self, col_name, stock_dates):
 
-        diff_df = pd.DataFrame(index=dates, columns=['Friday', 'Sunday', "Weekend"])
+        diff_df = pd.DataFrame(index=stock_dates, columns=['Friday', 'Sunday', "Weekend"])
         diff_df.index.name = "Date"
 
-        friday_df = self.sent_df[col_name].loc[dates]
+        friday_df = self.sent_df[col_name].loc[stock_dates]
         diff_df['Friday'] = np.round(friday_df.diff(), 2)
 
-        sunday_df = np.round(self.sent_df.diff(), 2)
-        diff_df['Sunday'] =  sunday_df[col_name].loc[dates]
+        sunday_df = np.round(self.sent_df[col_name].to_frame().diff(), 2)
+        # print(sunday_df)
+        diff_df['Sunday'] =  sunday_df[col_name].loc[stock_dates]
 
 
+        weekend_df = self.get_weekend(col_name, stock_dates)
+        # print(weekend_df)
+        diff_df['Weekend'] = weekend_df[col_name].loc[stock_dates]
 
-        diff_df['Weekend'] = self.get_weekend(col_name, dates)
-
-        # print(diff_df)
+        return diff_df
 
 
 from_date = '2016-11-01'
@@ -79,14 +80,9 @@ stock_df = stock.get_diff(from_date, to_date)
 
 
 sent = Sent(subject, source)
-sent_df = sent.create_diff(precision_col, stock_df.index.values)
-# print(sent_df)
+diff_df = sent.create_diff(precision_col, stock_df.index.values)
+print(diff_df)
 
-# exit()
-
-# new_df = stock_df.to_frame().join(sent_df.to_frame(), how='left')
-# # print(new_df)
-#
 # file_path = settings.PREDICTOR_DIFF + '/' + source + '/' + source + '-diff-' + subject + '.csv'
 # dir = os.path.dirname(os.path.realpath(file_path))
 # os.makedirs(dir, exist_ok=True)
