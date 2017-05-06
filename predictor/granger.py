@@ -68,22 +68,65 @@ class Sent:
         return diff_df
 
 
+def run_one(subject, from_date, to_date, precision_col):
+
+    # stock dataframe
+    stock = Stock(subject)
+    stock_df = stock.get_diff(from_date, to_date)
+    # print(stock_df)
+
+    # sentiment dataframe
+    sent = Sent(subject, source)
+    diff_df = sent.create_diff(precision_col, stock_df.index.values)
+    # print(diff_df)
+
+    # combine
+    diff_df['Stock'] = stock_df
+    # print(diff_df)
+
+    # save output
+    output_file_path = settings.PREDICTOR_DIFF + '/' + source + '/' + subject + '/' + source + '-diff-' + subject + '-' + precision + '.csv'
+    dir = os.path.dirname(os.path.realpath(output_file_path))
+    os.makedirs(dir, exist_ok=True)
+    diff_df.to_csv(output_file_path)
+
+
+def run_the(subject, from_date, to_date, precision_col):
+
+    stock = Stock('djia')
+    stock_df = stock.get_diff(from_date, to_date)
+
+    # sentiment dataframe
+    sent = Sent(subject, source)
+    diff_df = sent.create_diff(precision_col, stock_df.index.values)
+
+    indexes = ['djia', 'nasdaq', 'snp']
+
+    for index in indexes:
+
+        # stock dataframe
+        stock = Stock(index)
+        stock_df = stock.get_diff(from_date, to_date)
+
+        # combine
+        diff_df[index] = stock_df
+
+    # save output
+    output_file_path = settings.PREDICTOR_DIFF + '/' + source + '/' + subject + '/' + source + '-diff-' + subject + '-' + precision + '.csv'
+    dir = os.path.dirname(os.path.realpath(output_file_path))
+    os.makedirs(dir, exist_ok=True)
+    diff_df.to_csv(output_file_path)
+
+
+
 from_date = '2016-11-01'
 to_date = '2017-04-30'
-source = "twitter"
-subject = "microsoft"
-precision_col = "Sent1.0"
+source = "news"
+subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla"]
+precisions = ["Sent0.6", "Sent0.8", "Sent1.0"]
 
-stock = Stock(subject)
-stock_df = stock.get_diff(from_date, to_date)
-# print(stock_df)
-
-
-sent = Sent(subject, source)
-diff_df = sent.create_diff(precision_col, stock_df.index.values)
-print(diff_df)
-
-# file_path = settings.PREDICTOR_DIFF + '/' + source + '/' + source + '-diff-' + subject + '.csv'
-# dir = os.path.dirname(os.path.realpath(file_path))
-# os.makedirs(dir, exist_ok=True)
-# new_df.to_csv(file_path)
+for precision in precisions:
+    for subject in subjects:
+        print(subject, precision)
+        run_one(subject, from_date, to_date, precision)
+    run_the('the', from_date, to_date, precision)

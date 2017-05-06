@@ -21,7 +21,7 @@ def run_collect(company, total_req):
     # os.makedirs(dir, exist_ok=True)
     # output = open(file_name, "a")
 
-    max_id = '66044358'
+    max_id = '99999999'
     previous_date = datetime.date.today()
 
     for j in range(0,10000):
@@ -84,7 +84,7 @@ logger.info("starting " + os.path.basename(__file__))
 
 
 # companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia", "the"]
-companies = ["the"]
+companies = ["mcd"]
 
 
 total_req = 1
