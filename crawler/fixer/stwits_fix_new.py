@@ -82,7 +82,7 @@ periods = [["2016", "11"], ["2016", "12"], ["2017", "01"], ["2017", "02"], ["201
 first_day = 1
 last_day = 31
 # subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia", "the"]
-subjects = ["the"]
+subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "compq", "spx", "djia"]
 
 
 for period in periods:

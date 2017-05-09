@@ -7,8 +7,8 @@ from os.path import isfile, join
 
 COLUMNS = 6
 
-dataset = "news"
-my_type = "algos0.8"
+dataset = "stwits"
+my_type = "stop-pos"
 
 mypath = settings.TRAINER + "/tests/output/" + dataset + "/" + my_type
 
@@ -57,7 +57,7 @@ for f in files_list:
             new_line = "mean"
             for i in range(1, COLUMNS):
                 mean[i] = round(sum[i]/count, 2)
-                new_line += ", " + str(mean[i])
+                new_line += " & " + str(mean[i])
 
             new_line += "\n"
             print("new_line: " + new_line)

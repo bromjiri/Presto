@@ -6,12 +6,12 @@ import trainer.classifier_test as cls
 import os
 
 # vars
-type = "stop"
+type = "stop-pos"
 nltk_run = True
 sklearn_run = False
 COUNT = 5000
 cut = int((COUNT / 2) * 3 / 4)
-array = [False, True]
+array = [True]
 
 def run(dataset):
 
@@ -43,7 +43,7 @@ def run(dataset):
         for variable in array:
             print(str(variable))
             var_name = str(variable)
-            features = ftr.Features(corpora, total=COUNT, bigram=False, stop=variable)
+            features = ftr.Features(corpora, total=COUNT, bigram=False, stop=variable, pos=["J", "V", "N", "R"])
 
             posfeats = features.get_features_pos()
             negfeats = features.get_fearures_neg()
