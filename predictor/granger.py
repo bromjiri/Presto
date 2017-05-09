@@ -122,8 +122,8 @@ def run_the(subject, from_date, to_date, precision_col):
 from_date = '2016-11-01'
 to_date = '2017-04-30'
 source = "stwits-comb"
-# subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla"]
-subjects = ["tesla"]
+subjects = ["microsoft", "netflix", "nike", "tesla"]
+# subjects = ["tesla"]
 
 precisions = ["Sent0.6", "Sent0.8", "Sent1.0"]
 
