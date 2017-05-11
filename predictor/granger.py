@@ -122,7 +122,7 @@ def run_the(subject, from_date, to_date, precision_col):
 from_date = '2016-11-01'
 to_date = '2017-04-30'
 source = "stwits-comb"
-subjects = ["microsoft", "netflix", "nike", "tesla"]
+subjects = ["nasdaq", "snp"]
 # subjects = ["tesla"]
 
 precisions = ["Sent0.6", "Sent0.8", "Sent1.0"]
@@ -131,4 +131,4 @@ for precision in precisions:
     for subject in subjects:
         print(subject, precision)
         run_one(subject, from_date, to_date, precision)
-    # run_the('the', from_date, to_date, precision)
+    run_the('the', from_date, to_date, precision)
