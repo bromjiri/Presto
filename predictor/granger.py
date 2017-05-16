@@ -48,27 +48,42 @@ class Sent:
 
         return np.round(weekend_df[col_name].to_frame().diff(), 2)
 
-    def create_diff(self, col_name, stock_dates):
+    def create_diff(self, precision, stock_dates):
+
+        sentiment_col = "Sent" + precision
+        total_col = "Tot" + precision
 
         diff_df = pd.DataFrame(index=stock_dates, columns=['Friday', 'Sunday', "Weekend"])
         diff_df.index.name = "Date"
 
-        friday_df = self.sent_df[col_name].loc[stock_dates]
-        diff_df['Friday'] = np.round(friday_df.diff(), 2)
+        # friday_df = self.sent_df[sentiment_col].loc[stock_dates]
+        # diff_df['Friday'] = np.round(friday_df.diff(), 2)
 
-        sunday_df = np.round(self.sent_df[col_name].to_frame().diff(), 2)
-        # print(sunday_df)
-        diff_df['Sunday'] =  sunday_df[col_name].loc[stock_dates]
+        temp_df = pd.DataFrame(index=stock_dates, columns=['Friday', 'Sunday', 'Weekend' 'Total'])
+        temp_df['Total'] = self.sent_df[total_col]
 
+        friday_df = self.sent_df[sentiment_col].loc[stock_dates]
+        temp_df['Friday'] = np.round(friday_df.diff(), 2)
+        diff_df['Friday'] = temp_df.apply(func, args=('Friday',), axis=1)
 
-        weekend_df = self.get_weekend(col_name, stock_dates)
-        # print(weekend_df)
-        diff_df['Weekend'] = weekend_df[col_name].loc[stock_dates]
+        sunday_df = np.round(self.sent_df[sentiment_col].to_frame().diff(), 2)
+        temp_df['Sunday'] =  sunday_df[sentiment_col].loc[stock_dates]
+        diff_df['Sunday'] = temp_df.apply(func, args=('Sunday',), axis=1)
+
+        weekend_df = self.get_weekend(sentiment_col, stock_dates)
+        temp_df['Weekend'] = weekend_df[sentiment_col].loc[stock_dates]
+        diff_df['Weekend'] = temp_df.apply(func, args=('Weekend',), axis=1)
 
         return diff_df
 
 
-def run_one(subject, from_date, to_date, precision_col):
+def func(row, col):
+    if row['Total'] >= 10:
+        return row[col]
+    else:
+        return 0
+
+def run_one(subject, from_date, to_date, precision):
 
     # stock dataframe
     stock = Stock(subject)
@@ -77,7 +92,7 @@ def run_one(subject, from_date, to_date, precision_col):
 
     # sentiment dataframe
     sent = Sent(subject, source)
-    diff_df = sent.create_diff(precision_col, stock_df.index.values)
+    diff_df = sent.create_diff(precision, stock_df.index.values)
     # print(diff_df)
 
     # combine
@@ -91,14 +106,14 @@ def run_one(subject, from_date, to_date, precision_col):
     diff_df.to_csv(output_file_path)
 
 
-def run_the(subject, from_date, to_date, precision_col):
+def run_the(subject, from_date, to_date, precision):
 
     stock = Stock('djia')
     stock_df = stock.get_diff(from_date, to_date)
 
     # sentiment dataframe
     sent = Sent(subject, source)
-    diff_df = sent.create_diff(precision_col, stock_df.index.values)
+    diff_df = sent.create_diff(precision, stock_df.index.values)
 
     indexes = ['djia', 'nasdaq', 'snp']
 
@@ -121,14 +136,14 @@ def run_the(subject, from_date, to_date, precision_col):
 
 from_date = '2016-11-01'
 to_date = '2017-04-30'
-source = "stwits-comb"
-subjects = ["nasdaq", "snp"]
+source = "stwits"
+subjects = ["mcdonalds"]
 # subjects = ["tesla"]
 
-precisions = ["Sent0.6", "Sent0.8", "Sent1.0"]
+precisions = ["0.6", "0.8", "1.0"]
 
 for precision in precisions:
     for subject in subjects:
         print(subject, precision)
         run_one(subject, from_date, to_date, precision)
-    run_the('the', from_date, to_date, precision)
+    # run_the('the', from_date, to_date, precision)
