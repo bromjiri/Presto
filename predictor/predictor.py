@@ -4,6 +4,8 @@ import nltk
 import csv
 import pandas as pd
 import numpy as np
+import trainer.classifier_test as cls
+import os
 
 class Days:
 
@@ -82,26 +84,47 @@ def run_one(source, subject, precision, method):
         days.shift(key)
         # print(key, stock_dict[key], sent_dict[key])
 
-    for f in features_list:
-        print(f)
+    # for f in features_list:
+    #     print(f)
 
-    random.shuffle(features_list)
-    # print(len(features_list))
+    output_dir_path = settings.PREDICTOR_PREDICTION + '/' + source + '/' + subject
+    os.makedirs(output_dir_path, exist_ok=True)
+    output_file_path = output_dir_path + '/' + source + '-prediction-' + subject + '-' + precision + '-' + method + '.csv'
+    output_file = open(output_file_path, 'w')
 
-    training_set = features_list[:90]
-    testing_set = features_list[90:]
+    for x in range(0, 50):
 
-    classifier = nltk.NaiveBayesClassifier.train(training_set)
-    print("Original Naive Bayes Algo accuracy percent:", (nltk.classify.accuracy(classifier, testing_set)) * 100)
-    classifier.show_most_informative_features(1)
+        random.shuffle(features_list)
+        # print(len(features_list))
+
+        trainfeats = features_list[:90]
+        testfeats = features_list[90:]
+
+        nlt_output, skl_output = cls.train(trainfeats, testfeats, nlt=nltk_run, skl=sklearn_run)
+
+        classifier = nltk.NaiveBayesClassifier.train(trainfeats)
+        print("Original Naive Bayes Algo accuracy percent:", (nltk.classify.accuracy(classifier, testfeats)) * 100)
+        classifier.show_most_informative_features(1)
+
+        if nltk_run:
+            print(str(nlt_output))
+            output_file.write(nlt_output)
+            # nlt[var_name].flush()
+        if sklearn_run:
+            print(str(skl_output))
+            output_file.write(skl_output)
+            # skl[var_name].flush()
 
 
-source = "stwits"
-subjects = ["microsoft"]
-# precisions = ["Sent0.6", "Sent0.8", "Sent1.0"]
-# method = ["Friday", "Sunday", "Weekend"]
-precisions = ["Sent0.6"]
-methods = ["Friday"]
+nltk_run = False
+sklearn_run = True
+
+source = "twitter"
+subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla"]
+precisions = ["Sent0.6", "Sent0.8", "Sent1.0"]
+methods = ["Friday", "Weekend"]
+# precisions = ["Sent0.8"]
+# methods = ["Sunday"]
 
 for precision in precisions:
     for subject in subjects:

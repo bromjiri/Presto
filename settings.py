@@ -23,6 +23,8 @@ PREDICTOR = os.path.join(PROJECT_ROOT, "predictor")
 PREDICTOR_SENTIMENT = os.path.join(PROJECT_ROOT, "predictor/data/sentiment")
 PREDICTOR_STOCK = os.path.join(PROJECT_ROOT, "predictor/data/stock")
 PREDICTOR_DIFF = os.path.join(PROJECT_ROOT, "predictor/data/diff")
+PREDICTOR_PREDICTION = os.path.join(PROJECT_ROOT, "predictor/data/prediction")
+
 
 
 def get_logger(file_path):
