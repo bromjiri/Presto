@@ -28,9 +28,9 @@ class VoteClassifier(ClassifierI):
             votes.append(v)
         # print(mode(votes))
 
-        if votes.count("pos") >= 3:
+        if votes.count("pos") >= 5:
             return "pos"
-        elif votes.count("neg") >= 3:
+        elif votes.count("neg") >= 5:
             return "neg"
         else:
             return "neu"
@@ -50,7 +50,7 @@ class VoteClassifier(ClassifierI):
 
 def get_precision(trainfeats, testfeats, my_classifier, dataset, classifier_name):
 
-    dir = "output/" + dataset + "/algos2/"
+    dir = "output/" + dataset + "/algos5/"
     os.makedirs(dir, exist_ok=True)
 
     file_name = dir + dataset + "-" + classifier_name + ".csv"
