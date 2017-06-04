@@ -5,14 +5,14 @@ from os.path import isfile, join
 
 
 
-COLUMNS = 7
+COLUMNS = 6
 
-dataset = "twitter"
+dataset = "stanford"
 subject = "tesla"
-my_type = "stop-pos"
+my_type = "algos5new"
 
-# mypath = settings.TRAINER + "/tests/output/" + dataset + "/" + my_type
-mypath = settings.PREDICTOR_PREDICTION + '/' + dataset + '/' + subject + '/'
+mypath = settings.TRAINER + "/tests/output/" + dataset + "/" + my_type
+# mypath = settings.PREDICTOR_PREDICTION + '/' + dataset + '/' + subject + '/'
 
 files_list = list()
 for f in listdir(mypath):
