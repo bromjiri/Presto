@@ -119,10 +119,10 @@ def run_one(source, subject, precision, method):
 nltk_run = False
 sklearn_run = True
 
-source = "twitter"
-subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla"]
+source = "stwits"
+subjects = ["coca-cola", "microsoft", "netflix", "nike", "tesla"]
 precisions = ["Sent0.6", "Sent0.8", "Sent1.0"]
-methods = ["Friday", "Weekend"]
+methods = ["Friday", "Sunday"]
 # precisions = ["Sent0.8"]
 # methods = ["Sunday"]
 
