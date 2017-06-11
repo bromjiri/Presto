@@ -87,13 +87,37 @@ def run_one(subject, from_date, to_date, precision):
     os.makedirs(dir, exist_ok=True)
     diff_df.to_csv(output_file_path)
 
+def run_the(subject, from_date, to_date, precision):
 
+    stock = Stock('djia')
+    stock_df = stock.get_diff(from_date, to_date)
+
+    # sentiment dataframe
+    sent = Sent(subject, source)
+    diff_df = sent.create_diff(precision, stock_df.index.values)
+
+    indexes = ['djia', 'nasdaq', 'snp']
+
+    for index in indexes:
+
+        # stock dataframe
+        stock = Stock(index)
+        stock_df = stock.get_diff(from_date, to_date)
+
+        # combine
+        diff_df[index] = stock_df
+
+    # save output
+    output_file_path = settings.PREDICTOR_DIFF + '/' + source + '/' + subject + '/' + source + '-diff-' + subject + '-' + precision + '-nat.csv'
+    dir = os.path.dirname(os.path.realpath(output_file_path))
+    os.makedirs(dir, exist_ok=True)
+    diff_df.to_csv(output_file_path)
 
 
 from_date = '2016-11-01'
 to_date = '2017-04-30'
-source = "twitter"
-subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla"]
+source = "stwits"
+subjects = ["djia", "nasdaq", "snp"]
 # subjects = ["tesla"]
 
 precisions = ["0.6", "0.8", "1.0"]
@@ -105,3 +129,4 @@ for precision in precisions:
     for subject in subjects:
         print(subject, precision)
         run_one(subject, from_date, to_date, precision)
+    # run_the('the', from_date, to_date, precision)
