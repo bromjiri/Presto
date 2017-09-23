@@ -28,7 +28,7 @@ class Counter:
         per_dict = dict()
         for limit in self.counter_list:
             if self.tot_dict[limit] < 1:
-                per_dict[limit] = -1
+                per_dict[limit] = 50
             else:
                 per_dict[limit] = self.pos_dict[limit] / self.tot_dict[limit]
                 per_dict[limit] = "{:.2f}".format(per_dict[limit] * 100)
@@ -170,8 +170,8 @@ class CounterTwitter():
             for row in head:
                 try:
                     # all lines
-                    sent, conf = st.sent_twitter(row[1].strip())
-                    # print(sent, conf, row[1].strip())
+                    sent, conf = st.sent_twitter(row[0].strip())
+                    # print(sent, conf, row[0].strip())
                     self.counter.inc(sent, conf)
                 except Exception as e:
                     logger.error(e)
@@ -237,15 +237,15 @@ class CounterNews():
 
 # vars
 source = "stwits"
-start_date = date(2016, 11, 1)
-end_date = date(2017, 4, 30)
+start_date = date(2017, 5, 1)
+end_date = date(2017, 8, 31)
 twi_max = 20000
 
 
-# subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the"]
+subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla"]
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the", "djia", "compq", "spx"]
-# subjects = ["nike", "samsung", "tesla", "the"]
-subjects = ["nike", "samsung", "the", "djia", "compq", "spx"]
+# subjects = ["netflix", "nike", "samsung", "tesla", "the"] # twitter
+# subjects = ["tesla"]
 
 for subject in subjects:
     logger.info(subject)

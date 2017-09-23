@@ -135,9 +135,9 @@ def run_the(subject, from_date, to_date, precision):
 
 
 from_date = '2016-11-01'
-to_date = '2017-04-30'
-source = "stwits"
-subjects = ["mcdonalds"]
+to_date = '2017-08-31'
+source = "twitter"
+subjects = ["coca-cola"]
 # subjects = ["tesla"]
 
 precisions = ["0.6", "0.8", "1.0"]

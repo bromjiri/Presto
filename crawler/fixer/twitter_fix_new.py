@@ -28,8 +28,12 @@ def fix_file(year, month, day, subject):
             output_list.append(previous + "\n")
             previous = row.strip()
 
+    output_list_wo_date = list()
+    for line in output_list:
+        output_list_wo_date.append(line[22:])
+        # print(line[22:])
 
-    unique_list = list(set(output_list))
+    unique_list = list(set(output_list_wo_date))
     for line in unique_list:
 
         if line.strip() == "":
@@ -54,10 +58,10 @@ def fix_file(year, month, day, subject):
 
 
 # periods = [["2016", "11"], ["2016", "12"], ["2017", "01"], ["2017", "02"], ["2017", "03"]]
-periods = [["2017", "04"]]
+periods = [["2017", "05"], ["2017", "06"], ["2017", "07"], ["2017", "08"]]
 first_day = 1
-last_day = 30
-subjects = ["microsoft", "cola", "mcdonald", "samsung", "netflix", "nike", "tesla", "the"]
+last_day = 31
+subjects = ["nike", "tesla", "the"]
 # subjects = ["mcdonald"]
 
 

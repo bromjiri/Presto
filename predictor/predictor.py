@@ -97,8 +97,8 @@ def run_one(source, subject, precision, method):
         random.shuffle(features_list)
         # print(len(features_list))
 
-        trainfeats = features_list[:90]
-        testfeats = features_list[90:]
+        trainfeats = features_list[:170]
+        testfeats = features_list[170:]
 
         nlt_output, skl_output = cls.train(trainfeats, testfeats, nlt=nltk_run, skl=sklearn_run)
 
@@ -119,10 +119,10 @@ def run_one(source, subject, precision, method):
 nltk_run = False
 sklearn_run = True
 
-source = "stwits"
-subjects = ["coca-cola", "microsoft", "netflix", "nike", "tesla"]
-precisions = ["Sent0.6", "Sent0.8", "Sent1.0"]
-methods = ["Friday", "Sunday"]
+source = "twitter"
+subjects = ["coca-cola"]
+precisions = ["0.6", "0.8", "1.0"]
+methods = ["Friday", "Sunday", "Weekend"]
 # precisions = ["Sent0.8"]
 # methods = ["Sunday"]
 

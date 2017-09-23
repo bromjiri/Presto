@@ -4,13 +4,13 @@ import numpy as np
 
 
 start = dt.datetime(2016,11,1)
-end = dt.datetime(2017,4,30)
+end = dt.datetime(2017,8,31)
 
 
 def download_stock(key):
 
     try:
-        df = web.DataReader(stock_list[key], 'yahoo', start, end)
+        df = web.DataReader(stock_list[key], 'google', start, end)
         output_file = "data/stock/" + key + ".csv"
 
         df_new = np.round(df[['Close']], 2)
@@ -23,8 +23,10 @@ def download_stock(key):
     except Exception as e:
         print(e)
 
-stock_list = {"coca-cola": "KO", "mcdonalds": "MCD", "microsoft": "MSFT", "netflix": "NFLX", "nike": "NKE",
-              "samsung": "005930.KS", "tesla": "TSLA", "nasdaq": "NDAQ", "djia": "DJIA", "snp": "^GSPC"}
+# stock_list = {"coca-cola": "KO", "mcdonalds": "MCD", "microsoft": "MSFT", "netflix": "NFLX", "nike": "NKE",
+#               "samsung": "005930.KS", "tesla": "TSLA", "nasdaq": "NDAQ", "djia": ".DJI", "snp": "^GSPC"}
+
+stock_list = {"djia": "INDEXDJX:.DJI"}
 
 for key in stock_list:
     print(key)
