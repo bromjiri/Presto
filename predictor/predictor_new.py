@@ -1,77 +1,249 @@
 import settings
+import pandas as pd
+import numpy as np
+import os
+from datetime import datetime
+from datetime import timedelta
+import predictor.predictor_classifier as cls
+import predictor.predictor_statistic as stat
 import random
 import nltk
-import csv
 
-class Days:
 
-    def __init__(self, three_days_list):
-        self.days = dict()
-        self.days[0] = three_days_list[0]
-        self.days[1] = three_days_list[1]
-        self.days[2] = three_days_list[2]
-        # print(self.days)
+class Stock:
 
-    def shift(self, new_day):
-        self.days[0] = self.days[1]
-        self.days[1] = self.days[2]
-        self.days[2] = new_day
+    def __init__(self, subject):
+        input_file = settings.PREDICTOR_STOCK + "/" + subject + ".csv"
+        self.stock_df = pd.read_csv(input_file, sep=',', index_col='Date')
 
-    def get_features(self, sent_dict):
+    def create_dict(self, from_date, to_date):
+        self.stock_ser = self.stock_df['Diff'].loc[from_date:to_date]
+
+        # binning
+        self.stock_ser = self.stock_ser.apply(binning_none)
+
+        self.stock_dict = self.stock_ser.dropna().astype(int).to_dict()
+
+    def get_dict(self):
+        return self.stock_dict
+
+    def get_stock_dates(self):
+        return self.stock_ser.index.values
+
+
+class Sent:
+
+    def __init__(self, subject, source):
+        input_file = settings.PREDICTOR_SENTIMENT + "/" + source + "/" + source + "-sent-" + subject + ".csv"
+        self.sent_df = pd.read_csv(input_file, sep=',', index_col='Date')
+
+    def get_weekend(self, col_name, stock_dates):
+
+        weekend_df = np.round(self.sent_df, 2)
+
+        aggreg = 0
+        days = 1
+        for idx, row in weekend_df.iterrows():
+            value = row[col_name]
+            date = pd.to_datetime(idx)
+            date_plus = date + timedelta(days=1)
+            if str(date_plus.date()) not in stock_dates:
+                # print("weekend")
+                value += aggreg
+                aggreg = value
+                days += 1
+            else:
+                total = value + aggreg
+                mean = total / days
+                aggreg = 0
+                days = 1
+                weekend_df.set_value(idx, col_name, mean)
+
+            # print(date.date(), row[col_name], value)
+
+        return np.round(weekend_df[col_name].diff().loc[stock_dates], 2)
+
+    def create_dict(self, precision, method, from_date, to_date, stock_dates, binning):
+        sentiment_col = "Sent" + precision
+        sent_ser = self.sent_df[sentiment_col]
+
+        if method == "Natural":
+            sent_ser = sent_ser.diff().loc[from_date:to_date]
+        elif method == "Friday":
+            sent_ser = sent_ser.loc[stock_dates].diff()
+        elif method == "Sunday":
+            sent_ser = sent_ser.diff().loc[stock_dates]
+        elif method == "Weekend":
+            sent_ser = self.get_weekend(sentiment_col, stock_dates)
+
+        # binning
+        std_dev1 = sent_ser.std() / 4
+        std_dev2 = sent_ser.std()
+        # print(std_dev1, std_dev2)
+        # tot1 = 0
+        # tot2 = 0
+        # for x in sent_ser:
+        #     if abs(x) > std_dev1:
+        #         # print(x)
+        #         tot1 += 1
+        #     if abs(x) > std_dev2:
+        #         # print(x)
+        #         tot2 += 1
+
+        # print(tot1, tot2)
+        # print(sent_ser)
+
+        if binning == 'none':
+            sent_ser_new = sent_ser.apply(binning_none)
+        elif binning == 'low':
+            sent_ser_new = sent_ser.apply(binning_low, args=(std_dev1,))
+        else:
+            sent_ser_new = sent_ser.apply(binning_high, args=(std_dev1, std_dev2,))
+
+        # print(pd.concat([sent_ser, sent_ser_new], axis=1))
+
+        self.sent_dict = sent_ser_new.dropna().astype(int).to_dict()
+        self.key_list = sorted(self.sent_dict.keys())
+
+    def get_dict(self):
+        return self.sent_dict
+
+    def get_features(self, key):
+        index = self.key_list.index(key)
+
         features = dict()
-        features[0] = sent_dict[self.days[0]]
-        features[1] = sent_dict[self.days[1]]
-        features[2] = sent_dict[self.days[2]]
+        features['d1'] = self.sent_dict[self.key_list[index-3]]
+        features['d2'] = self.sent_dict[self.key_list[index-2]]
+        features['d3'] = self.sent_dict[self.key_list[index-1]]
         return features
 
-def get_dict(input_file):
 
-    stock_dict = dict()
+def binning_none(row):
 
-    with open(input_file, 'r') as input:
-        reader = csv.reader(input, delimiter=',')
-        prev = next(reader)[1]
-        for row in reader:
-            if row[1] > prev:
-                stock_dict[row[0]] = 4
-            else:
-                stock_dict[row[0]] = 0
-            prev = row[1]
-    return stock_dict
+    if row > 0:
+        return 4
+    elif row < 0:
+        return 0
+    else:
+        return row
 
 
-subject = "coca-cola"
-source = "twitter"
-conf_limit = "1.0"
+def binning_low(row, std_dev1):
 
-input_file = settings.PREDICTOR_STOCK + "/" + subject + ".csv"
-stock_dict = get_dict(input_file)
+    if row > std_dev1:
+        return 4
+    elif row < std_dev1 and row > -std_dev1:
+        return 2
+    elif row < -std_dev1:
+        return 0
+    else:
+        return row
 
-input_file = settings.PREDICTOR_SENTIMENT + "/" + source + "/" + source + "-sent-" + subject + "-" + conf_limit + ".csv"
-sent_dict = get_dict(input_file)
 
-days = dict()
-days = Days([x for x in sorted(stock_dict)[0:3]])
+def binning_high(row, std_dev1, std_dev2):
 
-# for key in sorted(stock_dict):
-#     print(key, stock_dict[key], sent_dict[key])
+    if row > std_dev2:
+        return 4
+    elif row < std_dev2 and row > std_dev1:
+        return 3
+    elif row < std_dev1 and row > -std_dev1:
+        return 2
+    elif row < -std_dev1 and row > -std_dev2:
+        return 1
+    elif row < -std_dev2:
+        return 0
+    else:
+        return row
 
-features_list = list()
-for key in sorted(stock_dict)[2:]:
-    features = days.get_features(sent_dict)
-    # print(features)
-    features_list.append([features, stock_dict[key]])
-    days.shift(key)
-    # print(key, stock_dict[key], sent_dict[key])
 
-for f in features_list:
-    print(f)
+def run_one(source, subject, precision, method, from_date, to_date, binning):
 
-random.shuffle(features_list)
+    # stock dataframe
+    stock = Stock(subject)
+    stock.create_dict(from_date, to_date)
+    stock_dict = stock.get_dict()
+    # print(sorted(stock_dict.items()))
 
-training_set = features_list[:70]
-testing_set = features_list[70:]
+    # sentiment dataframe
+    sent = Sent(subject, source)
+    sent.create_dict(precision, method, from_date, to_date, stock.get_stock_dates(), binning)
+    # print(sorted(sent.get_dict().items()))
 
-classifier = nltk.NaiveBayesClassifier.train(training_set)
-print("Original Naive Bayes Algo accuracy percent:", (nltk.classify.accuracy(classifier, testing_set)) * 100)
-classifier.show_most_informative_features(1)
+    # features
+    features_list = list()
+    for key in sorted(stock_dict)[3:]:
+        features = sent.get_features(key)
+        features_list.append([features, stock_dict[key]])
+        # print([key, sorted(features.items()), stock_dict[key]])
+
+    features_list_pos = list()
+    features_list_neg = list()
+
+    for feature in features_list:
+        if feature[1] == 0:
+            features_list_neg.append(feature)
+        else:
+            features_list_pos.append(feature)
+
+
+    statictic = stat.Statistic(source, subject, precision, method)
+
+    # print(len(features_list), len(features_list_pos), len(features_list_neg))
+
+
+    # exit()
+    cycles = 50
+    for x in range(0, cycles):
+
+        random.shuffle(features_list_pos)
+        random.shuffle(features_list_neg)
+        # random.shuffle(features_list)
+
+        trainfeats = features_list_pos[:70] + features_list_neg[:70]
+        testfeats = features_list_pos[70:90] + features_list_neg[70:90]
+        # print(len(trainfeats), len(testfeats))
+
+        # trainfeats = features_list[:170]
+        # testfeats = features_list[170:]
+
+        nlt_output, skl_output = cls.train(trainfeats, testfeats, nlt=nltk_run, skl=sklearn_run)
+        # print(nlt_output['most1'])
+
+        # exit()
+
+        if nltk_run:
+            statictic.add_nltk(nlt_output)
+        if sklearn_run:
+            statictic.add_skl(skl_output)
+
+    if nltk_run:
+        statictic.mean_nltk(cycles)
+        statictic.print_nltk()
+    if sklearn_run:
+        statictic.mean_skl(cycles)
+        statictic.print_skl()
+
+nltk_run = True
+sklearn_run = True
+
+from_date = '2016-11-01'
+to_date = '2017-08-31'
+source = "stwits"
+
+binnings = ['high']
+subjects = ["microsoft", "netflix", "nike", "coca-cola", "tesla",]
+# subjects = ["netflix"]
+# precisions = ["0.6", "0.8", "1.0"]
+precisions = ["0.6"]
+
+methods = ["Friday", "Sunday", "Natural", "Weekend"]
+# methods = ["Friday"]
+
+
+
+for subject in subjects:
+    for binning in binnings:
+        for precision in precisions:
+            for method in methods:
+                # print(source, subject, precision, method)
+                run_one(source, subject, precision, method, from_date, to_date, binning)
