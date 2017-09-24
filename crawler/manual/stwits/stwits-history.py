@@ -86,8 +86,8 @@ def run_collect(company, total_req):
 logger.info("starting " + os.path.basename(__file__))
 
 
-companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia", "the"]
-# companies = ["nflx"]
+# companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia", "the"]
+companies = ["the"]
 
 
 total_req = 1

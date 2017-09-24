@@ -1,14 +1,14 @@
 import settings
 import csv
-from os import listdir
+from os import listdir, path
 from os.path import isfile, join
 
 
 
 COLUMNS = 7
 
-dataset = "twitter"
-subject = "coca-cola"
+dataset = "stwits"
+subject = "tesla"
 
 mypath = settings.PREDICTOR_PREDICTION + '/' + dataset + '/' + subject + '/'
 
@@ -26,8 +26,8 @@ for f in files_list:
 
         # skip already processed
         for x in reader: pass
-        if x[0] == "":
-            print("skip: " + input_file_path)
+        if "mean" in str(x):
+            print("skip: " + path.basename(input_file_path))
             continue
 
         # prepare dict

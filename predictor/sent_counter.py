@@ -67,7 +67,7 @@ class CounterStwits():
 
     def get_percentage_bull(self):
         if self.stwits_tot < 1:
-            per_bull = -1
+            per_bull = 50
         else:
             per_bull = self.stwits_bull / self.stwits_tot
             per_bull = "{:.2f}".format(per_bull * 100)
@@ -236,15 +236,15 @@ class CounterNews():
 ###############
 
 # vars
-source = "stwits"
+source = "twitter"
 start_date = date(2017, 5, 1)
 end_date = date(2017, 8, 31)
 twi_max = 20000
 
 
-subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla"]
+# subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla"]
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the", "djia", "compq", "spx"]
-# subjects = ["netflix", "nike", "samsung", "tesla", "the"] # twitter
+subjects = ["netflix", "nike", "samsung", "tesla", "the"] # twitter
 # subjects = ["tesla"]
 
 for subject in subjects:

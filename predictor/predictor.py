@@ -81,6 +81,7 @@ def run_one(source, subject, precision, method):
         features = days.get_features(sent_dict)
         # print(features)
         features_list.append([features, stock_dict[key]])
+        # print(features_list)
         days.shift(key)
         # print(key, stock_dict[key], sent_dict[key])
 
@@ -119,8 +120,8 @@ def run_one(source, subject, precision, method):
 nltk_run = False
 sklearn_run = True
 
-source = "twitter"
-subjects = ["coca-cola"]
+source = "stwits"
+subjects = ["tesla"]
 precisions = ["0.6", "0.8", "1.0"]
 methods = ["Friday", "Sunday", "Weekend"]
 # precisions = ["Sent0.8"]
