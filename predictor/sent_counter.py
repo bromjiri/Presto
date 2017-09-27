@@ -244,7 +244,7 @@ twi_max = 20000
 
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla"]
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the", "djia", "compq", "spx"]
-subjects = ["netflix", "nike", "samsung", "tesla", "the"] # twitter
+subjects = ["nike", "samsung", "tesla", "the"] # twitter + netflix august
 # subjects = ["tesla"]
 
 for subject in subjects:
