@@ -1,5 +1,5 @@
 import datetime as dt
-import pandas_datareader.data as web
+import pandas as pd
 import numpy as np
 
 
@@ -10,7 +10,8 @@ end = dt.datetime(2017,8,31)
 def download_stock(key):
 
     try:
-        df = web.DataReader(stock_list[key], 'google', start, end)
+        # df = web.DataReader(stock_list[key], 'yahoo', start, end)
+        df = pd.read_csv("data/stock/" + stock_list[key] + ".csv", index_col="Date")
         output_file = "data/stock/" + key + ".csv"
 
         df_new = np.round(df[['Close']], 2)
@@ -26,7 +27,7 @@ def download_stock(key):
 # stock_list = {"coca-cola": "KO", "mcdonalds": "MCD", "microsoft": "MSFT", "netflix": "NFLX", "nike": "NKE",
 #               "samsung": "005930.KS", "tesla": "TSLA", "nasdaq": "NDAQ", "djia": ".DJI", "snp": "^GSPC"}
 
-stock_list = {"djia": "INDEXDJX:.DJI"}
+stock_list = {"snp": "GSPC"}
 
 for key in stock_list:
     print(key)
