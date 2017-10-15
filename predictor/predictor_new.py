@@ -79,19 +79,6 @@ class Sent:
         # binning
         std_dev1 = sent_ser.std() / 4
         std_dev2 = sent_ser.std()
-        # print(std_dev1, std_dev2)
-        # tot1 = 0
-        # tot2 = 0
-        # for x in sent_ser:
-        #     if abs(x) > std_dev1:
-        #         # print(x)
-        #         tot1 += 1
-        #     if abs(x) > std_dev2:
-        #         # print(x)
-        #         tot2 += 1
-
-        # print(tot1, tot2)
-        # print(sent_ser)
 
         if binning == 'none':
             sent_ser_new = sent_ser.apply(binning_none)
@@ -156,13 +143,17 @@ def binning_high(row, std_dev1, std_dev2):
         return row
 
 
-def run_one(source, subject, precision, method, from_date, to_date, binning):
+def run_one(source, subject, precision, method, from_date, to_date, binning, filename_nltk, filename_skl):
 
     # stock dataframe
     stock = Stock(subject)
     stock.create_dict(from_date, to_date)
     stock_dict = stock.get_dict()
     # print(sorted(stock_dict.items()))
+
+    indexes = ["djia", "snp", "nasdaq"]
+    # if subject in indexes:
+    #     subject = "the"
 
     # sentiment dataframe
     sent = Sent(subject, source)
@@ -186,10 +177,12 @@ def run_one(source, subject, precision, method, from_date, to_date, binning):
             features_list_pos.append(feature)
 
 
-    statictic = stat.Statistic(source, subject, precision, method)
+    statistic = stat.Statistic(source, subject, precision, method, binning)
 
     # print(len(features_list), len(features_list_pos), len(features_list_neg))
-
+    max_half = min(len(features_list_pos), len(features_list_neg))
+    train_border = int(max_half * 4 / 5)
+    # print(train_border, max_half)
 
     # exit()
     cycles = 50
@@ -199,8 +192,8 @@ def run_one(source, subject, precision, method, from_date, to_date, binning):
         random.shuffle(features_list_neg)
         # random.shuffle(features_list)
 
-        trainfeats = features_list_pos[:70] + features_list_neg[:70]
-        testfeats = features_list_pos[70:90] + features_list_neg[70:90]
+        trainfeats = features_list_pos[:train_border] + features_list_neg[:train_border]
+        testfeats = features_list_pos[train_border:max_half] + features_list_neg[train_border:max_half]
         # print(len(trainfeats), len(testfeats))
 
         # trainfeats = features_list[:170]
@@ -212,38 +205,67 @@ def run_one(source, subject, precision, method, from_date, to_date, binning):
         # exit()
 
         if nltk_run:
-            statictic.add_nltk(nlt_output)
+            statistic.add_nltk(nlt_output)
         if sklearn_run:
-            statictic.add_skl(skl_output)
+            statistic.add_skl(skl_output)
 
     if nltk_run:
-        statictic.mean_nltk(cycles)
-        statictic.print_nltk()
+        statistic.mean_nltk(cycles)
+        statistic.print_nltk()
+        statistic.write_nltk(filename_nltk)
     if sklearn_run:
-        statictic.mean_skl(cycles)
-        statictic.print_skl()
+        statistic.mean_skl(cycles)
+        statistic.print_skl()
+        statistic.write_skl(filename_skl)
 
 nltk_run = True
 sklearn_run = True
 
 from_date = '2016-11-01'
 to_date = '2017-08-31'
-source = "stwits"
+source = "stwits-comb"
 
-binnings = ['high']
-subjects = ["microsoft", "netflix", "nike", "coca-cola", "tesla",]
-# subjects = ["netflix"]
-# precisions = ["0.6", "0.8", "1.0"]
-precisions = ["0.6"]
+binnings = ['none', 'low', 'high']
+# subjects = ["snp", "djia", "nasdaq"]
+subjects = ["djia", "snp", "nasdaq"]
+# subjects = ["microsoft"]
+precisions = ["0.6", "0.8", "1.0"]
+# precisions = ["0.6"]
 
-methods = ["Friday", "Sunday", "Natural", "Weekend"]
+methods = ["Friday", "Natural", "Weekend", "Sunday"]
 # methods = ["Friday"]
 
 
 
 for subject in subjects:
-    for binning in binnings:
+
+    folder = settings.PREDICTOR_PREDICTION + '/' + source + '/' + subject + '/'
+    os.makedirs(folder, exist_ok=True)
+    filename_nltk = folder + source + '-prediction-' + subject + "-nltk.csv"
+    filename_skl = folder + source + '-prediction-' + subject + "-skl.csv"
+
+    if nltk_run:
+        open(filename_nltk, 'w').close()
+
+    if sklearn_run:
+        open(filename_skl, 'w').close()
+
+    for method in methods:
+
+        if nltk_run:
+            f = open(filename_nltk, 'a')
+            f.write(source + ", " + subject + ", " + method + ", NLTK\n")
+            f.write("precision, binning, accuracy, pos_prec, neg_prec, pos_rec, neg_rec, d1, d2, d3\n")
+            f.close()
+
+        if sklearn_run:
+            f = open(filename_skl, 'a')
+            f.write(source + ", " + subject + ", " + method + ", SKL\n")
+            f.write("precision, binning, mnb, bnb, lr, lsvc, nsvc, voted\n")
+            f.close()
+
         for precision in precisions:
-            for method in methods:
+            for binning in binnings:
+
                 # print(source, subject, precision, method)
-                run_one(source, subject, precision, method, from_date, to_date, binning)
+                run_one(source, subject, precision, method, from_date, to_date, binning, filename_nltk, filename_skl)

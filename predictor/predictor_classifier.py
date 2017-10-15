@@ -56,11 +56,21 @@ def train(trainfeats, testfeats, nlt = True, skl = True, most = 10):
             testsets[observed].add(i)
 
         # precision and recall
-        accuracy = nltk.classify.util.accuracy(my_classifier, testfeats) * 100
-        pos_prec = precision(refsets[4], testsets[4]) * 100
-        pos_rec = recall(refsets[4], testsets[4]) * 100
-        neg_prec = precision(refsets[0], testsets[0]) * 100
-        neg_rec = recall(refsets[0], testsets[0]) * 100
+        accuracy = 0
+        pos_prec = 0
+        pos_rec = 0
+        neg_prec = 0
+        neg_rec = 0
+
+        try:
+            accuracy = nltk.classify.util.accuracy(my_classifier, testfeats) * 100
+            pos_prec = precision(refsets[4], testsets[4]) * 100
+            pos_rec = recall(refsets[4], testsets[4]) * 100
+            neg_prec = precision(refsets[0], testsets[0]) * 100
+            neg_rec = recall(refsets[0], testsets[0]) * 100
+        except Exception as e:
+            print(e)
+            pass
 
         # round
         # accuracy = round(accuracy, 1)

@@ -3,12 +3,13 @@
 
 class Statistic:
 
-    def __init__(self, source, subject, precision, method):
+    def __init__(self, source, subject, precision, method, binning):
 
         self.source = source
         self.subject = subject
         self.precision = precision
         self.method = method
+        self.binning = binning
 
         self.skl_dict = dict()
         self.skl_dict['mnb'] = 0
@@ -66,16 +67,6 @@ class Statistic:
         self.nltk_mean['d2'] = self.nltk_dict['d2']
         self.nltk_mean['d3'] = self.nltk_dict['d3']
 
-    def print_skl(self):
-        # print(self.source + ", " + self.subject + ", " + self.precision + ", " + self.method + ":\n")
-        print("mnb: " + str(round(self.skl_mean["mnb"], 1))
-              + ", bnb: " + str(round(self.skl_mean["bnb"], 1))
-              + ", lr: " + str(round(self.skl_mean["lr"], 1))
-              + ", lsvc: " + str(round(self.skl_mean["lsvc"], 1))
-              + ", nsvc: " + str(round(self.skl_mean["nsvc"], 1))
-              + ", voted: " + str(round(self.skl_mean["voted"], 1)))
-
-
     def print_nltk(self):
         print("\n" + self.source + ", " + self.subject + ", " + self.precision + ", " + self.method + ":\n"
               + "accuracy: " + str(round(self.nltk_mean["accuracy"], 1))
@@ -86,3 +77,36 @@ class Statistic:
               + ", d1: " + str(self.nltk_mean["d1"])
               + ", d2: " + str(self.nltk_mean["d2"])
               + ", d3: " + str(self.nltk_mean["d3"]))
+
+    def write_nltk(self, filename):
+        f = open(filename, 'a')
+        f.write(self.precision + ", " + self.binning + ", "
+              + str(round(self.nltk_mean["accuracy"], 1)) + ", "
+              + str(round(self.nltk_mean["pos_prec"], 1)) + ", "
+              + str(round(self.nltk_mean["neg_prec"], 1)) + ", "
+              + str(round(self.nltk_mean["pos_rec"], 1)) + ", "
+              + str(round(self.nltk_mean["neg_rec"], 1)) + ", "
+              + str(self.nltk_mean["d1"]) + ", "
+              + str(self.nltk_mean["d2"]) + ", "
+              + str(self.nltk_mean["d3"]) + "\n")
+        f.close()
+
+    def print_skl(self):
+        # print(self.source + ", " + self.subject + ", " + self.precision + ", " + self.method + ":\n")
+        print("mnb: " + str(round(self.skl_mean["mnb"], 1))
+              + ", bnb: " + str(round(self.skl_mean["bnb"], 1))
+              + ", lr: " + str(round(self.skl_mean["lr"], 1))
+              + ", lsvc: " + str(round(self.skl_mean["lsvc"], 1))
+              + ", nsvc: " + str(round(self.skl_mean["nsvc"], 1))
+              + ", voted: " + str(round(self.skl_mean["voted"], 1)))
+
+    def write_skl(self, filename):
+        f = open(filename, 'a')
+        f.write(self.precision + ", " + self.binning + ", "
+                + str(round(self.skl_mean["mnb"], 1)) + ", "
+                + str(round(self.skl_mean["bnb"], 1)) + ", "
+                + str(round(self.skl_mean["lr"], 1)) + ", "
+                + str(round(self.skl_mean["lsvc"], 1)) + ", "
+                + str(round(self.skl_mean["nsvc"], 1)) + ", "
+                + str(round(self.skl_mean["voted"], 1)) + "\n")
+        f.close()
