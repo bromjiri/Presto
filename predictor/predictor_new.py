@@ -212,11 +212,12 @@ def run_one(source, subject, precision, method, from_date, to_date, binning, fil
     if nltk_run:
         statistic.mean_nltk(cycles)
         statistic.print_nltk()
-        statistic.write_nltk(filename_nltk)
+        # statistic.write_nltk(filename_nltk)
     if sklearn_run:
         statistic.mean_skl(cycles)
         statistic.print_skl()
-        statistic.write_skl(filename_skl)
+        statistic.print_stddev()
+        # statistic.write_skl(filename_skl)
 
 nltk_run = True
 sklearn_run = True
@@ -244,25 +245,25 @@ for subject in subjects:
     filename_nltk = folder + source + '-prediction-' + subject + "-nltk.csv"
     filename_skl = folder + source + '-prediction-' + subject + "-skl.csv"
 
-    if nltk_run:
-        open(filename_nltk, 'w').close()
-
-    if sklearn_run:
-        open(filename_skl, 'w').close()
+    # if nltk_run:
+    #     open(filename_nltk, 'w').close()
+    #
+    # if sklearn_run:
+    #     open(filename_skl, 'w').close()
 
     for method in methods:
 
-        if nltk_run:
-            f = open(filename_nltk, 'a')
-            f.write(source + ", " + subject + ", " + method + ", NLTK\n")
-            f.write("precision, binning, accuracy, pos_prec, neg_prec, pos_rec, neg_rec, d1, d2, d3\n")
-            f.close()
-
-        if sklearn_run:
-            f = open(filename_skl, 'a')
-            f.write(source + ", " + subject + ", " + method + ", SKL\n")
-            f.write("precision, binning, mnb, bnb, lr, lsvc, nsvc, voted\n")
-            f.close()
+        # if nltk_run:
+        #     f = open(filename_nltk, 'a')
+        #     f.write(source + ", " + subject + ", " + method + ", NLTK\n")
+        #     f.write("precision, binning, accuracy, pos_prec, neg_prec, pos_rec, neg_rec, d1, d2, d3\n")
+        #     f.close()
+        #
+        # if sklearn_run:
+        #     f = open(filename_skl, 'a')
+        #     f.write(source + ", " + subject + ", " + method + ", SKL\n")
+        #     f.write("precision, binning, mnb, bnb, lr, lsvc, nsvc, voted\n")
+        #     f.close()
 
         for precision in precisions:
             for binning in binnings:

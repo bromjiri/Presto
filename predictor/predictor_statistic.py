@@ -1,4 +1,4 @@
-
+import statistics
 
 
 class Statistic:
@@ -29,6 +29,8 @@ class Statistic:
         self.nltk_dict['d2'] = 0
         self.nltk_dict['d3'] = 0
 
+        self.voted_list = list()
+
     def add_skl(self, new_dict):
         self.skl_dict['mnb'] += new_dict['mnb']
         self.skl_dict['bnb'] += new_dict['bnb']
@@ -36,6 +38,8 @@ class Statistic:
         self.skl_dict['lsvc'] += new_dict['lsvc']
         self.skl_dict['nsvc'] += new_dict['nsvc']
         self.skl_dict['voted'] += new_dict['voted']
+
+        self.voted_list.append(new_dict['voted'])
 
     def add_nltk(self, new_dict):
         self.nltk_dict['accuracy'] += new_dict['accuracy']
@@ -110,3 +114,6 @@ class Statistic:
                 + str(round(self.skl_mean["nsvc"], 1)) + ", "
                 + str(round(self.skl_mean["voted"], 1)) + "\n")
         f.close()
+
+    def print_stddev(self):
+        print("std dev: " + str(statistics.stdev(self.voted_list)))
