@@ -21,14 +21,14 @@ def run_collect(company, total_req):
     # os.makedirs(dir, exist_ok=True)
     # output = open(file_name, "a")
 
-    max_id = '92399116'
+    max_id = '999999999'
     previous_date = datetime.date.today()
 
-    for j in range(0,10000):
+    for j in range(0,100000):
         total_req +=1
-        if total_req == 200:
-            sleep(3600)
-            total_req = 1
+        # if total_req == 200:
+        #     sleep(3600)
+        #     total_req = 1
 
         logger.info(company + ": " + str(j))
 
@@ -65,11 +65,13 @@ def run_collect(company, total_req):
                 previous_date = created_date
                 logger.info("date: " + previous_date)
 
-            if "2017-04" in created_date:
+            if "2017-08" in created_date:
                 return total_req
 
             file_name = settings.DOWNLOADS_STWITS + "/" + company + "/stwits-" + company + "-" + created_date + "-hist.csv"
-            output = open(file_name, "a")
+            dir = os.path.dirname(os.path.realpath(file_name))
+            os.makedirs(dir, exist_ok=True)
+            output = open(file_name, "a", encoding='utf8')
             logger.debug(created_at + ', ' + sentiment + ', ' + text)
             output.write('"' + created_at + '","' + sentiment + '","' + text + '"\n')
 
@@ -87,7 +89,7 @@ logger.info("starting " + os.path.basename(__file__))
 
 
 # companies = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia", "the"]
-companies = ["the"]
+companies = ["nflx"]
 
 
 total_req = 1

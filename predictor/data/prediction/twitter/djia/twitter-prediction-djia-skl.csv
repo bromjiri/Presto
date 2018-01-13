@@ -9,11 +9,11 @@ precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,method,Friday,Natural,Weeke
 1, none,53.3,54.2,54.4,54.3,50,54.2,,,49.26,50.36,51.73
 1, low,52,51.3,55.8,56.5,51.1,54.3,,,,,
 1, high,51.2,53.8,54,55.4,51.7,53.5,,,,,
-twitter, djia, Natural, SKL,,,,,,,,,
-precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,,,,
+twitter, djia, Natural, SKL,,,,,,method,Friday,Natural,Weekend
+precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,,54.00,49.43,56.30
 0.6, none,47.3,46,45.5,45.6,48.9,45.9,,,,,
-0.6, low,47.9,49.5,45.6,45.3,49.2,46.1,,,,,
-0.6, high,47.6,48,46.4,46.1,51,45.9,,,,,
+0.6, low,47.9,49.5,45.6,45.3,49.2,46.1,,binning,none,low,high
+0.6, high,47.6,48,46.4,46.1,51,45.9,,,53.73,53.13,52.87
 0.8, none,46,42.9,43.5,43.6,51.9,43,,,,,
 0.8, low,47.5,44.1,45.5,45.5,49.1,45.9,,,,,
 0.8, high,51.2,48.8,50.9,50.7,52.2,50.8,,,,,

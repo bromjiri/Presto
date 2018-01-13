@@ -9,11 +9,11 @@ precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,method,Friday,Natural,Weeke
 1, none,56,58.9,58.5,58.2,48.2,58.8,,,59.07,57.48,57.23
 1, low,56,60,57.6,57.8,53.4,57.6,,,,,
 1, high,58,55.7,57.4,57.6,53.4,57.7,,,,,
-stwits-comb, netflix, Natural, SKL,,,,,,,,,
-precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,,,,
+stwits-comb, netflix, Natural, SKL,,,,,,method,Friday,Natural,Weekend
+precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,,58.03,60.30,57.30
 0.6, none,60,60,60,60,49.6,60,,,,,
-0.6, low,58.6,59.6,58.8,58.2,50,59,,,,,
-0.6, high,61.6,51.8,60.2,59.6,49.6,59.6,,,,,
+0.6, low,58.6,59.6,58.8,58.2,50,59,,binning,none,low,high
+0.6, high,61.6,51.8,60.2,59.6,49.6,59.6,,,60.67,57.43,57.53
 0.8, none,54.5,55.4,55.5,55.7,49.6,55.4,,,,,
 0.8, low,57.6,58.4,55.8,55.6,50.4,56.5,,,,,
 0.8, high,56,52.4,54.4,54.4,56.4,54.9,,,,,

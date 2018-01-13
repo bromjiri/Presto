@@ -29,6 +29,13 @@ class Statistic:
         self.nltk_dict['d2'] = 0
         self.nltk_dict['d3'] = 0
 
+        self.lr_dict = dict()
+        self.lr_dict['accuracy'] = 0
+        self.lr_dict['pos_prec'] = 0
+        self.lr_dict['neg_prec'] = 0
+        self.lr_dict['pos_rec'] = 0
+        self.lr_dict['neg_rec'] = 0
+
         self.voted_list = list()
 
     def add_skl(self, new_dict):
@@ -51,6 +58,13 @@ class Statistic:
         self.nltk_dict[new_dict['most2']] += 2
         self.nltk_dict[new_dict['most3']] += 1
 
+    def add_lr(self, new_dict):
+        self.lr_dict['accuracy'] += new_dict['accuracy']
+        self.lr_dict['pos_prec'] += new_dict['pos_prec']
+        self.lr_dict['neg_prec'] += new_dict['neg_prec']
+        self.lr_dict['pos_rec'] += new_dict['pos_rec']
+        self.lr_dict['neg_rec'] += new_dict['neg_rec']
+
     def mean_skl(self, cycles):
         self.skl_mean = dict()
         self.skl_mean['mnb'] = self.skl_dict['mnb']/cycles
@@ -70,6 +84,14 @@ class Statistic:
         self.nltk_mean['d1'] = self.nltk_dict['d1']
         self.nltk_mean['d2'] = self.nltk_dict['d2']
         self.nltk_mean['d3'] = self.nltk_dict['d3']
+
+    def mean_lr(self, cycles):
+        self.lr_mean = dict()
+        self.lr_mean['accuracy'] = self.lr_dict['accuracy']/cycles
+        self.lr_mean['pos_prec'] = self.lr_dict['pos_prec'] / cycles
+        self.lr_mean['neg_prec'] = self.lr_dict['neg_prec'] / cycles
+        self.lr_mean['pos_rec'] = self.lr_dict['pos_rec'] / cycles
+        self.lr_mean['neg_rec'] = self.lr_dict['neg_rec'] / cycles
 
     def print_nltk(self):
         print("\n" + self.source + ", " + self.subject + ", " + self.precision + ", " + self.method + ":\n"
@@ -113,6 +135,24 @@ class Statistic:
                 + str(round(self.skl_mean["lsvc"], 1)) + ", "
                 + str(round(self.skl_mean["nsvc"], 1)) + ", "
                 + str(round(self.skl_mean["voted"], 1)) + "\n")
+        f.close()
+
+    def print_lr(self):
+        print("\n" + self.source + ", " + self.subject + ", " + self.precision + ", " + self.method + ":")
+        print("accuracy: " + str(round(self.lr_mean["accuracy"], 1))
+              + ", pos_prec: " + str(round(self.lr_mean["pos_prec"], 1))
+              + ", neg_prec: " + str(round(self.lr_mean["neg_prec"], 1))
+              + ", pos_rec: " + str(round(self.lr_mean["pos_rec"], 1))
+              + ", neg_rec: " + str(round(self.lr_mean["neg_rec"], 1)))
+
+    def write_lr(self, filename):
+        f = open(filename, 'a')
+        f.write(self.precision + ", " + self.binning + ", "
+                + str(round(self.lr_mean["accuracy"], 1)) + ", "
+                + str(round(self.lr_mean["pos_prec"], 1)) + ", "
+                + str(round(self.lr_mean["neg_prec"], 1)) + ", "
+                + str(round(self.lr_mean["pos_rec"], 1)) + ", "
+                + str(round(self.lr_mean["neg_rec"], 1)) + "\n")
         f.close()
 
     def print_stddev(self):

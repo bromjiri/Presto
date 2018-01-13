@@ -9,11 +9,11 @@ precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,method,Friday,Natural,Weeke
 1, none,51.3,51.5,51.2,50.9,50.3,51.4,,,51.82,52.89,52.96
 1, low,52.4,54.3,51.1,50.8,49.9,52.1,,,,,
 1, high,48.2,54.2,48.6,49.8,47.8,48.5,,,,,
-news, mcdonalds, Natural, SKL,,,,,,,,,
-precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,,,,
+news, mcdonalds, Natural, SKL,,,,,,method,Friday,Natural,Weekend
+precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,,50.67,54.17,50.50
 0.6, none,52.6,51.9,50.7,50.5,51.9,51.2,,,,,
-0.6, low,54.2,52.2,53.4,52.9,49.9,53.6,,,,,
-0.6, high,53.2,50.6,52.1,51.3,52.1,52.5,,,,,
+0.6, low,54.2,52.2,53.4,52.9,49.9,53.6,,binning,none,low,high
+0.6, high,53.2,50.6,52.1,51.3,52.1,52.5,,,51.90,52.27,51.17
 0.8, none,47.7,48.4,49.2,50.6,52.2,49.4,,,,,
 0.8, low,55.3,51.4,52.1,52.3,50.3,52.5,,,,,
 0.8, high,54,50.3,52.6,52.3,50.7,53.1,,,,,

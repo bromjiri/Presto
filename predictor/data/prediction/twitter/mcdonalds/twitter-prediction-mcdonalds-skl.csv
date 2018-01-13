@@ -1,6 +1,6 @@
 twitter, mcdonalds, Friday, SKL,,,,,,,,,
 precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,method,Friday,Natural,Weekend
-0.6, none,44.5,46.2,46.1,45.7,50.4,45.8,,,47.22,52.60,49.77
+0.6, none,44.5,46.2,46.1,45.7,50.4,45.8,,,47.22,52.6,49.77
 0.6, low,46.3,46.8,46.8,47.3,48.9,46.6,,,,,
 0.6, high,47.8,50.4,47.4,48.2,47.6,47.7,,precision,0.6,0.8,1
 0.8, none,48.3,48.6,48.2,48.4,50.2,48.1,,,49.39,50.51,49.69
@@ -9,11 +9,11 @@ precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,method,Friday,Natural,Weeke
 1, none,45.5,47.4,47.6,48.4,50.5,47.6,,,50.34,50.01,49.58
 1, low,44.9,46.8,50.4,51.1,48.5,48.9,,,,,
 1, high,46.1,51.1,46.9,48.2,44.1,46.3,,,,,
-twitter, mcdonalds, Natural, SKL,,,,,,,,,
-precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,,,,
+twitter, mcdonalds, Natural, SKL,,,,,,method,Friday,Natural,Weekend
+precision, binning, mnb, bnb, lr, lsvc, nsvc, voted,,,47.60,52.00,49.47
 0.6, none,54.5,55.2,54.8,54.6,49.4,55,,,,,
-0.6, low,55.2,47.3,55.4,55.2,52.1,55.4,,,,,
-0.6, high,51.6,50.9,50.1,49.4,50.4,49.6,,,,,
+0.6, low,55.2,47.3,55.4,55.2,52.1,55.4,,binning,none,low,high
+0.6, high,51.6,50.9,50.1,49.4,50.4,49.6,,,49.70,50.17,49.20
 0.8, none,56.2,53.6,53.7,53.8,47.3,53.9,,,,,
 0.8, low,51.1,50.4,50.4,49.2,48.5,50.2,,,,,
 0.8, high,53.1,54.7,51.9,51.5,48.1,53.3,,,,,
