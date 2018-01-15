@@ -1,9 +1,12 @@
 # fix newlines
 import settings
+import os
 
 def fix_file(year, month, day, subject):
 
     output_file_path = settings.DOWNLOADS_TWITTER_FINAL + "/" + subject + "/twitter-" + subject + "-" + year + "-" + month + "-" + day + "-fix.csv"
+    dir = os.path.dirname(os.path.realpath(output_file_path))
+    os.makedirs(dir, exist_ok=True)
     output_file = open(output_file_path, "w")
 
     input_file_path = settings.DOWNLOADS_TWITTER + "/" + subject + "/twitter-" + subject + "-" + year + "-" + month + "-" + day + ".csv"
@@ -58,10 +61,10 @@ def fix_file(year, month, day, subject):
 
 
 # periods = [["2016", "11"], ["2016", "12"], ["2017", "01"], ["2017", "02"], ["2017", "03"]]
-periods = [["2017", "05"], ["2017", "06"], ["2017", "07"], ["2017", "08"]]
+periods = [["2017", "09"], ["2017", "10"], ["2017", "11"], ["2017", "12"]]
 first_day = 1
 last_day = 31
-subjects = ["nike", "tesla", "the"]
+subjects = ["cola", "mcdonald","microsoft", "netflix", "nike", "tesla", "the"]
 # subjects = ["mcdonald"]
 
 

@@ -236,15 +236,15 @@ class CounterNews():
 ###############
 
 # vars
-source = "twitter"
-start_date = date(2017, 5, 1)
-end_date = date(2017, 8, 31)
+source = "stwits"
+start_date = date(2017, 9, 1)
+end_date = date(2017, 10, 31)
 twi_max = 20000
 
 
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla"]
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the", "djia", "compq", "spx"]
-subjects = ["nike", "samsung", "tesla", "the"] # twitter + netflix august
+subjects = ["coca-cola", "microsoft", "netflix", "tesla"] # twitter + netflix august
 # subjects = ["tesla"]
 
 for subject in subjects:

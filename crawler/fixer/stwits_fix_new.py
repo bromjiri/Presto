@@ -1,5 +1,6 @@
 # fix newlines
 import settings
+import os
 
 def fix_file(year, month, day, subject):
 
@@ -28,6 +29,8 @@ def fix_file(year, month, day, subject):
             return
 
         output_file_path = settings.DOWNLOADS_STWITS_FINAL + "/" + subject + "/stwits-" + subject + "-" + year + "-" + month + "-" + day + "-fix.csv"
+        dir = os.path.dirname(os.path.realpath(output_file_path))
+        os.makedirs(dir, exist_ok=True)
         output_file = open(output_file_path, "w")
 
         output_list = list()
@@ -77,12 +80,12 @@ def fix_file(year, month, day, subject):
         pass
 
 
-periods = [["2017", "05"], ["2017", "06"], ["2017", "07"], ["2017", "08"]]
+periods = [["2017", "09"], ["2017", "10"]]
 # periods = [["2017", "01"]]
 first_day = 1
 last_day = 31
 # subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia", "the"]
-subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla"]
+subjects = ["msft", "ko", "nflx", "tsla"]
 
 
 for period in periods:

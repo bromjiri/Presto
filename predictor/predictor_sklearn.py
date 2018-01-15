@@ -2,12 +2,10 @@ import settings
 import pandas as pd
 import numpy as np
 import os
-from datetime import datetime
 from datetime import timedelta
-import predictor.predictor_classifier as cls
 import predictor.predictor_statistic as stat
 import random
-import nltk
+import pickle
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -189,7 +187,10 @@ def run_one(source, subject, precision, method, from_date, to_date, binning, fil
     # print(train_border, max_half)
 
     # exit()
-    cycles = 50
+    if pickle_switch:
+        cycles = 1
+    else:
+        cycles = 50
     for x in range(0, cycles):
 
         random.shuffle(features_list_pos)
@@ -219,6 +220,16 @@ def run_one(source, subject, precision, method, from_date, to_date, binning, fil
 
         # fit model
         logreg.fit(X_train_vect, y_train)
+
+        # pickle
+        if pickle_switch:
+            logreg_f = open("pickled/nflx_logreg.pickle", "wb")
+            pickle.dump(logreg, logreg_f)
+            logreg_f.close()
+
+            vector_f = open("pickled/nflx_vector.pickle", "wb")
+            pickle.dump(v, vector_f)
+            vector_f.close()
 
         # make class predictions for the testing set
         y_pred_class = logreg.predict(X_test_vect)
@@ -267,25 +278,26 @@ def run_one(source, subject, precision, method, from_date, to_date, binning, fil
     if lr_run:
         statistic.mean_lr(cycles)
         statistic.print_lr()
-        statistic.write_lr(filename_lr)
+        # statistic.write_lr(filename_lr)
 
 nltk_run = False
 sklearn_run = False
 lr_run = True
+pickle_switch = True
 
 from_date = '2016-11-01'
 to_date = '2017-08-31'
-source = "twitter"
+source = "stwits-comb"
 
-binnings = ['none', 'low', 'high']
-# binnings = ['none']
+# binnings = ['none', 'low', 'high']
+binnings = ['none']
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "djia", "snp", "nasdaq"]
-subjects = ["tesla"]
+subjects = ["netflix"]
 # precisions = ["0.6", "0.8", "1.0"]
-precisions = ["1.0"]
+precisions = ["0.6"]
 
-methods = ["Friday", "Natural", "Weekend"]
-# methods = ["Friday"]
+# methods = ["Friday", "Natural", "Weekend"]
+methods = ["Friday"]
 
 
 
@@ -320,11 +332,11 @@ for subject in subjects:
         #     f.write("precision, binning, mnb, bnb, lr, lsvc, nsvc, voted\n")
         #     f.close()
 
-        if lr_run:
-            f = open(filename_lr, 'a')
-            f.write(source + ", " + subject + ", " + method + ", LR\n")
-            f.write("precision, binning, accuracy, pos_prec, neg_prec, pos_rec, neg_rec\n")
-            f.close()
+        # if lr_run:
+        #     f = open(filename_lr, 'a')
+        #     f.write(source + ", " + subject + ", " + method + ", LR\n")
+        #     f.write("precision, binning, accuracy, pos_prec, neg_prec, pos_rec, neg_rec\n")
+        #     f.close()
 
         for precision in precisions:
             for binning in binnings:
