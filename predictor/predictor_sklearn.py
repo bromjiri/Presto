@@ -223,11 +223,12 @@ def run_one(source, subject, precision, method, from_date, to_date, binning, fil
 
         # pickle
         if pickle_switch:
-            logreg_f = open("pickled/nflx_logreg.pickle", "wb")
+            os.makedirs('pickled', exist_ok=True)
+            logreg_f = open("pickled/tesla_logreg.pickle", "wb")
             pickle.dump(logreg, logreg_f)
             logreg_f.close()
 
-            vector_f = open("pickled/nflx_vector.pickle", "wb")
+            vector_f = open("pickled/tesla_vector.pickle", "wb")
             pickle.dump(v, vector_f)
             vector_f.close()
 
@@ -287,12 +288,12 @@ pickle_switch = True
 
 from_date = '2016-11-01'
 to_date = '2017-08-31'
-source = "stwits-comb"
+source = "stwits"
 
 # binnings = ['none', 'low', 'high']
 binnings = ['none']
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "djia", "snp", "nasdaq"]
-subjects = ["netflix"]
+subjects = ["tesla"]
 # precisions = ["0.6", "0.8", "1.0"]
 precisions = ["0.6"]
 

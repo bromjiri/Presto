@@ -12,17 +12,17 @@ from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
 
 
-logreg_f = open("pickled/nflx_logreg.pickle", "rb")
+logreg_f = open("pickled/tesla_logreg.pickle", "rb")
 logreg = pickle.load(logreg_f)
 logreg_f.close()
 
 
-vector_f = open("pickled/nflx_vector.pickle", "rb")
+vector_f = open("pickled/tesla_vector.pickle", "rb")
 vectorizer = pickle.load(vector_f)
 vector_f.close()
 
 feature = dict()
-feature['d1'] = 4
+feature['d1'] = 0
 feature['d2'] = 4
 feature['d3'] = 4
 
