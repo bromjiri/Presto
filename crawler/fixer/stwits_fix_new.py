@@ -41,6 +41,7 @@ def fix_file(year, month, day, subject):
             previous = input_file[0].strip()
 
             for row in input_file[1:]:
+                row = row.replace('\0', '')
 
                 if row.strip() == "":
                     continue
@@ -57,6 +58,7 @@ def fix_file(year, month, day, subject):
             previous = input_file_hist[0].strip()
 
             for row in input_file_hist[1:]:
+                row = row.replace('\0', '')
 
                 if row.strip() == "":
                     continue
@@ -80,12 +82,12 @@ def fix_file(year, month, day, subject):
         pass
 
 
-periods = [["2017", "09"], ["2017", "10"]]
+periods = [["2017", "09"],["2017", "10"],["2017", "11"],["2017", "12"]]
 # periods = [["2017", "01"]]
 first_day = 1
 last_day = 31
 # subjects = ["msft", "ko", "mcd", "ssnlf", "nflx", "nke", "tsla", "compq", "spx", "djia", "the"]
-subjects = ["msft", "ko", "nflx", "tsla"]
+subjects = ["tsla"]
 
 
 for period in periods:
