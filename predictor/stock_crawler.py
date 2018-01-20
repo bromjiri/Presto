@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 
 
-start = dt.datetime(2016,11,1)
-end = dt.datetime(2017,8,31)
+start = dt.datetime(2017,8,1)
+end = dt.datetime(2017,12,31)
 
 
 def download_stock(key):
@@ -27,7 +27,7 @@ def download_stock(key):
 # stock_list = {"coca-cola": "KO", "mcdonalds": "MCD", "microsoft": "MSFT", "netflix": "NFLX", "nike": "NKE",
 #               "samsung": "005930.KS", "tesla": "TSLA", "nasdaq": "NDAQ", "djia": ".DJI", "snp": "^GSPC"}
 
-stock_list = {"snp": "GSPC"}
+stock_list = {"tesla-new-output": "tesla-new"}
 
 for key in stock_list:
     print(key)
