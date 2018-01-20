@@ -238,14 +238,13 @@ class CounterNews():
 # vars
 source = "stwits"
 start_date = date(2017, 9, 1)
-end_date = date(2017, 10, 31)
+end_date = date(2017, 12, 31)
 twi_max = 20000
 
 
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla"]
 # subjects = ["coca-cola", "mcdonalds", "microsoft", "netflix", "nike", "samsung", "tesla", "the", "djia", "compq", "spx"]
-subjects = ["coca-cola", "microsoft", "netflix", "tesla"] # twitter + netflix august
-# subjects = ["tesla"]
+subjects = ["tesla"]
 
 for subject in subjects:
     logger.info(subject)

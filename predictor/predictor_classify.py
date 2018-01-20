@@ -1,16 +1,4 @@
-import settings
-import pandas as pd
-import numpy as np
-import os
-from datetime import timedelta
-import predictor.predictor_statistic as stat
-import random
 import pickle
-from sklearn.feature_extraction import DictVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn import metrics
-
 
 logreg_f = open("pickled/tesla_logreg.pickle", "rb")
 logreg = pickle.load(logreg_f)
@@ -22,7 +10,7 @@ vectorizer = pickle.load(vector_f)
 vector_f.close()
 
 feature = dict()
-feature['d1'] = 0
+feature['d1'] = 4
 feature['d2'] = 4
 feature['d3'] = 4
 

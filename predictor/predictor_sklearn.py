@@ -284,7 +284,7 @@ def run_one(source, subject, precision, method, from_date, to_date, binning, fil
 nltk_run = False
 sklearn_run = False
 lr_run = True
-pickle_switch = True
+pickle_switch = False
 
 from_date = '2016-11-01'
 to_date = '2017-08-31'
